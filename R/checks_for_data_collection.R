@@ -88,3 +88,11 @@ df_greater_thresh_distance <- check_threshold_distance(input_sample_data = df_sa
                                                        input_threshold_dist = threshold_dist)
 
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_greater_thresh_distance")
+
+# others checks -----------------------------------------------------------
+
+df_others_data <- extract_other_specify_data(input_tool_data = df_tool_data, 
+                                             input_survey = df_survey, 
+                                             input_choices = df_choices)
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_others_data")
