@@ -1,0 +1,24 @@
+---
+title: "field_data_collection_tracker"
+author: "REACH"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+knit: (function(inputFile, encoding) { rmarkdown::render(inputFile, encoding = encoding, output_file = paste0(dirname(inputFile), '/livelihoods_field_data_collection_tracker_', format(Sys.Date(), '%Y_%m_%d'),'.html')) })
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+
+# read packages
+library(tidyverse)
+library(lubridate)
+library(glue)
+library(leaflet)
+
+```
