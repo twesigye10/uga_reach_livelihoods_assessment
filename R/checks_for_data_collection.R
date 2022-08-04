@@ -101,3 +101,12 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ot
 # logical checks ----------------------------------------------------------
 
 
+
+
+# combine and output checks -----------------------------------------------
+
+# combine checks
+df_combined_checks <- bind_rows(logic_output)
+
+# output the combined checks
+write_csv(x = df_combined_checks, file = paste0("outputs/", butteR::date_file_prefix(), "_combined_checks_livelihood.csv"), na = "")
