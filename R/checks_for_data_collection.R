@@ -114,7 +114,7 @@ df_crop_production_on_own_land <- df_tool_data %>%
          i.check.value = "",
          i.check.issue_id = "logic_c_crop_production_on_own_land",
          i.check.issue = glue("farming_land_availability: {farming_land_availability}, but hh_primary_livelihood or 
-                              other_livelihoods_hh_engaged_in has livestock_farming_on_own_land as an option}"),
+                              other_livelihoods_hh_engaged_in has crop_production_on_own_land as an option}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
