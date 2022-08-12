@@ -4,6 +4,7 @@ library(checksupporteR)
 library(tidyverse)
 library(lubridate)
 library(glue)
+library(sf)
 
 # read data ---------------------------------------------------------------
 
@@ -11,8 +12,8 @@ df_tool_data <- readxl::read_excel(path = "inputs/livelihoods_assessment_data.xl
   mutate(i.check.uuid = `_uuid`,
          i.check.start_date = as_date(start),
          i.check.enumerator_id = as.character(enumerator_id),
-         i.check.district_name = district_name,
-         i.check.point_number = point_number) %>% 
+         i.check.district_name = district_name)%>% 
+          
   filter(i.check.start_date > as_date("2022-08-07"))
 
 df_survey <- readxl::read_excel(path = "inputs/livelihoods_assessment_tool.xlsx", sheet = "survey")
@@ -99,6 +100,35 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ot
 
 
 # logical checks ----------------------------------------------------------
+
+# HH reports 'crop production on own land' as a livelihood, but reports to not have arable land. i.e. 
+#(selected(${hh_primary_livelihood}, "crop_production_on_own_land") OR selected(${other_livelihoods_hh_engaged_in}, 
+#"crop_production_on_own_land")) AND farming_land_availability = 'no'
+
+df_farming_land_availability <- df_tool_data %>% 
+  filter(farming_land_availability == "no", str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_own_land") |
+                                             str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land")) %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "farming_land_availability",
+         i.check.current_value = as.character(farming_land_availability),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_farming_land_availability_no",
+         i.check.issue = glue("farming_land_availability: {farming_land_availability}, but hh_primary_livelihood: {hh_primary_livelihood} or 
+                              other_livelihoods_hh_engaged_in: {other_livelihoods_hh_engaged_in}"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_farming_land_availability")
+
+view(df_farming_land_availability)
+
 
 
 
