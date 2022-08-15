@@ -172,7 +172,7 @@ df_own_livestock_three <- df_tool_data %>%
          i.check.value = "",
          i.check.issue_id = "logic_c_hh_own_livestock_no",
          i.check.issue = glue("hh_own_livestock: {hh_own_livestock}, but hh_primary_livelihood or 
-                              other_livelihoods_hh_engaged_in has livestock_farming_on_own_land/livestock_farming_on_land_of_others as options"),
+                              other_livelihoods_hh_engaged_in has 'livestock farming on own land' or/and 'livestock farming on land of others' as options"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
@@ -204,7 +204,7 @@ df_own_arable_land_four <- df_tool_data %>%
          i.check.value = "",
          i.check.issue_id = "logic_c_land_occupancy_arrangement_ownership",
          i.check.issue = glue("land_occupancy_arrangement: {land_occupancy_arrangement}, but hh_primary_livelihood or 
-                              other_livelihoods_hh_engaged_in has no crop production or/and livestock farming as options"),
+                              other_livelihoods_hh_engaged_in has no 'crop production on own land' or/and 'livestock farming on own land'"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
@@ -273,7 +273,7 @@ df_squatting_arable_land_six <- df_tool_data %>%
          i.check.value = "",
          i.check.issue_id = "logic_c_land_occupancy_arrangement_squatting",
          i.check.issue = glue("land_occupancy_arrangement: {land_occupancy_arrangement}, but hh_primary_livelihood or 
-                              other_livelihoods_hh_engaged_in has no crop_production_on_land_of_others or/and livestock_farming_on_land_of_others"),
+                              other_livelihoods_hh_engaged_in has no 'crop production on land of others' or/and 'livestock farming on land of others' as options"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
@@ -294,7 +294,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_sq
 
 df_borrowing_arable_land_seven <- df_tool_data %>% 
   filter(land_occupancy_arrangement == "borrowing_friends_family_or_employer", 
-         !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_land_of_others") |
+           !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_land_of_others") |
            !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others") |
            !str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_land_of_others") |
            !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_land_of_others")) %>% 
@@ -304,7 +304,7 @@ df_borrowing_arable_land_seven <- df_tool_data %>%
          i.check.value = "",
          i.check.issue_id = "logic_c_land_occupancy_arrangement_borrowing",
          i.check.issue = glue("land_occupancy_arrangement: {land_occupancy_arrangement}, but hh_primary_livelihood or 
-                              other_livelihoods_hh_engaged_in has no crop_production_on_land_of_others or/and livestock_farming_on_land_of_others"),
+                              other_livelihoods_hh_engaged_in has no 'crop production on land of others' or/and 'livestock farming on land of others' as options"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
@@ -316,6 +316,43 @@ df_borrowing_arable_land_seven <- df_tool_data %>%
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_borrowing_arable_land_seven")
+
+
+# HH reports members travel back to settlement 'to work on own land', but do not report 'crop production on own land' OR 'livestock farming on own land' 
+# as a livelihood i.e. reason_hh_member_travels_back_to_settlement = 'to_work_on_own_land' AND (not(selected(${hh_primary_livelihood}, 
+# "crop_production_on_own_land")) AND not(selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_own_land")) AND
+# not(selected(${hh_primary_livelihood}, "livestock_farming_on_own_land")) AND not(selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_own_land")))
+
+
+df_reason_travel_back_to_settlement_eight <- df_tool_data %>% 
+  filter(str_detect(string = reason_hh_member_travel_back_to_settlement, pattern = "to_work_on_own_land"), 
+           !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_own_land") |
+           !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land") |
+           !str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_own_land") |
+           !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land")) %>% 
+  mutate(i.check.type = "remove_option",
+         i.check.name = "reason_hh_member_travel_back_to_settlement",
+         i.check.current_value = as.character(reason_hh_member_travel_back_to_settlement),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_reason_hh_member_travel_back_to_settlement",
+         i.check.issue = glue("reason_hh_member_travel_back_to_settlement: {reason_hh_member_travel_back_to_settlement}, but hh_primary_livelihood or 
+                              other_livelihoods_hh_engaged_in has no 'crop production on own land' or/and 'livestock farming on own land' as options"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_reason_travel_back_to_settlement_eight")
+
+
+
+
+
 
 
 
