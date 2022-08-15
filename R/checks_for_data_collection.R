@@ -256,6 +256,35 @@ df_rent_arable_land_five <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_rent_arable_land_five")
 
 
+# HH reports squatting on arable land, but does not report 'crop production on land of others' OR 'livestock farming on land of others' as a livelihood
+# i.e. land_occupancy_arrangement = 'squattingusing_unoccupied_land' AND (not(selected(${hh_primary_livelihood}, "crop_production_on_land_of_others"))
+# AND not(selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_land_of_others")) AND not(selected(${hh_primary_livelihood}, 
+# "livestock_farming_on_land_of_others")) AND not(selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others")))
+
+df_squatting_arable_land_six <- df_tool_data %>% 
+  filter(land_occupancy_arrangement == "squattingusing_unoccupied_land", 
+         !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_land_of_others") |
+           !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others") |
+           !str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_land_of_others") |
+           !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_land_of_others")) %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "land_occupancy_arrangement",
+         i.check.current_value = as.character(land_occupancy_arrangement),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_land_occupancy_arrangement_squatting",
+         i.check.issue = glue("land_occupancy_arrangement: {land_occupancy_arrangement}, but hh_primary_livelihood or 
+                              other_livelihoods_hh_engaged_in has no crop_production_on_land_of_others or/and livestock_farming_on_land_of_others"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_squatting_arable_land_six")
 
 
 
