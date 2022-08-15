@@ -204,7 +204,7 @@ df_land_occupancy_arrangement_four <- df_tool_data %>%
          i.check.value = "",
          i.check.issue_id = "logic_c_land_occupancy_arrangement",
          i.check.issue = glue("land_occupancy_arrangement: {land_occupancy_arrangement}, but hh_primary_livelihood or 
-                              other_livelihoods_hh_engaged_in has no crop_production_on_own_land/livestock_farming_on_land_of_others as an option"),
+                              other_livelihoods_hh_engaged_in has no crop_production_on_own_land/livestock_farming_on_own_land as an option"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
