@@ -526,7 +526,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_re
 # HH reports members travel to urban centres 'to work on own land', but do not report having arable land i.e. 
 # reason_hh_member_travels_to_towns = 'to_work_on_own_land' AND farming_land_availability = 'no' 
 
-df_farming_land_availability_in_towns <- df_tool_data %>% 
+df_farming_land_availability_in_towns_15 <- df_tool_data %>% 
   filter(farming_land_availability == "no", !str_detect(string = reason_hh_member_travels_to_towns, pattern = "to_work_on_own_land")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "farming_land_availability",
