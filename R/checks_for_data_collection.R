@@ -401,7 +401,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_te
 # (not(selected(${hh_primary_livelihood}, "crop_production_on_land_of_others")) AND not(selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_land_of_others")) AND
 # not(selected(${hh_primary_livelihood}, "livestock_farming_on_land_of_others")) AND not(selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others")))
 
-df_eleven_work_done_by_family_farming <- df_tool_data %>% 
+df_eleven_type_work_done_by_family_farming <- df_tool_data %>% 
 filter(str_detect(string = type_work_done_by_close_family_member_in_settlement, pattern = "work_on_land_of_others"), 
                                        !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_land_of_others") |
                                        !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others") |
@@ -411,7 +411,7 @@ filter(str_detect(string = type_work_done_by_close_family_member_in_settlement, 
          i.check.name = "type_work_done_by_close_family_member_in_settlement",
          i.check.current_value = as.character(type_work_done_by_close_family_member_in_settlement),
          i.check.value = "",
-         i.check.issue_id = "logic_c_type_work_done_by_close_family_member_in_settlement",
+         i.check.issue_id = "logic_c_type_work_done_by_family_farming",
          i.check.issue = glue("type_work_done_by_close_family_member_in_settlement: {type_work_done_by_close_family_member_in_settlement}, but hh_primary_livelihood or 
                               other_livelihoods_hh_engaged_in has no 'crop production on land of others' or/and 'livestock farming on land of others' as options"),
          i.check.other_text = "",
@@ -424,14 +424,72 @@ filter(str_detect(string = type_work_done_by_close_family_member_in_settlement, 
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_eleven_work_done_by_family_farming")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_eleven_type_work_done_by_family_farming")
 
 
+# HH reports members travel back to settlement for 'non-agricultural daily labour', but did not report 'casual or daily labour' OR 
+# 'salaried employment with a business' as a livelihood i.e. type_work_done_by_close_family_member_in_settlement = 'non_agricultural_daily_labour' AND
+# (not(selected(${hh_primary_livelihood}, "casual_or_daily_labour_non_farming")) AND not(selected(${other_livelihoods_hh_engaged_in}, "casual_or_daily_labour_non_farming")) AND
+# not(selected(${hh_primary_livelihood}, "salaried_employment_in_a_business")) AND not(selected(${other_livelihoods_hh_engaged_in}, "salaried_employment_in_a_business")))
+
+df_twelve_type_work_done_by_family_non_agric <- df_tool_data %>% 
+  filter(str_detect(string = type_work_done_by_close_family_member_in_settlement, pattern = "non_agricultural_daily_labour"), 
+                                       !str_detect(string = hh_primary_livelihood, pattern = "casual_or_daily_labour_non_farming") |
+                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "casual_or_daily_labour_non_farming") |
+                                       !str_detect(string = hh_primary_livelihood, pattern = "salaried_employment_in_a_business") |
+                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "salaried_employment_in_a_business")) %>% 
+  mutate(i.check.type = "remove_option",
+         i.check.name = "type_work_done_by_close_family_member_in_settlement",
+         i.check.current_value = as.character(type_work_done_by_close_family_member_in_settlement),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_type_work_done_by_family_non_agric",
+         i.check.issue = glue("type_work_done_by_close_family_member_in_settlement: {type_work_done_by_close_family_member_in_settlement}, but hh_primary_livelihood or 
+                              other_livelihoods_hh_engaged_in has no 'casual or daily labour' or/and 'salaried employment in a business' as options"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_twelve_type_work_done_by_family_non_agric")
 
 
+# HH reports members travel back to settlement for 'permanent salaried job', but did not report 'salaried employment with a business' OR 
+# 'salaried employment with an NGO' OR 'salaried employment with the government' as a livelihood i.e. type_work_done_by_close_family_member_in_settlement = 'non_agricultural_daily_labour'
+# AND (not(selected(${hh_primary_livelihood}, "casual_or_daily_labour_non_farming")) AND not(selected(${other_livelihoods_hh_engaged_in}, "casual_or_daily_labour_non_farming")) AND
+# not(selected(${hh_primary_livelihood}, "salaried_employment_in_a_business")) AND not(selected(${other_livelihoods_hh_engaged_in}, "salaried_employment_in_a_business")))
 
+df_thirteen_type_work_done_by_family_salary <- df_tool_data %>% 
+  filter(str_detect(string = type_work_done_by_close_family_member_in_settlement, pattern = "permanent_salaried_job"), 
+                                       !str_detect(string = hh_primary_livelihood, pattern = "salaried_employment_in_a_business") |
+                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "salaried_employment_in_a_business") |
+                                       !str_detect(string = hh_primary_livelihood, pattern = "salaried_employment_with_an_ngo") |
+                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "salaried_employment_with_an_ngo") |
+                                       !str_detect(string = hh_primary_livelihood, pattern = "salaried_employment_with_the_government") |
+                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "salaried_employment_with_the_government")) %>% 
+  mutate(i.check.type = "remove_option",
+         i.check.name = "type_work_done_by_close_family_member_in_settlement",
+         i.check.current_value = as.character(type_work_done_by_close_family_member_in_settlement),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_type_work_done_by_family_salary",
+         i.check.issue = glue("type_work_done_by_close_family_member_in_settlement: {type_work_done_by_close_family_member_in_settlement}, but hh_primary_livelihood or 
+                              other_livelihoods_hh_engaged_in has no 'salaried employment in a business', 'salaried employment with an NGO' or/and 
+                              'salaried employment with the government' as options"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_thirteen_type_work_done_by_family_salary")
 
 
 
