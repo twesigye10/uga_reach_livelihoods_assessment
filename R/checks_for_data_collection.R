@@ -354,7 +354,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ei
 # HH reports members travel back to settlement 'to work on own land', but do not report having arable land i.e. 
 # reason_hh_member_travels_back_to_settlement = 'to_work_on_own_land' AND farming_land_availability = 'no' 
 
-df_nine_reason_travel_back_to_settlement <- df_tool_data %>% 
+df_nine_reason_travel_back_to_settlement_farm <- df_tool_data %>% 
   filter(farming_land_availability == "no", !str_detect(string = reason_hh_member_travel_back_to_settlement, pattern = "to_work_on_own_land")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "farming_land_availability",
@@ -373,21 +373,24 @@ df_nine_reason_travel_back_to_settlement <- df_tool_data %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_nine_reason_travel_back_to_settlement")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_nine_reason_travel_back_to_settlement_farm")
 
 
-# HH reports members travel back to settlement 'to work on own land', but do not report having arable land i.e. 
-# reason_hh_member_travels_back_to_settlement = 'to_work_on_own_land' AND farming_land_availability = 'no' 
+# HH reports members travel back to settlement 'to run business(es)', but do not report 'own business' as a livelihood i.e. 
+# reason_hh_member_travels_back_to_settlement = 'to_run_businesses' AND
+# (not(selected(${hh_primary_livelihood}, "own_business_non_farming")) AND not(selected(${other_livelihoods_hh_engaged_in}, "own_business_non_farming")) 
 
-df_reason_travel_back_to_settlement_business <- df_tool_data %>% 
-  filter(farming_land_availability == "no", !str_detect(string = reason_hh_member_travel_back_to_settlement, pattern = "to_work_on_own_land")) %>% 
+df_ten_reason_travel_back_to_settlement_business <- df_tool_data %>% 
+  filter(str_detect(string = reason_hh_member_travel_back_to_settlement, pattern = "to_run_businesses"), 
+           !str_detect(string = hh_primary_livelihood, pattern = "own_business_non_farming") |
+           !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "own_business_non_farming")) %>% 
   mutate(i.check.type = "change_response",
-         i.check.name = "farming_land_availability",
-         i.check.current_value = as.character(farming_land_availability),
+         i.check.name = "reason_hh_member_travel_back_to_settlement",
+         i.check.current_value = as.character(reason_hh_member_travel_back_to_settlement),
          i.check.value = "",
-         i.check.issue_id = "logic_c_farming_land_availability_no",
-         i.check.issue = glue("farming_land_availability: {farming_land_availability}, but reason_hh_member_travel_back_to_settlement: 
-                              {reason_hh_member_travel_back_to_settlement}"),
+         i.check.issue_id = "logic_c_reason_hh_member_travel_back_to_settlement_business",
+         i.check.issue = glue("reason_hh_member_travel_back_to_settlement: {reason_hh_member_travel_back_to_settlement}, but hh_primary_livelihood or 
+                              other_livelihoods_hh_engaged_in has no 'own business' selected as an option"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
@@ -398,7 +401,7 @@ df_reason_travel_back_to_settlement_business <- df_tool_data %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_reason_travel_back_to_settlement_nine")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ten_reason_travel_back_to_settlement_business")
 
 
 
