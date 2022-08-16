@@ -347,7 +347,38 @@ df_reason_travel_back_to_settlement_eight <- df_tool_data %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
+view(df_reason_travel_back_to_settlement_eight)
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_reason_travel_back_to_settlement_eight")
+
+
+# HH reports members travel back to settlement 'to work on own land', but do not report having arable land i.e. 
+# reason_hh_member_travels_back_to_settlement = 'to_work_on_own_land' AND farming_land_availability = 'no' 
+
+df_reason_travel_back_to_settlement_nine <- df_tool_data %>% 
+  filter(farming_land_availability == "no", !str_detect(string = reason_hh_member_travel_back_to_settlement, pattern = "to_work_on_own_land")) %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "farming_land_availability",
+         i.check.current_value = as.character(farming_land_availability),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_farming_land_availability_no",
+         i.check.issue = glue("farming_land_availability: {farming_land_availability}, but reason_hh_member_travel_back_to_settlement: 
+                              {reason_hh_member_travel_back_to_settlement}"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_reason_travel_back_to_settlement_nine")
+
+
+
+
+
 
 
 
