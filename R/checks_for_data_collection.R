@@ -105,7 +105,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ot
 #(selected(${hh_primary_livelihood}, "crop_production_on_own_land") OR selected(${other_livelihoods_hh_engaged_in}, 
 #"crop_production_on_own_land")) AND farming_land_availability = 'no'
 
-df_crop_production_on_own_land_one <- df_tool_data %>% 
+df_one_crop_production_on_own_land <- df_tool_data %>% 
   filter(farming_land_availability == "no", str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_own_land") |
                                             str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land")) %>% 
   mutate(i.check.type = "change_response",
@@ -125,7 +125,7 @@ df_crop_production_on_own_land_one <- df_tool_data %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_crop_production_on_own_land_one")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_one_crop_production_on_own_land")
 
 
 # HH reports 'livestock farming on own land' as a livelihood, but reports to not have arable land i.e. 
@@ -133,7 +133,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_cr
 #"livestock_farming_on_own_land")) AND farming_land_availability = 'no' 
 
 
-df_livestock_farming_on_own_land_two <- df_tool_data %>% 
+df_two_livestock_farming_on_own_land <- df_tool_data %>% 
   filter(farming_land_availability == "no", str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_own_land") |
                                             str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land")) %>% 
   mutate(i.check.type = "change_response",
@@ -153,7 +153,7 @@ df_livestock_farming_on_own_land_two <- df_tool_data %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_livestock_farming_on_own_land_two")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_two_livestock_farming_on_own_land")
 
 
 # HH reports 'livestock farming on own land' AND/OR 'livestock farming on land of others' as a livelihood, but reports not owning any livestock 
@@ -161,7 +161,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_li
 # OR selected(${hh_primary_livelihood}, "livestock_farming_on_land_of_others") OR selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others"))
 # AND hh_own_livestock = 'no' or 'no_answer'
 
-df_own_livestock_three <- df_tool_data %>% 
+df_three_own_livestock <- df_tool_data %>% 
   filter(hh_own_livestock == "no" | hh_own_livestock == "no_answer", str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_own_land") |
                                       str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land") |
                                       str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_land_of_others") |
@@ -183,7 +183,7 @@ df_own_livestock_three <- df_tool_data %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_own_livestock_three")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_three_own_livestock")
 
 
 # HH reports owning arable land, but does not report 'crop production on own land' OR 'livestock farming on own land' as a livelihood 
@@ -192,7 +192,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ow
 # not(selected(${hh_primary_livelihood}, "livestock_farming_on_own_land")) AND not(selected(${other_livelihoods_hh_engaged_in}, 
 # "livestock_farming_on_own_land")))
 
-df_own_arable_land_four <- df_tool_data %>% 
+df_four_own_arable_land <- df_tool_data %>% 
   filter(land_occupancy_arrangement == "ownership" | land_occupancy_arrangement == "land_was_assigned", 
                                        !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_own_land") |
                                        !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land") |
@@ -215,7 +215,7 @@ df_own_arable_land_four <- df_tool_data %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_own_arable_land_four")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_four_own_arable_land")
 
 
 # HH reports renting arable land, but does not report 'crop oroduction on own land' OR 'crop production on land of others' OR 
@@ -227,7 +227,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ow
 # "livestock_farming_on_own_land")) AND not(selected(${hh_primary_livelihood}, "livestock_farming_on_land_of_others")) AND 
 # not(selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others")))
 
-df_renting_arable_land_five <- df_tool_data %>% 
+df_five_renting_arable_land <- df_tool_data %>% 
   filter(land_occupancy_arrangement == "renting", !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_own_land") |
                                        !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land") |
                                        !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_land_of_others") |
@@ -253,7 +253,7 @@ df_renting_arable_land_five <- df_tool_data %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_renting_arable_land_five")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_five_renting_arable_land")
 
 
 # HH reports squatting on arable land, but does not report 'crop production on land of others' OR 'livestock farming on land of others' as a livelihood
@@ -261,7 +261,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_re
 # AND not(selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_land_of_others")) AND not(selected(${hh_primary_livelihood}, 
 # "livestock_farming_on_land_of_others")) AND not(selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others")))
 
-df_squatting_arable_land_six <- df_tool_data %>% 
+df_six_squatting_arable_land <- df_tool_data %>% 
   filter(land_occupancy_arrangement == "squattingusing_unoccupied_land", 
          !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_land_of_others") |
            !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others") |
@@ -284,7 +284,7 @@ df_squatting_arable_land_six <- df_tool_data %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_squatting_arable_land_six")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_six_squatting_arable_land")
 
 
 # HH reports borrowing arable land, but does not report  'crop production on land of others' OR 'livestock farming on land of others' as a livelihood
@@ -292,7 +292,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_sq
 # AND not(selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_land_of_others")) AND # not(selected(${hh_primary_livelihood}, 
 # "livestock_farming_on_land_of_others")) AND not(selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others")))
 
-df_borrowing_arable_land_seven <- df_tool_data %>% 
+df_seven_borrowing_arable_land <- df_tool_data %>% 
   filter(land_occupancy_arrangement == "borrowing_friends_family_or_employer", 
            !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_land_of_others") |
            !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others") |
@@ -315,7 +315,7 @@ df_borrowing_arable_land_seven <- df_tool_data %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_borrowing_arable_land_seven")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_seven_borrowing_arable_land")
 
 
 # HH reports members travel back to settlement 'to work on own land', but do not report 'crop production on own land' OR 'livestock farming on own land' 
@@ -324,7 +324,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_bo
 # not(selected(${hh_primary_livelihood}, "livestock_farming_on_own_land")) AND not(selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_own_land")))
 
 
-df_reason_travel_back_to_settlement_eight <- df_tool_data %>% 
+df_eight_reason_travel_back_to_settlement <- df_tool_data %>% 
   filter(str_detect(string = reason_hh_member_travel_back_to_settlement, pattern = "to_work_on_own_land"), 
            !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_own_land") |
            !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land") |
@@ -348,13 +348,38 @@ df_reason_travel_back_to_settlement_eight <- df_tool_data %>%
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
 view(df_reason_travel_back_to_settlement_eight)
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_reason_travel_back_to_settlement_eight")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_eight_reason_travel_back_to_settlement")
 
 
 # HH reports members travel back to settlement 'to work on own land', but do not report having arable land i.e. 
 # reason_hh_member_travels_back_to_settlement = 'to_work_on_own_land' AND farming_land_availability = 'no' 
 
-df_reason_travel_back_to_settlement_nine <- df_tool_data %>% 
+df_nine_reason_travel_back_to_settlement <- df_tool_data %>% 
+  filter(farming_land_availability == "no", !str_detect(string = reason_hh_member_travel_back_to_settlement, pattern = "to_work_on_own_land")) %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "farming_land_availability",
+         i.check.current_value = as.character(farming_land_availability),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_farming_land_availability_no",
+         i.check.issue = glue("farming_land_availability: {farming_land_availability}, but reason_hh_member_travel_back_to_settlement: 
+                              {reason_hh_member_travel_back_to_settlement}"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_nine_reason_travel_back_to_settlement")
+
+
+# HH reports members travel back to settlement 'to work on own land', but do not report having arable land i.e. 
+# reason_hh_member_travels_back_to_settlement = 'to_work_on_own_land' AND farming_land_availability = 'no' 
+
+df_reason_travel_back_to_settlement_business <- df_tool_data %>% 
   filter(farming_land_availability == "no", !str_detect(string = reason_hh_member_travel_back_to_settlement, pattern = "to_work_on_own_land")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "farming_land_availability",
@@ -374,8 +399,6 @@ df_reason_travel_back_to_settlement_nine <- df_tool_data %>%
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_reason_travel_back_to_settlement_nine")
-
-
 
 
 
