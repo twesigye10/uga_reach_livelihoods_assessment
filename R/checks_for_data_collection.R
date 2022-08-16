@@ -548,6 +548,34 @@ df_farming_land_availability_in_towns_15 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_farming_land_availability_in_towns_15")
 
 
+# HH reports members to urban centres 'to run business(es)', but do not report 'own business' as a livelihood i.e. reason_hh_member_travels_to_towns = 
+# 'to_run_businesses' AND (not(selected(${hh_primary_livelihood}, "own_business_non_farming")) AND not(selected(${other_livelihoods_hh_engaged_in}, "own_business_non_farming"))
+
+
+df_reason_hh_member_travels_to_towns_business_16 <- df_tool_data %>% 
+  filter(str_detect(string = reason_hh_member_travels_to_towns, pattern = "to_run_businesses"),
+                                   !str_detect(string = hh_primary_livelihood, pattern = "own_business_non_farming") |
+                                   !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "own_business_non_farming")) %>% 
+  mutate(i.check.type = "remove_option",
+         i.check.name = "reason_hh_member_travels_to_towns",
+         i.check.current_value = as.character(reason_hh_member_travels_to_towns),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_reason_hh_member_travels_to_towns_16",
+         i.check.issue = glue("reason_hh_member_travels_to_towns: {reason_hh_member_travels_to_towns}, but hh_primary_livelihood or 
+                              other_livelihoods_hh_engaged_in has no 'Own business' selected as an option"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_reason_hh_member_travels_to_towns_business_16")
+
+
 
 
 
