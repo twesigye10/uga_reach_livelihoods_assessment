@@ -795,8 +795,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 
 df_hh_access_mfi_loans_27 <- df_tool_data %>% 
   filter(str_detect(string = name_fsp_hh_sought_loan, pattern = "mfi") |
-           str_detect(string = name_fsp_hh_to_seek_loan, pattern = "mfi"),
-           !str_detect(string = financial_service_providers_present, pattern = "mfi")) %>% 
+                                          str_detect(string = name_fsp_hh_to_seek_loan, pattern = "mfi"),
+                                         !str_detect(string = financial_service_providers_present, pattern = "mfi")) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "financial_service_providers_present",
          i.check.current_value = as.character(financial_service_providers_present),
@@ -822,8 +822,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 
 df_hh_access_vsla_loans_28 <- df_tool_data %>% 
   filter(str_detect(string = name_fsp_hh_sought_loan, pattern = "vsla") |
-           str_detect(string = name_fsp_hh_to_seek_loan, pattern = "vsla"),
-         !str_detect(string = financial_service_providers_present, pattern = "vsla")) %>% 
+                                     str_detect(string = name_fsp_hh_to_seek_loan, pattern = "vsla"),
+                                    !str_detect(string = financial_service_providers_present, pattern = "vsla")) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "financial_service_providers_present",
          i.check.current_value = as.character(financial_service_providers_present),
@@ -844,12 +844,37 @@ df_hh_access_vsla_loans_28 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_access_vsla_loans_28")
 
 
+# HH reports haven taken out a loan from a SACCO OR having access to loans from a SACCO, but reports not having access to SACCOs i.e.
+# (name_fsp_hh_sought_loan = 'sacco' OR name_fsp_hh_to_seek_loan = 'sacco') AND not(selected(financial_service_providers_present, 'sacco'))
+
+df_hh_access_sacco_loans_29 <- df_tool_data %>% 
+  filter(str_detect(string = name_fsp_hh_sought_loan, pattern = "sacco") |
+                                       str_detect(string = name_fsp_hh_to_seek_loan, pattern = "sacco"),
+                                      !str_detect(string = financial_service_providers_present, pattern = "sacco")) %>% 
+  mutate(i.check.type = "remove_option",
+         i.check.name = "financial_service_providers_present",
+         i.check.current_value = as.character(financial_service_providers_present),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_financial_service_providers_present_sacco_no_29",
+         i.check.issue = glue("name_fsp_hh_sought_loan: {name_fsp_hh_sought_loan} or name_fsp_hh_to_seek_loan: {name_fsp_hh_to_seek_loan} 
+                              but financial_service_providers_present has no 'sacco'selected as an option"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_access_sacco_loans_29")
 
 
-
-
-
-
+# HH reports haven taken out a loan from a local business or community member OR having access to loans from a local business or 
+# community member, but reports not having access to financial services provided by local businesses or community members i.e. 
+# (name_fsp_hh_sought_loan = 'local_business_or_community_member' OR name_fsp_hh_to_seek_loan = 'local_business_or_community_member')AND
+# not(selected(financial_service_providers_present, 'financial_services_provided_by_local_businesses_or_community_members'))
 
 
 
