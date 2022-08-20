@@ -723,7 +723,7 @@ df_hh_not_able_to_meet_basic_needs_24 <- df_tool_data %>%
          i.check.value = "",
          i.check.issue_id = "logic_c_hh_able_to_meet_basic_needs_no_24",
          i.check.issue = glue("hh_able_to_meet_basic_needs: {hh_able_to_meet_basic_needs}, 
-                              but household also reports adopting coping strategies for survival"),
+                              but household does not report adopting any coping strategies for survival"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
@@ -737,8 +737,57 @@ df_hh_not_able_to_meet_basic_needs_24 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_not_able_to_meet_basic_needs_24")
 
 
+# HH reports that 'child is too young' as a reason for non-attendance i.e. why_child_not_regularly_attending = 'child_or_children_were_too_young'
+
+df_why_child_not_regularly_attending_25 <- df_tool_data %>% 
+  filter(why_child_not_regularly_attending == "child_or_children_were_too_young") %>% 
+  mutate(i.check.type = "remove_option",
+         i.check.name = "why_child_not_regularly_attending",
+         i.check.current_value = as.character(why_child_not_regularly_attending),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_why_child_not_regularly_attending_25",
+         i.check.issue = glue("why_child_not_regularly_attending: {why_child_not_regularly_attending}, 
+                              check child age"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "Verify age of non-attending children and IF child is 6, delete enrollment & attendance data for the child", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_why_child_not_regularly_attending_25")
 
 
+# HH reports haven taken out a loan from a bank OR having access to loans from a bank, but reports not having access to banks i.e.
+# (name_fsp_hh_sought_loan = 'bank' OR name_fsp_hh_to_seek_loan = 'bank') AND
+# not(selected(financial_service_providers_present, any('banking_agents', 'banks_full_service'))))
+
+df_hh_access_bank_loans_26 <- df_tool_data %>% 
+  filter(str_detect(string = name_fsp_hh_sought_loan, pattern = "bank") |
+                                str_detect(string = name_fsp_hh_to_seek_loan, pattern = "bank"),
+                               !str_detect(string = financial_service_providers_present, pattern = "banking_agents") |
+                               !str_detect(string = financial_service_providers_present, pattern = "banks_full_service")) %>% 
+  mutate(i.check.type = "remove_option",
+         i.check.name = "financial_service_providers_present",
+         i.check.current_value = as.character(financial_service_providers_present),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_financial_service_providers_present_no_26",
+         i.check.issue = glue("name_fsp_hh_sought_loan: {name_fsp_hh_sought_loan} or name_fsp_hh_to_seek_loan: {name_fsp_hh_to_seek_loan} 
+                              but financial_service_providers_present has no 'banking_agents' or 'banks_full_service' selected as an option"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_access_bank_loans_26")
 
 
 
