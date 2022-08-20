@@ -673,9 +673,40 @@ df_type_work_done_by_hh_member_in_towns_salaried_job_19 <- df_tool_data %>%
 
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_type_work_done_by_hh_member_in_towns_salaried_job_19")
 
-view(df_type_work_done_by_hh_member_in_towns_salaried_job_19)
+
+# HH reports no or low income (below MEB), but also reports to be able to meet all their basic needs i.e. 
+
+# HH reports high income (above MEB), but also reports to not be able to meet their basic needs
+
+# HH reports no or low income (below MEB), but also reports to have not used any coping strategies
 
 
+# HH reports to be able to meet all of their needs, but also reports to have used coping strategies i.e. hh_able_to_meet_basic_needs = 'yes'
+# AND [ANY grp_lcsi rows] = 'yes' 
+
+df_hh_able_to_meet_basic_needs_20 <- df_tool_data %>% 
+  filter(hh_able_to_meet_basic_needs == "yes", increase_the_number_of_family_members_searching_for_work_outside_your_village == "yes" | 
+           sold_household_assets == "yes" | purchased_food_on_credit == "yes" | spent_savings == "yes" | borrowed_money == "yes" | 
+           sold_productive_assets_or_means_of_transport == "yes" | reduced_expenditure_on_health_and_education == "yes" |
+           withdrew_children_from_school == "yes" | begged_or_relied_on_charity == "yes" | sold_more_animals_than_usual == "yes") %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "hh_able_to_meet_basic_needs",
+         i.check.current_value = as.character(hh_able_to_meet_basic_needs),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_hh_able_to_meet_basic_needs_yes_20",
+         i.check.issue = glue("hh_able_to_meet_basic_needs: {hh_able_to_meet_basic_needs}, 
+                              but household also reports adopting coping strategies for survival"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_able_to_meet_basic_needs_20")
 
 
 
