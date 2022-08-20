@@ -774,7 +774,7 @@ df_hh_access_bank_loans_26 <- df_tool_data %>%
          i.check.name = "financial_service_providers_present",
          i.check.current_value = as.character(financial_service_providers_present),
          i.check.value = "",
-         i.check.issue_id = "logic_c_financial_service_providers_present_no_26",
+         i.check.issue_id = "logic_c_financial_service_providers_present_bank_no_26",
          i.check.issue = glue("name_fsp_hh_sought_loan: {name_fsp_hh_sought_loan} or name_fsp_hh_to_seek_loan: {name_fsp_hh_to_seek_loan} 
                               but financial_service_providers_present has no 'banking_agents' or 'banks_full_service' selected as an option"),
          i.check.other_text = "",
@@ -790,6 +790,53 @@ df_hh_access_bank_loans_26 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_access_bank_loans_26")
 
 
+# HH reports haven taken out a loan from a MFI OR having access to loans from a MFI, but reports not having access to MFIs i.e.
+# (name_fsp_hh_sought_loan = 'mfi' OR name_fsp_hh_to_seek_loan = 'mfi') AND not(selected(financial_service_providers_present, 'mfi'))
+
+df_hh_access_mfi_loans_27 <- df_tool_data %>% 
+  filter(str_detect(string = name_fsp_hh_sought_loan, pattern = "mfi") |
+           str_detect(string = name_fsp_hh_to_seek_loan, pattern = "mfi"),
+           !str_detect(string = financial_service_providers_present, pattern = "mfi")) %>% 
+  mutate(i.check.type = "remove_option",
+         i.check.name = "financial_service_providers_present",
+         i.check.current_value = as.character(financial_service_providers_present),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_financial_service_providers_present_mfi_no_27",
+         i.check.issue = glue("name_fsp_hh_sought_loan: {name_fsp_hh_sought_loan} or name_fsp_hh_to_seek_loan: {name_fsp_hh_to_seek_loan} 
+                              but financial_service_providers_present has no 'microfinance institutions'selected as an option"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_access_mfi_loans_27")
+
+
+# HH reports haven taken out a loan from a VSLA OR having access to loans from a VSLA, but reports not having access to VSLAs i.e.
+# (name_fsp_hh_sought_loan = 'vsla' OR name_fsp_hh_to_seek_loan = 'vsla') AND not(selected(financial_service_providers_present, 'vsla'))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -800,3 +847,7 @@ df_combined_checks <- bind_rows(logic_output)
 
 # output the combined checks
 write_csv(x = df_combined_checks, file = paste0("outputs/", butteR::date_file_prefix(), "_combined_checks_livelihood.csv"), na = "")
+
+
+
+  
