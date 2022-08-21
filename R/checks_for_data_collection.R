@@ -953,7 +953,7 @@ df_grp_inter_group_social_cohesion_32 <- df_tool_data %>%
          i.check.name = "joining_any_nationals_to_address_issues",
          i.check.current_value = as.character(joining_any_nationals_to_address_issues),
          i.check.value = "",
-         i.check.issue_id = "logic_c_grp_intra_group_social_cohesion_31",
+         i.check.issue_id = "logic_c_grp_inter_group_social_cohesion_31",
          i.check.issue = glue("All inter-group social cohesion questions have similar response"),
          i.check.other_text = "",
          i.check.checked_by = "",
@@ -966,6 +966,42 @@ df_grp_inter_group_social_cohesion_32 <- df_tool_data %>%
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_grp_inter_group_social_cohesion_32")
+
+
+# HH reports to not have a shelter, but reports any occupancy status other than squatting i.e. shelter_type_hh_live = 'none'
+# AND shelter_occupancy_arrangement != 'squatting' AND shelter_occupancy_arrangement != 'no_answer'
+
+df_shelter_type_hh_live_33 <- df_tool_data %>% 
+  filter(!shelter_occupancy_arrangement %in% c("squatting", "no_answer"), 
+                                       shelter_type_hh_live =="none") %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "shelter_type_hh_live",
+         i.check.current_value = as.character(shelter_type_hh_live),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_shelter_type_hh_live_none_33",
+         i.check.issue = glue("shelter_type_hh_live: {shelter_type_hh_live},  but shelter_occupancy_arrangement: 
+                              {shelter_occupancy_arrangement}"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_shelter_type_hh_live_33")
+
+
+# HH entered the same value for all FCS categories i.e. 
+
+
+
+
+
+
+
 
 
 
