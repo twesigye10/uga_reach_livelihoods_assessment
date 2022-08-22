@@ -903,18 +903,18 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # Respondent gives the same answer to all intra-group social cohesion questions i.e [all grp_intra_group_social_cohesion rows] = [same answer]
 
 df_grp_intra_group_social_cohesion_31 <- df_tool_data %>% 
-  filter(joining_other_refugee_to_address_issues == "yes" & trust_among_refugee == "yes" & friendliness_between_refugee == "yes" &
+  filter((joining_other_refugee_to_address_issues == "yes" & trust_among_refugee == "yes" & friendliness_between_refugee == "yes" &
            sense_of_belonging_to_refugee_community == "yes" & taken_advantage_of_by_fellow_refugee == "yes" & 
            joining_other_nationals_to_address_issues == "yes" & trust_among_other_nationals == "yes" & friendliness_among_nationals == "yes" &
-           sense_of_belonging_to_community_here == "yes" & taken_advantage_of_by_other_nationals == "yes" | 
-           joining_other_refugee_to_address_issues == "no" & trust_among_refugee == "no" & friendliness_between_refugee == "no" &
+           sense_of_belonging_to_community_here == "yes" & taken_advantage_of_by_other_nationals == "yes") | 
+           (joining_other_refugee_to_address_issues == "no" & trust_among_refugee == "no" & friendliness_between_refugee == "no" &
            sense_of_belonging_to_refugee_community == "no" & taken_advantage_of_by_fellow_refugee == "no" & 
            joining_other_nationals_to_address_issues == "no" & trust_among_other_nationals == "no" & friendliness_among_nationals == "no" &
-           sense_of_belonging_to_community_here == "no" & taken_advantage_of_by_other_nationals == "no" |
-           joining_other_refugee_to_address_issues == "no_answer" & trust_among_refugee == "no_answer" & friendliness_between_refugee == "no_answer" &
+           sense_of_belonging_to_community_here == "no" & taken_advantage_of_by_other_nationals == "no") |
+           (joining_other_refugee_to_address_issues == "no_answer" & trust_among_refugee == "no_answer" & friendliness_between_refugee == "no_answer" &
            sense_of_belonging_to_refugee_community == "no_answer" & taken_advantage_of_by_fellow_refugee == "no_answer" & 
            joining_other_nationals_to_address_issues == "no_answer" & trust_among_other_nationals == "no_answer" & friendliness_among_nationals == "no_answer" &
-           sense_of_belonging_to_community_here == "no_answer" & taken_advantage_of_by_other_nationals == "no_answer") %>% 
+           sense_of_belonging_to_community_here == "no_answer" & taken_advantage_of_by_other_nationals == "no_answer")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "joining_other_refugee_to_address_issues",
          i.check.current_value = as.character(joining_other_refugee_to_address_issues),
@@ -985,28 +985,6 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_sh
 
 
 # HH entered the same value for all FCS categories i.e. 
-
-df_grp_inter_group_social_cohesion_32 <- df_tool_data %>% 
-     select(joining_any_nationals_to_address_issues:taken_advantage_of_by_any_refugee, -social_cohesion_refugee_and_nationals) %>% 
-     filter(!identical(df_grp_inter_group_social_cohesion_32, "yes")) %>% 
-     mutate(i.check.type = "change_response",
-            i.check.name = "joining_any_nationals_to_address_issues",
-            i.check.current_value = as.character(joining_any_nationals_to_address_issues),
-            i.check.value = "",
-            i.check.issue_id = "logic_c_grp_inter_group_social_cohesion_31",
-            i.check.issue = glue("All inter-group social cohesion questions have similar response"),
-            i.check.other_text = "",
-            i.check.checked_by = "",
-            i.check.checked_date = as_date(today()),
-            i.check.comment = "", 
-            i.check.reviewed = "",
-            i.check.adjust_log = "",
-            i.check.so_sm_choices = "") %>% 
-     dplyr::select(starts_with("i.check.")) %>% 
-     rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
-    
-   add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_grp_inter_group_social_cohesion_32")
-
 
 
 
