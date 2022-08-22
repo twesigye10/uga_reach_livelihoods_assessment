@@ -984,10 +984,28 @@ df_shelter_type_hh_live_33 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_shelter_type_hh_live_33")
 
 
-# HH entered the same value for all FCS categories i.e. 
+# HH entered the same value for all FCS categories i.e. cereals == pulses == vegetables == fruits == tubers == protein == dairy == sugar == oils
 
 
+df_grp_fd_consumption_score_34 <- df_tool_data %>% 
+  filter(cereals == pulses & vegetables == fruits & tubers == protein & dairy == sugar & oils == cereals) %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "cereals",
+         i.check.current_value = as.character(cereals),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_grp_fd_consumption_score_34",
+         i.check.issue = glue("All questions about foods eaten in the past seven days have similar response"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_grp_intra_group_social_cohesion_31")
 
 
 
