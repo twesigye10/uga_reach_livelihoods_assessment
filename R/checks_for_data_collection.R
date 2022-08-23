@@ -999,7 +999,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_in
 
  # Respondent gives the same answer to all inter-group social cohesion questions for host community i.e. [all grp_inter_group_social_cohesion rows] = [same answer]
  
- df_inter_group_social_cohesion_host_34 <- df_tool_data %>% 
+ df_inter_group_social_cohesion_host_32b <- df_tool_data %>% 
  filter(joining_any_refugee_to_address_issues == trust_any_refugee & trust_any_refugee == friendliness_among_refugee & 
             friendliness_among_refugee == sense_of_belonging_to_both_refugee_and_nationals & sense_of_belonging_to_both_refugee_and_nationals == 
             taken_advantage_of_by_any_refugee) %>% 
@@ -1007,7 +1007,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_in
         i.check.name = "joining_any_refugee_to_address_issues",
         i.check.current_value = as.character(joining_any_refugee_to_address_issues),
         i.check.value = "",
-        i.check.issue_id = "logic_c_inter_group_social_cohesion_host_34",
+        i.check.issue_id = "logic_c_inter_group_social_cohesion_host_32b",
         i.check.issue = glue("All inter-group social cohesion questions have similar response"),
         i.check.other_text = "",
         i.check.checked_by = "",
@@ -1019,7 +1019,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_in
  dplyr::select(starts_with("i.check.")) %>% 
  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_inter_group_social_cohesion_host_34")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_inter_group_social_cohesion_host_32b")
 
 # HH reports to not have a shelter, but reports any occupancy status other than squatting i.e. shelter_type_hh_live = 'none'
 # AND shelter_occupancy_arrangement != 'squatting' AND shelter_occupancy_arrangement != 'no_answer'
@@ -1049,7 +1049,6 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_sh
 
 # HH entered the same value for all FCS categories i.e. cereals == pulses == vegetables == fruits == tubers == protein == dairy == sugar == oils
 
-
 df_grp_fd_consumption_score_34 <- df_tool_data %>% 
   filter(cereals == pulses & pulses == vegetables & vegetables == fruits & fruits == tubers & tubers == protein & protein == dairy & 
            dairy == sugar & sugar == oils) %>% 
@@ -1072,6 +1071,28 @@ df_grp_fd_consumption_score_34 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_grp_fd_consumption_score_34")
 
 
+# HH got a total FCS of 10 or less i.e. cereals/tubers * 2 + pulses * 3 + vegetables + fruits + protein *4 + dairy *4 + sugar * 0.5 + oils * 0.5 <=10
+# Can be done in excel 
+
+df_fd_consumption_score_less_than_ten_35 <- df_tool_data %>% 
+  filter(((cereals > tubers | tubers > cereals) * 2 + pulses * 3 + (vegetables +  fruits + protein) * 4 + dairy * 4 + sugar * 0.5 + oils * 0.5) <= 10) %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "cereals",
+         i.check.current_value = as.character(cereals),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_fd_consumption_score_less_than_ten_35",
+         i.check.issue = glue("Food consumption score is less than ten"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_fd_consumption_score_less_than_ten_35")
 
 
 
