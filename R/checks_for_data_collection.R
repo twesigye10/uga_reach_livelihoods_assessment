@@ -988,7 +988,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_sh
 
 
 df_grp_fd_consumption_score_34 <- df_tool_data %>% 
-  filter(cereals == pulses & vegetables == fruits & tubers == protein & dairy == sugar & oils == cereals) %>% 
+  filter(cereals == pulses & pulses == vegetables & vegetables == fruits & fruits == tubers & tubers == protein & protein == dairy & 
+           dairy == sugar & sugar == oils) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "cereals",
          i.check.current_value = as.character(cereals),
@@ -1005,7 +1006,7 @@ df_grp_fd_consumption_score_34 <- df_tool_data %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_grp_intra_group_social_cohesion_31")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_grp_fd_consumption_score_34")
 
 
 
