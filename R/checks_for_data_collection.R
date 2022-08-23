@@ -900,21 +900,35 @@ df_hh_access_local_business_or_community_member_loans_30 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_access_local_business_or_community_member_loans_30")
 
 
-# Respondent gives the same answer to all intra-group social cohesion questions i.e [all grp_intra_group_social_cohesion rows] = [same answer]
+# Respondent gives the same answer to all intra-group social cohesion questions for refugee i.e [all grp_intra_group_social_cohesion rows] = [same answer]
+
+df_intra_group_social_cohesion_refugee_31 <- df_tool_data %>% 
+  filter(joining_other_refugee_to_address_issues == trust_among_refugee & trust_among_refugee == friendliness_between_refugee & friendliness_between_refugee == 
+            sense_of_belonging_to_refugee_community & sense_of_belonging_to_refugee_community == taken_advantage_of_by_fellow_refugee) %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "joining_other_refugee_to_address_issues",
+         i.check.current_value = as.character(joining_other_refugee_to_address_issues),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_intra_group_social_cohesion_refugee_31",
+         i.check.issue = glue("All intra-group social cohesion questions have similar response"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_intra_group_social_cohesion_refugee_31")
+
+
+# Respondent gives the same answer to all intra-group social cohesion questions for host community i.e [all grp_intra_group_social_cohesion rows] = [same answer]
 
 df_grp_intra_group_social_cohesion_31 <- df_tool_data %>% 
-  filter((joining_other_refugee_to_address_issues == "yes" & trust_among_refugee == "yes" & friendliness_between_refugee == "yes" &
-           sense_of_belonging_to_refugee_community == "yes" & taken_advantage_of_by_fellow_refugee == "yes" & 
-           joining_other_nationals_to_address_issues == "yes" & trust_among_other_nationals == "yes" & friendliness_among_nationals == "yes" &
-           sense_of_belonging_to_community_here == "yes" & taken_advantage_of_by_other_nationals == "yes") | 
-           (joining_other_refugee_to_address_issues == "no" & trust_among_refugee == "no" & friendliness_between_refugee == "no" &
-           sense_of_belonging_to_refugee_community == "no" & taken_advantage_of_by_fellow_refugee == "no" & 
-           joining_other_nationals_to_address_issues == "no" & trust_among_other_nationals == "no" & friendliness_among_nationals == "no" &
-           sense_of_belonging_to_community_here == "no" & taken_advantage_of_by_other_nationals == "no") |
-           (joining_other_refugee_to_address_issues == "no_answer" & trust_among_refugee == "no_answer" & friendliness_between_refugee == "no_answer" &
-           sense_of_belonging_to_refugee_community == "no_answer" & taken_advantage_of_by_fellow_refugee == "no_answer" & 
-           joining_other_nationals_to_address_issues == "no_answer" & trust_among_other_nationals == "no_answer" & friendliness_among_nationals == "no_answer" &
-           sense_of_belonging_to_community_here == "no_answer" & taken_advantage_of_by_other_nationals == "no_answer")) %>% 
+  filter(joining_other_nationals_to_address_issues == trust_among_other_nationals & trust_among_other_nationals == friendliness_among_nationals &
+         friendliness_among_nationals == sense_of_belonging_to_community_here & sense_of_belonging_to_community_here == taken_advantage_of_by_other_nationals) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "joining_other_refugee_to_address_issues",
          i.check.current_value = as.character(joining_other_refugee_to_address_issues),
@@ -928,35 +942,84 @@ df_grp_intra_group_social_cohesion_31 <- df_tool_data %>%
          i.check.reviewed = "",
          i.check.adjust_log = "",
          i.check.so_sm_choices = "") %>% 
-  dplyr::select(starts_with("i.check.")) %>% 
-  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+    dplyr::select(starts_with("i.check.")) %>% 
+    rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_grp_intra_group_social_cohesion_31")
 
 
 # Respondent gives the same answer to all inter-group social cohesion questions i.e. [all grp_inter_group_social_cohesion rows] = [same answer]
 
-df_grp_inter_group_social_cohesion_32 <- df_tool_data %>% 
-  select(joining_any_nationals_to_address_issues:taken_advantage_of_by_any_refugee, -social_cohesion_refugee_and_nationals) %>% 
-  filter(identical(df_grp_inter_group_social_cohesion_32, "TRUE")) %>% 
+# df_grp_inter_group_social_cohesion_32 <- df_tool_data %>% 
+#  select(joining_any_nationals_to_address_issues:taken_advantage_of_by_any_refugee, -social_cohesion_refugee_and_nationals) %>% 
+# filter(identical(df_grp_inter_group_social_cohesion_32, "TRUE")) %>% 
+#  mutate(i.check.type = "change_response",
+#        i.check.name = "joining_any_nationals_to_address_issues",
+#        i.check.current_value = as.character(joining_any_nationals_to_address_issues),
+#        i.check.value = "",
+#        i.check.issue_id = "logic_c_grp_inter_group_social_cohesion_31",
+#        i.check.issue = glue("All inter-group social cohesion questions have similar response"),
+#        i.check.other_text = "",
+#        i.check.checked_by = "",
+#        i.check.checked_date = as_date(today()),
+#        i.check.comment = "", 
+#        i.check.reviewed = "",
+#        i.check.adjust_log = "",
+#        i.check.so_sm_choices = "") %>% 
+# dplyr::select(starts_with("i.check.")) %>% 
+# rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+#add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_grp_inter_group_social_cohesion_32")
+
+
+# Respondent gives the same answer to all inter-group social cohesion questions for refugee i.e. [all grp_inter_group_social_cohesion rows] = [same answer]
+
+ df_inter_group_social_cohesion_refugee_33 <- df_tool_data %>% 
+  filter(joining_any_nationals_to_address_issues == trust_among_nationals & trust_among_nationals == friendliness_among_refugee_and_nationals &
+           friendliness_among_refugee_and_nationals == sense_of_belonging_both_refugee_and_nationals & sense_of_belonging_both_refugee_and_nationals == 
+           taken_advantage_of_by_nationals) %>% 
   mutate(i.check.type = "change_response",
-         i.check.name = "joining_any_nationals_to_address_issues",
-         i.check.current_value = as.character(joining_any_nationals_to_address_issues),
-         i.check.value = "",
-         i.check.issue_id = "logic_c_grp_inter_group_social_cohesion_31",
-         i.check.issue = glue("All inter-group social cohesion questions have similar response"),
-         i.check.other_text = "",
-         i.check.checked_by = "",
-         i.check.checked_date = as_date(today()),
-         i.check.comment = "", 
-         i.check.reviewed = "",
-         i.check.adjust_log = "",
-         i.check.so_sm_choices = "") %>% 
-  dplyr::select(starts_with("i.check.")) %>% 
-  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+        i.check.name = "joining_any_nationals_to_address_issues",
+        i.check.current_value = as.character(joining_any_nationals_to_address_issues),
+        i.check.value = "",
+        i.check.issue_id = "logic_c_inter_group_social_cohesion_refugee_33",
+        i.check.issue = glue("All inter-group social cohesion questions have similar response"),
+        i.check.other_text = "",
+        i.check.checked_by = "",
+        i.check.checked_date = as_date(today()),
+        i.check.comment = "", 
+        i.check.reviewed = "",
+        i.check.adjust_log = "",
+        i.check.so_sm_choices = "") %>% 
+ dplyr::select(starts_with("i.check.")) %>% 
+ rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_grp_inter_group_social_cohesion_32")
+ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_inter_group_social_cohesion_refugee_33")
 
+
+ # Respondent gives the same answer to all inter-group social cohesion questions for host community i.e. [all grp_inter_group_social_cohesion rows] = [same answer]
+ 
+ df_inter_group_social_cohesion_host_34 <- df_tool_data %>% 
+ filter(joining_any_refugee_to_address_issues == trust_any_refugee & trust_any_refugee == friendliness_among_refugee & 
+            friendliness_among_refugee == sense_of_belonging_to_both_refugee_and_nationals & sense_of_belonging_to_both_refugee_and_nationals == 
+            taken_advantage_of_by_any_refugee) %>% 
+ mutate(i.check.type = "change_response",
+        i.check.name = "joining_any_refugee_to_address_issues",
+        i.check.current_value = as.character(joining_any_refugee_to_address_issues),
+        i.check.value = "",
+        i.check.issue_id = "logic_c_inter_group_social_cohesion_host_34",
+        i.check.issue = glue("All inter-group social cohesion questions have similar response"),
+        i.check.other_text = "",
+        i.check.checked_by = "",
+        i.check.checked_date = as_date(today()),
+        i.check.comment = "", 
+        i.check.reviewed = "",
+        i.check.adjust_log = "",
+        i.check.so_sm_choices = "") %>% 
+ dplyr::select(starts_with("i.check.")) %>% 
+ rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_inter_group_social_cohesion_host_34")
 
 # HH reports to not have a shelter, but reports any occupancy status other than squatting i.e. shelter_type_hh_live = 'none'
 # AND shelter_occupancy_arrangement != 'squatting' AND shelter_occupancy_arrangement != 'no_answer'
