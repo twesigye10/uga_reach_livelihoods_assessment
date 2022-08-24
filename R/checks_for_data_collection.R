@@ -1049,14 +1049,14 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_sh
 
 # HH entered the same value for all FCS categories i.e. cereals == pulses == vegetables == fruits == tubers == protein == dairy == sugar == oils
 
-df_grp_fd_consumption_score_34 <- df_tool_data %>% 
+df_grp_fd_consumption_score_same_34 <- df_tool_data %>% 
   filter(cereals == pulses & pulses == vegetables & vegetables == fruits & fruits == tubers & tubers == protein & protein == dairy & 
            dairy == sugar & sugar == oils) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "cereals",
          i.check.current_value = as.character(cereals),
          i.check.value = "",
-         i.check.issue_id = "logic_c_grp_fd_consumption_score_34",
+         i.check.issue_id = "logic_c_grp_fd_consumption_score_same_34",
          i.check.issue = glue("All questions about foods eaten in the past seven days have similar response"),
          i.check.other_text = "",
          i.check.checked_by = "",
@@ -1068,7 +1068,7 @@ df_grp_fd_consumption_score_34 <- df_tool_data %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_grp_fd_consumption_score_34")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_grp_fd_consumption_score_same_34")
 
 
 # HH got a total FCS of 10 or less i.e. cereals/tubers * 2 + pulses * 3 + vegetables + fruits + protein *4 + dairy *4 + sugar * 0.5 + oils * 0.5 <=10
@@ -1095,6 +1095,31 @@ df_fd_consumption_score_less_than_ten_35 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_fd_consumption_score_less_than_ten_35")
 
 
+# HH entered 0 for at least 3 categories of the FCS i.e. [at least 3 grp_fcs groups] = 0
+
+
+df_three_or_more_fcs_equal_zero_36 <- df_tool_data %>%
+    mutate(three_fcs_gps_equal_zero = rowSums(across(cereals:oils) == 0, na.rm = TRUE)) %>% 
+    filter(three_fcs_gps_equal_zero >= 3) %>% 
+    mutate(i.check.type = "change_response",
+           i.check.name = "three_fcs_gps_equal_zero",
+           i.check.current_value = as.numeric(three_fcs_gps_equal_zero),
+           i.check.value = "",
+           i.check.issue_id = "logic_c_three_or_more_fcs_equal_zero_36",
+           i.check.issue = glue("Household has not eaten three or more food categories in past seven days"),
+           i.check.other_text = "",
+           i.check.checked_by = "",
+           i.check.checked_date = as_date(today()),
+           i.check.comment = "", 
+           i.check.reviewed = "",
+           i.check.adjust_log = "",
+           i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_three_or_more_fcs_equal_zero_36")
+
+
 
 
 
@@ -1115,6 +1140,8 @@ df_combined_checks <- bind_rows(logic_output)
 
 # output the combined checks
 write_csv(x = df_combined_checks, file = paste0("outputs/", butteR::date_file_prefix(), "_combined_checks_livelihood.csv"), na = "")
+
+filter(if_any(c(cereals, pulses, vegetables, fruits, tubers, protein, dairy, sugar, oils), ~ . == 0))
 
 
 
