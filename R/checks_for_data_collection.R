@@ -1126,7 +1126,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_th
 df_fd_consumption_score_poor_37 <- df_tool_data %>% 
   mutate(poor_fcs = (cereals > tubers | tubers > cereals) * 2 + pulses * 3 + (vegetables +  fruits + protein) * 4 + dairy * 4 + sugar * 0.5 + oils * 0.5, 
        round(0)) %>% 
-  filter(poor_fcs <= 21, if_any(c(increase_the_number_of_family_members_searching_for_work_outside_your_village:sold_more_animals_than_usual), ~ . != "yes")) %>% 
+  filter(poor_fcs <= 21, if_all(c(increase_the_number_of_family_members_searching_for_work_outside_your_village:sold_more_animals_than_usual), ~ . != "yes")) %>% 
 mutate(i.check.type = "change_response",
        i.check.name = "poor_fcs",
        i.check.current_value = as.numeric(poor_fcs),
@@ -1172,6 +1172,32 @@ df_poor_fcs_but_meets_needs_38 <- df_tool_data %>%
 
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_poor_fcs_but_meets_needs_38")
 
+
+# Remittances reported under income, but not said to receive remittances under movement section i.e. income_remittances > 0 
+# AND hh_receiving_money_from_family_or_friend_in_settlement = 'no' AND hh_receiving_money_from_family_or_friend_in_towns = 'no' AND
+# hh_receiving_money_from_family_or_friend_in_home_country = 'no'
+
+df_hh_reported_no_remittances_39 <- df_tool_data %>% 
+    filter(income_remittances > 0, hh_receiving_money_from_family_or_friend_in_settlement == "no", hh_receiving_money_from_family_or_friend_in_towns == "no",
+                                             hh_receiving_money_from_family_or_friend_in_home_country == "no") %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "income_remittances",
+         i.check.current_value = as.numeric(income_remittances),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_hh_reported_no_remittances_39",
+         i.check.issue = glue("income_remittances: {income_remittances}, 
+                              but hh has not reported remittances under movement section"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_reported_no_remittances_39")
 
 
 
