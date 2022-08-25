@@ -751,7 +751,7 @@ df_why_child_not_regularly_attending_25 <- df_tool_data %>%
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
-         i.check.comment = "Verify age of non-attending children and IF child is 6, delete enrollment & attendance data for the child", 
+         i.check.comment = "Verify age of non-attending school and IF child is 6, delete enrollment & attendance data for the child", 
          i.check.reviewed = "",
          i.check.adjust_log = "",
          i.check.so_sm_choices = "") %>% 
@@ -1126,7 +1126,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_th
 df_fd_consumption_score_poor_37 <- df_tool_data %>% 
   mutate(poor_fcs = (cereals > tubers | tubers > cereals) * 2 + pulses * 3 + (vegetables +  fruits + protein) * 4 + dairy * 4 + sugar * 0.5 + oils * 0.5, 
        round(0)) %>% 
-  filter(poor_fcs <= 21 & if_all(c(increase_the_number_of_family_members_searching_for_work_outside_your_village:sold_more_animals_than_usual), ~ . != "yes")) %>% 
+  filter(poor_fcs <= 21, if_any(c(increase_the_number_of_family_members_searching_for_work_outside_your_village:sold_more_animals_than_usual), ~ . != "yes")) %>% 
 mutate(i.check.type = "change_response",
        i.check.name = "poor_fcs",
        i.check.current_value = as.numeric(poor_fcs),
@@ -1146,9 +1146,41 @@ mutate(i.check.type = "change_response",
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_fd_consumption_score_poor_37")
 
 
+# HH got poor FCS, but reported to be able to meet all their needs i.e. cereals/tubers * 2 + pulses * 3 + vegetables + fruits + protein *4 + dairy *4 + 
+# sugar * 0.5 + oils * 0.5 <=21 AND hh_able_to_meet_basic_needs = 'yes'
+
+df_poor_fcs_but_meets_needs_38 <- df_tool_data %>% 
+  mutate(poor_fcs = (cereals > tubers | tubers > cereals) * 2 + pulses * 3 + (vegetables +  fruits + protein) * 4 + dairy * 4 + sugar * 0.5 + oils * 0.5, 
+         round(0)) %>% 
+  filter(poor_fcs <= 21, hh_able_to_meet_basic_needs == "yes") %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "hh_able_to_meet_basic_needs",
+         i.check.current_value = as.character(hh_able_to_meet_basic_needs),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_poor_fcs_but_meets_needs_38",
+         i.check.issue = glue("hh_able_to_meet_basic_needs: {hh_able_to_meet_basic_needs}, 
+                              but hh does not have enough food"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_poor_fcs_but_meets_needs_38")
+
+
+
+
+
+
+
 
      
-     write_csv(x = df_fd_consumption_score_poor_37, file = paste0("outputs/", butteR::date_file_prefix(), "_combined_checks_livelihood.csv"), na = "")
+ write_csv(x = df_fd_consumption_score_poor_37, file = paste0("outputs/", butteR::date_file_prefix(), "_combined_checks_livelihood.csv"), na = "")
 
 # combine and output checks -----------------------------------------------
 
