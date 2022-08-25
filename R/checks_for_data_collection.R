@@ -681,10 +681,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ty
 # AND [ANY grp_lcsi rows] = 'yes' 
 
 df_hh_able_to_meet_basic_needs_23 <- df_tool_data %>% 
-  filter(hh_able_to_meet_basic_needs == "yes", increase_the_number_of_family_members_searching_for_work_outside_your_village == "yes" | 
-           sold_household_assets == "yes" | purchased_food_on_credit == "yes" | spent_savings == "yes" | borrowed_money == "yes" | 
-           sold_productive_assets_or_means_of_transport == "yes" | reduced_expenditure_on_health_and_education == "yes" |
-           withdrew_children_from_school == "yes" | begged_or_relied_on_charity == "yes" | sold_more_animals_than_usual == "yes") %>% 
+  filter(hh_able_to_meet_basic_needs == "yes", 
+         if_any(c(increase_the_number_of_family_members_searching_for_work_outside_your_village:sold_more_animals_than_usual), ~ . == "yes")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "hh_able_to_meet_basic_needs",
          i.check.current_value = as.character(hh_able_to_meet_basic_needs),
@@ -708,11 +706,9 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # HH reports not being able to meet all needs, but also reports to not have used coping strategies i.e. hh_able_to_meet_basic_needs = 'no'
 # AND [all grp_lcsi rows] = 'no' 
 
-df_hh_not_able_to_meet_basic_needs_24 <- df_tool_data %>% 
-  filter(hh_able_to_meet_basic_needs == "no", increase_the_number_of_family_members_searching_for_work_outside_your_village == "no" | 
-           sold_household_assets == "no" | purchased_food_on_credit == "no" | spent_savings == "no" | borrowed_money == "no" | 
-           sold_productive_assets_or_means_of_transport == "no" | reduced_expenditure_on_health_and_education == "no" |
-           withdrew_children_from_school == "no" | begged_or_relied_on_charity == "no" | sold_more_animals_than_usual == "no") %>% 
+df_hh_not_able_to_meet_basic_needs_24 <- df_tool_data %>%
+  filter(hh_able_to_meet_basic_needs == "no", 
+         if_all(c(increase_the_number_of_family_members_searching_for_work_outside_your_village:sold_more_animals_than_usual), ~ . == "no")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "hh_able_to_meet_basic_needs",
          i.check.current_value = as.character(hh_able_to_meet_basic_needs),
@@ -1270,14 +1266,14 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 
 df_hh_own_farm_assets_42 <- df_tool_data %>% 
   filter(own_farm_land_items == "yes", 
-           !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_own_land"),
-           !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land"),
-           !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_land_of_others"),
-           !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others"),
-           !str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_own_land"),
-           !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land"),
-           !str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_land_of_others"),
-           !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_land_of_others")) %>% 
+                         !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_own_land"),
+                         !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land"),
+                         !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_land_of_others"),
+                         !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others"),
+                         !str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_own_land"),
+                         !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land"),
+                         !str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_land_of_others"),
+                         !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_land_of_others")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "own_farm_land_items",
          i.check.current_value = as.character(own_farm_land_items),
@@ -1296,7 +1292,39 @@ df_hh_own_farm_assets_42 <- df_tool_data %>%
 
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_own_farm_assets_42")
 
-view(df_hh_own_farm_assets_42)
+
+# HH reports to not have farm assets, but does report to have agriculture as a livelihood i.e. 
+
+df_hh_own_no_farm_assets_43 <- df_tool_data %>% 
+  filter(own_farm_land_items != "yes", 
+                       str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_own_land") |
+                       str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land") |
+                       str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_land_of_others") |
+                       str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others") |
+                       str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_own_land") |
+                       str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land") |
+                       str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_land_of_others") |
+                       str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_land_of_others")) %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "own_farm_land_items",
+         i.check.current_value = as.character(own_farm_land_items),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_hh_own_no_farm_assets_43",
+         i.check.issue = glue("own_farm_land_items: {own_farm_land_items}, but hh reports to be engaged in agriculture as a livelihood"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_own_no_farm_assets_43")
+
+
+# HH reports to not have farm assets, but does report to have agriculture as a livelihood i.e. 
 
 
 
