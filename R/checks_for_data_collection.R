@@ -1120,18 +1120,35 @@ df_three_or_more_fcs_equal_zero_36 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_three_or_more_fcs_equal_zero_36")
 
 
+# HH got poor FCS, but reported to never have used coping strategies i.e. cereals/tubers * 2 + pulses * 3 + vegetables + fruits + protein *4 + 
+# dairy *4 + sugar * 0.5 + oils * 0.5 <=21 AND [all grp_lcsi rows] = 'no' 
+
+df_fd_consumption_score_poor_37 <- df_tool_data %>% 
+  mutate(poor_fcs = (cereals > tubers | tubers > cereals) * 2 + pulses * 3 + (vegetables +  fruits + protein) * 4 + dairy * 4 + sugar * 0.5 + oils * 0.5, 
+       round(0)) %>% 
+  filter(poor_fcs <= 21 & if_all(c(increase_the_number_of_family_members_searching_for_work_outside_your_village:sold_more_animals_than_usual), ~ . != "yes")) %>% 
+mutate(i.check.type = "change_response",
+       i.check.name = "poor_fcs",
+       i.check.current_value = as.numeric(poor_fcs),
+       i.check.value = "",
+       i.check.issue_id = "logic_c_fd_consumption_score_poor_37",
+       i.check.issue = glue("Household has poor fcs but has not reported any coping strategy"),
+       i.check.other_text = "",
+       i.check.checked_by = "",
+       i.check.checked_date = as_date(today()),
+       i.check.comment = "", 
+       i.check.reviewed = "",
+       i.check.adjust_log = "",
+       i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_fd_consumption_score_poor_37")
 
 
 
-
-
-
-
-
-
-
-
-
+     
+     write_csv(x = df_fd_consumption_score_poor_37, file = paste0("outputs/", butteR::date_file_prefix(), "_combined_checks_livelihood.csv"), na = "")
 
 # combine and output checks -----------------------------------------------
 
@@ -1141,7 +1158,6 @@ df_combined_checks <- bind_rows(logic_output)
 # output the combined checks
 write_csv(x = df_combined_checks, file = paste0("outputs/", butteR::date_file_prefix(), "_combined_checks_livelihood.csv"), na = "")
 
-filter(if_any(c(cereals, pulses, vegetables, fruits, tubers, protein, dairy, sugar, oils), ~ . == 0))
 
 
 
