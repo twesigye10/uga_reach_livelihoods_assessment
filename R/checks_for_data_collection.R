@@ -940,30 +940,6 @@ df_intra_group_social_cohesion_host_31b <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_intra_group_social_cohesion_host_31b")
 
 
-# Respondent gives the same answer to all inter-group social cohesion questions i.e. [all grp_inter_group_social_cohesion rows] = [same answer]
-
-# df_grp_inter_group_social_cohesion_32 <- df_tool_data %>% 
-#  select(joining_any_nationals_to_address_issues:taken_advantage_of_by_any_refugee, -social_cohesion_refugee_and_nationals) %>% 
-# filter(identical(df_grp_inter_group_social_cohesion_32, "TRUE")) %>% 
-#  mutate(i.check.type = "change_response",
-#        i.check.name = "joining_any_nationals_to_address_issues",
-#        i.check.current_value = as.character(joining_any_nationals_to_address_issues),
-#        i.check.value = "",
-#        i.check.issue_id = "logic_c_grp_inter_group_social_cohesion_31",
-#        i.check.issue = glue("All inter-group social cohesion questions have similar response"),
-#        i.check.other_text = "",
-#        i.check.checked_by = "",
-#        i.check.checked_date = as_date(today()),
-#        i.check.comment = "", 
-#        i.check.reviewed = "",
-#        i.check.adjust_log = "",
-#        i.check.so_sm_choices = "") %>% 
-# dplyr::select(starts_with("i.check.")) %>% 
-# rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
-
-#add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_grp_inter_group_social_cohesion_32")
-
-
 # Respondent gives the same answer to all inter-group social cohesion questions for refugee i.e. [all grp_inter_group_social_cohesion rows] = [same answer]
 
  df_inter_group_social_cohesion_refugee_32a <- df_tool_data %>% 
@@ -1042,8 +1018,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_sh
 # HH entered the same value for all FCS categories i.e. cereals == pulses == vegetables == fruits == tubers == protein == dairy == sugar == oils
 
 df_grp_fd_consumption_score_same_34 <- df_tool_data %>% 
-  filter(cereals == pulses & pulses == vegetables & vegetables == fruits & fruits == tubers & tubers == protein & protein == dairy & 
-           dairy == sugar & sugar == oils) %>% 
+  filter(cereals == pulses, vegetables == cereals, cereals == fruits, cereals == tubers, cereals == protein, protein == dairy,  
+         cereals == sugar, cereals == oils) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "cereals",
          i.check.current_value = as.character(cereals),
@@ -1241,7 +1217,7 @@ df_hh_own_farm_land_items_41 <- df_tool_data %>%
          i.check.name = "own_farm_land_items",
          i.check.current_value = as.character(own_farm_land_items),
          i.check.value = "",
-         i.check.issue_id = "logic_hh_own_farm_land_items_41",
+         i.check.issue_id = "logic_c_hh_own_farm_land_items_41",
          i.check.issue = glue("income_remittances: {income_remittances}, 
                               but hh has not reported receiving remittances under movement section"),
          i.check.other_text = "",
@@ -1293,7 +1269,11 @@ df_hh_own_farm_assets_42 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_own_farm_assets_42")
 
 
-# HH reports to not have farm assets, but does report to have agriculture as a livelihood i.e. 
+# HH reports to not have farm assets, but does report to have agriculture as a livelihood i.e. own_farm_land_items != 'yes' AND
+# selected(${hh_primary_livelihood}, "crop_production_on_own_land") OR selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_own_land") OR
+# selected(${hh_primary_livelihood}, "crop_production_on_land_of_others") OR selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_land_of_others") OR
+# selected(${hh_primary_livelihood}, "livestock_farming_on_own_land") OR selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_own_land") OR
+# selected(${hh_primary_livelihood}, "livestock_farming_on_land_of_others") OR selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others"))
 
 df_hh_own_no_farm_assets_43 <- df_tool_data %>% 
   filter(own_farm_land_items != "yes", 
@@ -1324,12 +1304,36 @@ df_hh_own_no_farm_assets_43 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_own_no_farm_assets_43")
 
 
-# HH reports to not have farm assets, but does report to have agriculture as a livelihood i.e. 
 
+# Same amount entered for all farm assets i.e. hoe = axe = spraying_machine = shovel = pick_axe = sickle = 
+# rake = cart = tractor = conventional_yoke = ox_plough = wheelbarrow = panga_slasher = pruning_knife = water_pump
+
+df_all_farm_assets_equal_44 <- df_tool_data %>% 
+  filter(hoe==axe, spraying_machine==hoe, shovel==hoe, pick_axe==hoe, sickle==hoe, rake==hoe, cart==hoe, tractor==hoe, conventional_yoke==hoe, 
+         ox_plough==hoe, wheelbarrow==hoe, panga_slasher==hoe, pruning_knife==hoe, water_pump==hoe) %>% 
+ mutate(i.check.type = "change_response",
+         i.check.name = "panga_slasher",
+         i.check.current_value = as.numeric(panga_slasher),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_hh_all_farm_assets_equal_44",
+         i.check.issue = glue("panga_slasher: {panga_slasher}, 
+                              all values are the same like for panga"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_all_farm_assets_equal_44")
 
 
 
      
+
  write_csv(x = df_fd_consumption_score_poor_37, file = paste0("outputs/", butteR::date_file_prefix(), "_combined_checks_livelihood.csv"), na = "")
 
 # combine and output checks -----------------------------------------------
