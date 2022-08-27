@@ -1304,18 +1304,17 @@ df_hh_own_no_farm_assets_43 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_own_no_farm_assets_43")
 
 
-
 # Same amount entered for all farm assets i.e. hoe = axe = spraying_machine = shovel = pick_axe = sickle = 
 # rake = cart = tractor = conventional_yoke = ox_plough = wheelbarrow = panga_slasher = pruning_knife = water_pump
 
-df_all_farm_assets_equal_44 <- df_tool_data %>% 
+df_all_farm_assets_response_same_44 <- df_tool_data %>% 
   filter(hoe==axe, spraying_machine==hoe, shovel==hoe, pick_axe==hoe, sickle==hoe, rake==hoe, cart==hoe, tractor==hoe, conventional_yoke==hoe, 
          ox_plough==hoe, wheelbarrow==hoe, panga_slasher==hoe, pruning_knife==hoe, water_pump==hoe) %>% 
  mutate(i.check.type = "change_response",
          i.check.name = "panga_slasher",
          i.check.current_value = as.numeric(panga_slasher),
          i.check.value = "",
-         i.check.issue_id = "logic_c_hh_all_farm_assets_equal_44",
+         i.check.issue_id = "logic_c_all_farm_assets_response_same_44",
          i.check.issue = glue("panga_slasher: {panga_slasher}, 
                               all values are the same like for panga"),
          i.check.other_text = "",
@@ -1328,11 +1327,75 @@ df_all_farm_assets_equal_44 <- df_tool_data %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_all_farm_assets_equal_44")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_all_farm_assets_response_same_44")
+
+
+# Same amount entered for all non-farm assets i.e. cell_phone = radio = car = tv = motorcycle = bicycle = solar_panel = fridge = generator = 
+# cooker_or_stove = iron_box_or_pressing = computer_or_laptop = tables = chairs_or_stools_or_benches = beds = mattresses = mosquito_nets = jerrycan
+
+df_all_non_farm_assets_response_same_45<- df_tool_data %>% 
+  filter(cell_phone==tv, radio==tv, car==tv, motorcycle==tv, bicycle==tv, solar_panel==tv, fridge==tv, generator==tv, cooker_or_stove==tv, iron_box_or_pressing==tv, 
+         computer_or_laptop==tv, tables==tv, chairs_or_stools_or_benches==tv, beds==tv, mattresses==tv, mosquito_nets==tv, jerrycan==tv) %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "cell_phone",
+         i.check.current_value = as.numeric(cell_phone),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_all_non_farm_assets_response_same_45",
+         i.check.issue = glue("cell_phone: {cell_phone}, 
+                              all values are the same like for cell_phone"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_all_non_farm_assets_response_same_45")
+
+
+# Amount of generators in unreasonable i.e. generator > 1  
+
+df_generator_greater_than_one_46 <- df_tool_data %>% 
+  filter(generator > 1) %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "generator",
+         i.check.current_value = as.numeric(cell_phone),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_generator_greater_than_one_46",
+         i.check.issue = glue("generator: {generator}, 
+                              confirm hh has more than one generator"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_generator_greater_than_one_46")
 
 
 
-     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
  write_csv(x = df_fd_consumption_score_poor_37, file = paste0("outputs/", butteR::date_file_prefix(), "_combined_checks_livelihood.csv"), na = "")
 
