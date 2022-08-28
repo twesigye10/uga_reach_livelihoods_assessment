@@ -1529,16 +1529,32 @@ df_hh_reported_zero_on_livestock_52 <- df_tool_data %>%
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_reported_zero_on_livestock_52")
-view(df_hh_reported_zero_on_livestock_52)
+
+
+# HH reports same amount for all livestock i.e.cows_and_calves =  goats =  sheep =  pigs =  donkeys =  poultry =  colonized_beehive =  other 
+
+df_hh_livestock_owned_same_53 <- df_tool_data %>% 
+  filter(cows_and_calves==goats, sheep==goats, pigs==goats, donkeys==goats, poultry==goats, colonized_beehive==goats, other==goats) %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "goats ",
+         i.check.current_value = as.numeric(goats),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_hh_livestock_owned_same_53",
+         i.check.issue = glue("goats: {goats}, all values are the same like for goats"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_livestock_owned_same_53")
 
 
 
-
-
-
-
-
- write_csv(x = df_fd_consumption_score_poor_37, file = paste0("outputs/", butteR::date_file_prefix(), "_combined_checks_livelihood.csv"), na = "")
 
 # combine and output checks -----------------------------------------------
 
