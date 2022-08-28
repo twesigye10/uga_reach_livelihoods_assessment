@@ -1459,14 +1459,14 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_cr
 # "livestock_farming_on_land_of_others") OR selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others")))
 
 
-df_livestock_farming_own_and_others_land_49 <- df_tool_data %>% 
+df_livestock_farming_own_and_others_land_50 <- df_tool_data %>% 
   filter(hh_primary_livelihood == "livestock_farming_on_own_land" | other_livelihoods_hh_engaged_in == "livestock_farming_on_own_land",
          hh_primary_livelihood == "livestock_farming_on_land_of_others" | other_livelihoods_hh_engaged_in == "livestock_farming_on_land_of_others") %>% 
   mutate(i.check.type = "",
          i.check.name = "hh_primary_livelihood/other_livelihoods_hh_engaged_in",
          i.check.current_value = "",
          i.check.value = "",
-         i.check.issue_id = "logic_c_livestock_farming_own_and_others_land_48",
+         i.check.issue_id = "logic_c_livestock_farming_own_and_others_land_50",
          i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, but also hh reports the same for other_livelihoods_hh_engaged_in: 
                               {hh_primary_livelihood}"),
          i.check.other_text = "",
@@ -1479,7 +1479,7 @@ df_livestock_farming_own_and_others_land_49 <- df_tool_data %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_livestock_farming_own_and_others_land_49")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_livestock_farming_own_and_others_land_50")
 
 
 
