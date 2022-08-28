@@ -1387,7 +1387,7 @@ df_fridge_greater_than_one_47 <- df_tool_data %>%
          i.check.name = "fridge ",
          i.check.current_value = as.numeric(cell_phone),
          i.check.value = "",
-         i.check.issue_id = "logic_c_generator_greater_than_one_46",
+         i.check.issue_id = "logic_c_generator_greater_than_one_47",
          i.check.issue = glue("fridge : {fridge}, confirm hh has more than one fridge"),
          i.check.other_text = "",
          i.check.checked_by = "",
@@ -1402,17 +1402,84 @@ df_fridge_greater_than_one_47 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_fridge_greater_than_one_47")
 
 
+# Respondent is not HoH & did not include HoH details in the household composition i.e. gender_hoh & age_hoh != age + gender (in hh_roster)
+# No hoh related question  
+
+# df_hoh_details_and_hh_roster_48a <- df_hh_roster_loop_data %>% 
+# filter(consent_two == "no",  %>% 
+# mutate(i.check.type = "change_response",
+  #       i.check.name = "fridge ",
+   #      i.check.current_value = as.numeric(cell_phone),
+    #     i.check.value = "",
+     #    i.check.issue_id = "logic_c_hoh_details_and_hh_roster_47a",
+  #       i.check.issue = glue("fridge : {fridge}, confirm hh has more than one fridge"),
+   #      i.check.other_text = "",
+    #     i.check.checked_by = "",
+     #    i.check.checked_date = as_date(today()),
+  #       i.check.comment = "", 
+   #      i.check.reviewed = "",
+    #     i.check.adjust_log = "",
+     #    i.check.so_sm_choices = "") %>% 
+#  dplyr::select(starts_with("i.check.")) %>% 
+#  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+# add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hoh_details_and_hh_roster_48a")
 
 
+# HH reports both crop production on own land and crop production on land of others i.e. (selected(${hh_primary_livelihood}, 
+# "crop_production_on_own_land") OR selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_own_land")) AND (selected(${hh_primary_livelihood}, 
+# "crop_production_on_land_of_others") OR selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_land_of_others"))
 
 
+df_crop_prodn_own_and_others_land_49 <- df_tool_data %>% 
+  filter(hh_primary_livelihood == "crop_production_on_own_land" | other_livelihoods_hh_engaged_in == "crop_production_on_own_land",
+         hh_primary_livelihood == "crop_production_on_land_of_others" | other_livelihoods_hh_engaged_in == "crop_production_on_land_of_others") %>% 
+  mutate(i.check.type = "",
+         i.check.name = "hh_primary_livelihood/other_livelihoods_hh_engaged_in",
+         i.check.current_value = "",
+         i.check.value = "",
+         i.check.issue_id = "logic_c_crop_prodn_own_and_others_land_49",
+         i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, but also hh reports the same for other_livelihoods_hh_engaged_in: 
+                              {hh_primary_livelihood}"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_crop_prodn_own_and_others_land_49")
 
 
+# HH reports both livestock on own land and livestock on land of others i.e. (selected(${hh_primary_livelihood}, "livestock_farming_on_own_land") 
+# OR selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_own_land")) AND (selected(${hh_primary_livelihood}, 
+# "livestock_farming_on_land_of_others") OR selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others")))
 
 
+df_livestock_farming_own_and_others_land_49 <- df_tool_data %>% 
+  filter(hh_primary_livelihood == "livestock_farming_on_own_land" | other_livelihoods_hh_engaged_in == "livestock_farming_on_own_land",
+         hh_primary_livelihood == "livestock_farming_on_land_of_others" | other_livelihoods_hh_engaged_in == "livestock_farming_on_land_of_others") %>% 
+  mutate(i.check.type = "",
+         i.check.name = "hh_primary_livelihood/other_livelihoods_hh_engaged_in",
+         i.check.current_value = "",
+         i.check.value = "",
+         i.check.issue_id = "logic_c_livestock_farming_own_and_others_land_48",
+         i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, but also hh reports the same for other_livelihoods_hh_engaged_in: 
+                              {hh_primary_livelihood}"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-
-
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_livestock_farming_own_and_others_land_49")
 
 
 
