@@ -1362,7 +1362,7 @@ df_generator_greater_than_one_46 <- df_tool_data %>%
   filter(generator > 1) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "generator",
-         i.check.current_value = as.numeric(cell_phone),
+         i.check.current_value = as.numeric(generator),
          i.check.value = "",
          i.check.issue_id = "logic_c_generator_greater_than_one_46",
          i.check.issue = glue("generator: {generator}, confirm hh has more than one generator"),
@@ -1384,10 +1384,10 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ge
 df_fridge_greater_than_one_47 <- df_tool_data %>% 
   filter(fridge  > 1) %>% 
   mutate(i.check.type = "change_response",
-         i.check.name = "fridge ",
-         i.check.current_value = as.numeric(cell_phone),
+         i.check.name = "fridge",
+         i.check.current_value = as.numeric(fridge),
          i.check.value = "",
-         i.check.issue_id = "logic_c_generator_greater_than_one_47",
+         i.check.issue_id = "logic_c_fridge_greater_than_one_47",
          i.check.issue = glue("fridge : {fridge}, confirm hh has more than one fridge"),
          i.check.other_text = "",
          i.check.checked_by = "",
@@ -1440,7 +1440,7 @@ df_crop_prodn_own_and_others_land_49 <- df_tool_data %>%
          i.check.value = "",
          i.check.issue_id = "logic_c_crop_prodn_own_and_others_land_49",
          i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, but also hh reports the same for other_livelihoods_hh_engaged_in: 
-                              {hh_primary_livelihood}"),
+                              {other_livelihoods_hh_engaged_in}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
@@ -1468,7 +1468,7 @@ df_livestock_farming_own_and_others_land_50 <- df_tool_data %>%
          i.check.value = "",
          i.check.issue_id = "logic_c_livestock_farming_own_and_others_land_50",
          i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, but also hh reports the same for other_livelihoods_hh_engaged_in: 
-                              {hh_primary_livelihood}"),
+                              {other_livelihoods_hh_engaged_in}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
@@ -1480,6 +1480,39 @@ df_livestock_farming_own_and_others_land_50 <- df_tool_data %>%
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_livestock_farming_own_and_others_land_50")
+
+
+# HH reports loans as an income sources but reports to not have taken out any loans in the last 6 months i.e.income_loans > 0 AND
+# hh_taken_loan_last_six_month != 'yes'
+
+df_income_loan_51 <- df_tool_data %>% 
+  filter(income_loans > 0, hh_taken_loan_last_six_month != "yes") %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "hh_taken_loan_last_six_month",
+         i.check.current_value = as.character(hh_taken_loan_last_six_month),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_income_loan_51",
+         i.check.issue = glue("hh_taken_loan_last_six_month: {hh_taken_loan_last_six_month}, but income_loans: {income_loans}"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_income_loan_51")
+
+
+
+
+
+
+
+
+
 
 
 
