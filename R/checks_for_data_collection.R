@@ -896,7 +896,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 
 df_intra_group_social_cohesion_refugee_31a <- df_tool_data %>% 
   filter(joining_other_refugee_to_address_issues == trust_among_refugee & trust_among_refugee == friendliness_between_refugee & friendliness_between_refugee == 
-            sense_of_belonging_to_refugee_community & sense_of_belonging_to_refugee_community == taken_advantage_of_by_fellow_refugee) %>% 
+           sense_of_belonging_to_refugee_community & sense_of_belonging_to_refugee_community == taken_advantage_of_by_fellow_refugee) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "joining_other_refugee_to_address_issues",
          i.check.current_value = as.character(joining_other_refugee_to_address_issues),
@@ -920,7 +920,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_in
 
 df_intra_group_social_cohesion_host_31b <- df_tool_data %>% 
   filter(joining_other_nationals_to_address_issues == trust_among_other_nationals & trust_among_other_nationals == friendliness_among_nationals &
-         friendliness_among_nationals == sense_of_belonging_to_community_here & sense_of_belonging_to_community_here == taken_advantage_of_by_other_nationals) %>% 
+           friendliness_among_nationals == sense_of_belonging_to_community_here & sense_of_belonging_to_community_here == taken_advantage_of_by_other_nationals) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "joining_other_nationals_to_address_issues",
          i.check.current_value = as.character(joining_other_nationals_to_address_issues),
@@ -934,58 +934,58 @@ df_intra_group_social_cohesion_host_31b <- df_tool_data %>%
          i.check.reviewed = "",
          i.check.adjust_log = "",
          i.check.so_sm_choices = "") %>% 
-    dplyr::select(starts_with("i.check.")) %>% 
-    rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_intra_group_social_cohesion_host_31b")
 
 
 # Respondent gives the same answer to all inter-group social cohesion questions for refugee i.e. [all grp_inter_group_social_cohesion rows] = [same answer]
 
- df_inter_group_social_cohesion_refugee_32a <- df_tool_data %>% 
+df_inter_group_social_cohesion_refugee_32a <- df_tool_data %>% 
   filter(joining_any_nationals_to_address_issues == trust_among_nationals & trust_among_nationals == friendliness_among_refugee_and_nationals &
            friendliness_among_refugee_and_nationals == sense_of_belonging_both_refugee_and_nationals & sense_of_belonging_both_refugee_and_nationals == 
            taken_advantage_of_by_nationals) %>% 
   mutate(i.check.type = "change_response",
-        i.check.name = "joining_any_nationals_to_address_issues",
-        i.check.current_value = as.character(joining_any_nationals_to_address_issues),
-        i.check.value = "",
-        i.check.issue_id = "logic_c_inter_group_social_cohesion_refugee_32a",
-        i.check.issue = glue("All inter-group social cohesion questions have similar response"),
-        i.check.other_text = "",
-        i.check.checked_by = "",
-        i.check.checked_date = as_date(today()),
-        i.check.comment = "", 
-        i.check.reviewed = "",
-        i.check.adjust_log = "",
-        i.check.so_sm_choices = "") %>% 
- dplyr::select(starts_with("i.check.")) %>% 
- rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+         i.check.name = "joining_any_nationals_to_address_issues",
+         i.check.current_value = as.character(joining_any_nationals_to_address_issues),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_inter_group_social_cohesion_refugee_32a",
+         i.check.issue = glue("All inter-group social cohesion questions have similar response"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
- add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_inter_group_social_cohesion_refugee_32a")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_inter_group_social_cohesion_refugee_32a")
 
 
- # Respondent gives the same answer to all inter-group social cohesion questions for host community i.e. [all grp_inter_group_social_cohesion rows] = [same answer]
- 
- df_inter_group_social_cohesion_host_32b <- df_tool_data %>% 
- filter(joining_any_refugee_to_address_issues == trust_any_refugee & trust_any_refugee == friendliness_among_refugee & 
-            friendliness_among_refugee == sense_of_belonging_to_both_refugee_and_nationals & sense_of_belonging_to_both_refugee_and_nationals == 
-            taken_advantage_of_by_any_refugee) %>% 
- mutate(i.check.type = "change_response",
-        i.check.name = "joining_any_refugee_to_address_issues",
-        i.check.current_value = as.character(joining_any_refugee_to_address_issues),
-        i.check.value = "",
-        i.check.issue_id = "logic_c_inter_group_social_cohesion_host_32b",
-        i.check.issue = glue("All inter-group social cohesion questions have similar response"),
-        i.check.other_text = "",
-        i.check.checked_by = "",
-        i.check.checked_date = as_date(today()),
-        i.check.comment = "", 
-        i.check.reviewed = "",
-        i.check.adjust_log = "",
-        i.check.so_sm_choices = "") %>% 
- dplyr::select(starts_with("i.check.")) %>% 
- rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+# Respondent gives the same answer to all inter-group social cohesion questions for host community i.e. [all grp_inter_group_social_cohesion rows] = [same answer]
+
+df_inter_group_social_cohesion_host_32b <- df_tool_data %>% 
+  filter(joining_any_refugee_to_address_issues == trust_any_refugee & trust_any_refugee == friendliness_among_refugee & 
+           friendliness_among_refugee == sense_of_belonging_to_both_refugee_and_nationals & sense_of_belonging_to_both_refugee_and_nationals == 
+           taken_advantage_of_by_any_refugee) %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "joining_any_refugee_to_address_issues",
+         i.check.current_value = as.character(joining_any_refugee_to_address_issues),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_inter_group_social_cohesion_host_32b",
+         i.check.issue = glue("All inter-group social cohesion questions have similar response"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_inter_group_social_cohesion_host_32b")
 
@@ -994,7 +994,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_in
 
 df_shelter_type_hh_live_33 <- df_tool_data %>% 
   filter(!shelter_occupancy_arrangement %in% c("squatting", "no_answer"), 
-                                       shelter_type_hh_live =="none") %>% 
+         shelter_type_hh_live =="none") %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "shelter_type_hh_live",
          i.check.current_value = as.character(shelter_type_hh_live),
@@ -1067,21 +1067,21 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_fd
 
 
 df_three_or_more_fcs_equal_zero_36 <- df_tool_data %>%
-    mutate(three_fcs_gps_equal_zero = rowSums(across(cereals:oils) == 0, na.rm = TRUE)) %>% 
-    filter(three_fcs_gps_equal_zero >= 3) %>% 
-    mutate(i.check.type = "change_response",
-           i.check.name = "three_fcs_gps_equal_zero",
-           i.check.current_value = as.numeric(three_fcs_gps_equal_zero),
-           i.check.value = "",
-           i.check.issue_id = "logic_c_three_or_more_fcs_equal_zero_36",
-           i.check.issue = glue("Household has not eaten three or more food categories in past seven days"),
-           i.check.other_text = "",
-           i.check.checked_by = "",
-           i.check.checked_date = as_date(today()),
-           i.check.comment = "", 
-           i.check.reviewed = "",
-           i.check.adjust_log = "",
-           i.check.so_sm_choices = "") %>% 
+  mutate(three_fcs_gps_equal_zero = rowSums(across(cereals:oils) == 0, na.rm = TRUE)) %>% 
+  filter(three_fcs_gps_equal_zero >= 3) %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "three_fcs_gps_equal_zero",
+         i.check.current_value = as.character(three_fcs_gps_equal_zero),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_three_or_more_fcs_equal_zero_36",
+         i.check.issue = glue("Household has not eaten three or more food categories in past seven days"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
@@ -1093,21 +1093,21 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_th
 
 df_fd_consumption_score_poor_37 <- df_tool_data %>% 
   mutate(poor_fcs = (cereals > tubers | tubers > cereals) * 2 + pulses * 3 + (vegetables +  fruits + protein) * 4 + dairy * 4 + sugar * 0.5 + oils * 0.5, 
-       round(0)) %>% 
+         round(0)) %>% 
   filter(poor_fcs <= 21, if_all(c(increase_the_number_of_family_members_searching_for_work_outside_your_village:sold_more_animals_than_usual), ~ . != "yes")) %>% 
-mutate(i.check.type = "change_response",
-       i.check.name = "poor_fcs",
-       i.check.current_value = as.numeric(poor_fcs),
-       i.check.value = "",
-       i.check.issue_id = "logic_c_fd_consumption_score_poor_37",
-       i.check.issue = glue("Household has poor fcs but has not reported any coping strategy"),
-       i.check.other_text = "",
-       i.check.checked_by = "",
-       i.check.checked_date = as_date(today()),
-       i.check.comment = "", 
-       i.check.reviewed = "",
-       i.check.adjust_log = "",
-       i.check.so_sm_choices = "") %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "poor_fcs",
+         i.check.current_value = as.numeric(poor_fcs),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_fd_consumption_score_poor_37",
+         i.check.issue = glue("Household has poor fcs but has not reported any coping strategy"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
@@ -1146,8 +1146,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_po
 # hh_receiving_money_from_family_or_friend_in_home_country = 'no'
 
 df_hh_reported_remittances_39 <- df_tool_data %>% 
-    filter(income_remittances > 0, if_all(c(hh_receiving_money_from_family_or_friend_in_settlement, hh_receiving_money_from_family_or_friend_in_towns, 
-                                            hh_receiving_money_from_family_or_friend_in_home_country), ~ . == "no")) %>% 
+  filter(income_remittances > 0, if_all(c(hh_receiving_money_from_family_or_friend_in_settlement, hh_receiving_money_from_family_or_friend_in_towns, 
+                                          hh_receiving_money_from_family_or_friend_in_home_country), ~ . == "no")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "income_remittances",
          i.check.current_value = as.numeric(income_remittances),
@@ -1178,17 +1178,17 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 
 df_hh_reported_no_remittances_40 <- df_tool_data %>% 
   filter(income_remittances == 0, (frequency_hh_receives_money_from_family_or_friend_in_settlement == "approximately_once_a_month" |
-                                   frequency_hh_receives_money_from_family_or_friend_in_settlement == "approximately_twice_a_month"|
-                                   frequency_hh_receives_money_from_family_or_friend_in_settlement == "approximately_3_times_a_month" |
-                                   frequency_hh_receives_money_from_family_or_friend_in_settlement == "approximately_more_than_3_times_a_month")|
-                                  (frequency_hh_receives_money_from_family_or_friend_in_towns == "approximately_once_a_month" |
-                                   frequency_hh_receives_money_from_family_or_friend_in_towns == "approximately_twice_a_month"|
-                                   frequency_hh_receives_money_from_family_or_friend_in_towns == "approximately_3_times_a_month" |
-                                   frequency_hh_receives_money_from_family_or_friend_in_towns == "approximately_more_than_3_times_a_month")|
-                                  (frequency_hh_receives_money_from_family_or_friend_in_home_country == "approximately_once_a_month" |
-                                   frequency_hh_receives_money_from_family_or_friend_in_home_country == "approximately_twice_a_month"|
-                                   frequency_hh_receives_money_from_family_or_friend_in_home_country == "approximately_3_times_a_month" |
-                                   frequency_hh_receives_money_from_family_or_friend_in_home_country == "approximately_more_than_3_times_a_month")) %>% 
+                                     frequency_hh_receives_money_from_family_or_friend_in_settlement == "approximately_twice_a_month"|
+                                     frequency_hh_receives_money_from_family_or_friend_in_settlement == "approximately_3_times_a_month" |
+                                     frequency_hh_receives_money_from_family_or_friend_in_settlement == "approximately_more_than_3_times_a_month")|
+           (frequency_hh_receives_money_from_family_or_friend_in_towns == "approximately_once_a_month" |
+              frequency_hh_receives_money_from_family_or_friend_in_towns == "approximately_twice_a_month"|
+              frequency_hh_receives_money_from_family_or_friend_in_towns == "approximately_3_times_a_month" |
+              frequency_hh_receives_money_from_family_or_friend_in_towns == "approximately_more_than_3_times_a_month")|
+           (frequency_hh_receives_money_from_family_or_friend_in_home_country == "approximately_once_a_month" |
+              frequency_hh_receives_money_from_family_or_friend_in_home_country == "approximately_twice_a_month"|
+              frequency_hh_receives_money_from_family_or_friend_in_home_country == "approximately_3_times_a_month" |
+              frequency_hh_receives_money_from_family_or_friend_in_home_country == "approximately_more_than_3_times_a_month")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "income_remittances",
          i.check.current_value = as.numeric(income_remittances),
@@ -1242,14 +1242,14 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 
 df_hh_own_farm_assets_42 <- df_tool_data %>% 
   filter(own_farm_land_items == "yes", 
-                         !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_own_land"),
-                         !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land"),
-                         !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_land_of_others"),
-                         !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others"),
-                         !str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_own_land"),
-                         !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land"),
-                         !str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_land_of_others"),
-                         !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_land_of_others")) %>% 
+         !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_own_land"),
+         !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land"),
+         !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_land_of_others"),
+         !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others"),
+         !str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_own_land"),
+         !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land"),
+         !str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_land_of_others"),
+         !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_land_of_others")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "own_farm_land_items",
          i.check.current_value = as.character(own_farm_land_items),
@@ -1277,14 +1277,14 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 
 df_hh_own_no_farm_assets_43 <- df_tool_data %>% 
   filter(own_farm_land_items != "yes", 
-                       str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_own_land") |
-                       str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land") |
-                       str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_land_of_others") |
-                       str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others") |
-                       str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_own_land") |
-                       str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land") |
-                       str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_land_of_others") |
-                       str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_land_of_others")) %>% 
+         str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_own_land") |
+           str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land") |
+           str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_land_of_others") |
+           str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others") |
+           str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_own_land") |
+           str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land") |
+           str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_land_of_others") |
+           str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_land_of_others")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "own_farm_land_items",
          i.check.current_value = as.character(own_farm_land_items),
@@ -1310,9 +1310,9 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 df_all_farm_assets_response_same_44 <- df_tool_data %>% 
   filter(hoe==axe, spraying_machine==hoe, shovel==hoe, pick_axe==hoe, sickle==hoe, rake==hoe, cart==hoe, tractor==hoe, conventional_yoke==hoe, 
          ox_plough==hoe, wheelbarrow==hoe, panga_slasher==hoe, pruning_knife==hoe, water_pump==hoe) %>% 
- mutate(i.check.type = "change_response",
+  mutate(i.check.type = "change_response",
          i.check.name = "panga_slasher",
-         i.check.current_value = as.numeric(panga_slasher),
+         i.check.current_value = as.character(panga_slasher),
          i.check.value = "",
          i.check.issue_id = "logic_c_all_farm_assets_response_same_44",
          i.check.issue = glue("panga_slasher: {panga_slasher}, 
@@ -1338,7 +1338,7 @@ df_all_non_farm_assets_response_same_45<- df_tool_data %>%
          computer_or_laptop==tv, tables==tv, chairs_or_stools_or_benches==tv, beds==tv, mattresses==tv, mosquito_nets==tv, jerrycan==tv) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "cell_phone",
-         i.check.current_value = as.numeric(cell_phone),
+         i.check.current_value = as.character(cell_phone),
          i.check.value = "",
          i.check.issue_id = "logic_c_all_non_farm_assets_response_same_45",
          i.check.issue = glue("cell_phone: {cell_phone}, 
@@ -1362,7 +1362,7 @@ df_generator_greater_than_one_46 <- df_tool_data %>%
   filter(generator > 1) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "generator",
-         i.check.current_value = as.numeric(generator),
+         i.check.current_value = as.character(generator),
          i.check.value = "",
          i.check.issue_id = "logic_c_generator_greater_than_one_46",
          i.check.issue = glue("generator: {generator}, confirm hh has more than one generator"),
@@ -1408,18 +1408,18 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_fr
 # df_hoh_details_and_hh_roster_48a <- df_hh_roster_loop_data %>% 
 # filter(consent_two == "no",  %>% 
 # mutate(i.check.type = "change_response",
-  #       i.check.name = "fridge ",
-   #      i.check.current_value = as.numeric(cell_phone),
-    #     i.check.value = "",
-     #    i.check.issue_id = "logic_c_hoh_details_and_hh_roster_47a",
-  #       i.check.issue = glue("fridge : {fridge}, confirm hh has more than one fridge"),
-   #      i.check.other_text = "",
-    #     i.check.checked_by = "",
-     #    i.check.checked_date = as_date(today()),
-  #       i.check.comment = "", 
-   #      i.check.reviewed = "",
-    #     i.check.adjust_log = "",
-     #    i.check.so_sm_choices = "") %>% 
+#       i.check.name = "fridge ",
+#      i.check.current_value = as.numeric(cell_phone),
+#     i.check.value = "",
+#    i.check.issue_id = "logic_c_hoh_details_and_hh_roster_47a",
+#       i.check.issue = glue("fridge : {fridge}, confirm hh has more than one fridge"),
+#      i.check.other_text = "",
+#     i.check.checked_by = "",
+#    i.check.checked_date = as_date(today()),
+#       i.check.comment = "", 
+#      i.check.reviewed = "",
+#     i.check.adjust_log = "",
+#    i.check.so_sm_choices = "") %>% 
 #  dplyr::select(starts_with("i.check.")) %>% 
 #  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
@@ -1485,25 +1485,25 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_li
 # HH reports loans as an income sources but reports to not have taken out any loans in the last 6 months i.e.income_loans > 0 AND
 # hh_taken_loan_last_six_month != 'yes'
 
-df_income_loan_51 <- df_tool_data %>% 
-  filter(income_loans > 0, hh_taken_loan_last_six_month != "yes") %>% 
-  mutate(i.check.type = "change_response",
-         i.check.name = "hh_taken_loan_last_six_month",
-         i.check.current_value = as.character(hh_taken_loan_last_six_month),
-         i.check.value = "",
-         i.check.issue_id = "logic_c_income_loan_51",
-         i.check.issue = glue("hh_taken_loan_last_six_month: {hh_taken_loan_last_six_month}, but income_loans: {income_loans}"),
-         i.check.other_text = "",
-         i.check.checked_by = "",
-         i.check.checked_date = as_date(today()),
-         i.check.comment = "", 
-         i.check.reviewed = "",
-         i.check.adjust_log = "",
-         i.check.so_sm_choices = "") %>% 
-  dplyr::select(starts_with("i.check.")) %>% 
-  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+# df_income_loan_51 <- df_tool_data %>% 
+# filter(income_loans > 0, hh_taken_loan_last_six_month != "yes") %>% 
+# mutate(i.check.type = "change_response",
+#        i.check.name = "hh_taken_loan_last_six_month",
+#        i.check.current_value = as.character(hh_taken_loan_last_six_month),
+#        i.check.value = "",
+#        i.check.issue_id = "logic_c_income_loan_51",
+#        i.check.issue = glue("hh_taken_loan_last_six_month: {hh_taken_loan_last_six_month}, but income_loans: {income_loans}"),
+#        i.check.other_text = "",
+#        i.check.checked_by = "",
+#        i.check.checked_date = as_date(today()),
+#        i.check.comment = "", 
+#        i.check.reviewed = "",
+#        i.check.adjust_log = "",
+#        i.check.so_sm_choices = "") %>% 
+#  dplyr::select(starts_with("i.check.")) %>% 
+#  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_income_loan_51")
+# add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_income_loan_51")
 
 
 # HH reports owning livestock but reports 0 for all livestock options i.e. hh_own_livestock = 'yes AND
@@ -1537,7 +1537,7 @@ df_hh_livestock_owned_same_53 <- df_tool_data %>%
   filter(cows_and_calves==goats, sheep==goats, pigs==goats, donkeys==goats, poultry==goats, colonized_beehive==goats, other==goats) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "goats ",
-         i.check.current_value = as.numeric(goats),
+         i.check.current_value = as.character(goats),
          i.check.value = "",
          i.check.issue_id = "logic_c_hh_livestock_owned_same_53",
          i.check.issue = glue("goats: {goats}, all values are the same like for goats"),
@@ -1554,8 +1554,6 @@ df_hh_livestock_owned_same_53 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_livestock_owned_same_53")
 
 
-
-
 # combine and output checks -----------------------------------------------
 
 # combine checks
@@ -1563,7 +1561,6 @@ df_combined_checks <- bind_rows(logic_output)
 
 # output the combined checks
 write_csv(x = df_combined_checks, file = paste0("outputs/", butteR::date_file_prefix(), "_combined_checks_livelihood.csv"), na = "")
-
 
 
 
