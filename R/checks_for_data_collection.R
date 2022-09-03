@@ -12,8 +12,8 @@ df_tool_data <- readxl::read_excel(path = "inputs/livelihoods_assessment_data.xl
   mutate(i.check.uuid = `_uuid`,
          i.check.start_date = as_date(start),
          i.check.enumerator_id = as.character(enumerator_id),
-         i.check.district_name = district_name)%>% 
-          
+         i.check.district_name = district_name,
+         i.check.point_number = point_number) %>% 
   filter(i.check.start_date > as_date("2022-08-07"))
 
 df_survey <- readxl::read_excel(path = "inputs/livelihoods_assessment_tool.xlsx", sheet = "survey")
