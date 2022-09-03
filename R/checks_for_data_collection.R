@@ -12,7 +12,15 @@ df_tool_data <- readxl::read_excel(path = "inputs/livelihoods_assessment_data.xl
   mutate(i.check.uuid = `_uuid`,
          i.check.start_date = as_date(start),
          i.check.enumerator_id = as.character(enumerator_id),
-         i.check.district_name = district_name,
+         i.check.district_name = case_when(location %in% c("rhino_camp") ~ "madi_okollo",
+                                           location %in% c("bidibidi") ~ "yumbe",
+                                           location %in% c("gulu") ~ "gulu",
+                                           location %in% c("palabek") ~ "lamwo",
+                                           location %in% c("kampala") ~ "kampala",
+                                           location %in% c("mbarara") ~ "mbarara",
+                                           location %in% c("nakivale") ~ "isingiro",
+                                           location %in% c("kitgum") ~ "kitgum",
+                                           TRUE ~ location),
          i.check.point_number = point_number) %>% 
   filter(i.check.start_date > as_date("2022-08-07"))
 
