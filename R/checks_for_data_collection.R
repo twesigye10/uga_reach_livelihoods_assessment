@@ -21,6 +21,7 @@ df_tool_data <- readxl::read_excel(path = "inputs/livelihoods_assessment_data.xl
                                            location %in% c("nakivale") ~ "isingiro",
                                            location %in% c("kitgum") ~ "kitgum",
                                            TRUE ~ location),
+         district_name = i.check.district_name,
          i.check.point_number = point_number) %>% 
   filter(i.check.start_date > as_date("2022-08-07"))
 
