@@ -168,17 +168,14 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # AND hh_own_livestock = 'no' or 'no_answer'
 
 df_livestock_ownership_3 <- df_tool_data %>% 
-  filter(hh_own_livestock == "no" | hh_own_livestock == "no_answer", str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_own_land") |
-                                      str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land") |
-                                      str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_land_of_others") |
-                                      str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_land_of_others")) %>% 
+  filter(hh_own_livestock %in% c("no", "no_answer"), (hh_primary_livelihood %in% c("livestock_farming_on_own_land", "livestock_farming_on_land_of_others") |
+                                      str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land|livestock_farming_on_land_of_others"))) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "hh_own_livestock",
-         i.check.current_value = as.character(hh_own_livestock),
+         i.check.current_value = hh_own_livestock,
          i.check.value = "",
          i.check.issue_id = "logic_c_hh_own_livestock_no_3",
-         i.check.issue = glue("hh_own_livestock: {hh_own_livestock}, but hh_primary_livelihood or 
-                              other_livelihoods_hh_engaged_in has 'livestock farming on own land' or/and 'livestock farming on land of others' as options"),
+         i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, but other_livelihoods_hh_engaged_in: {other_livelihoods_hh_engaged_in}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
