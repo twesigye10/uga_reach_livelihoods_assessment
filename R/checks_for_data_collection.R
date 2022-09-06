@@ -224,21 +224,14 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_la
 # "livestock_farming_on_own_land")) AND not(selected(${hh_primary_livelihood}, "livestock_farming_on_land_of_others")) AND not(selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others")))
 
 df_land_occupancy_arrangement_renting_5 <- df_tool_data %>% 
-  filter(land_occupancy_arrangement == "renting", !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_own_land") |
-                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land") |
-                                       !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_land_of_others") |
-                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others") |
-                                       !str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_own_land") |
-                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land") |
-                                       !str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_land_of_others") |
-                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_land_of_others")) %>% 
+  filter(land_occupancy_arrangement == "renting", (!hh_primary_livelihood %in% c("crop_production_on_own_land", "crop_production_on_land_of_others", "livestock_farming_on_own_land", "livestock_farming_on_land_of_others") &
+                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|crop_production_on_land_of_others|livestock_farming_on_own_land|livestock_farming_on_land_of_others"))) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "land_occupancy_arrangement",
-         i.check.current_value = as.character(land_occupancy_arrangement),
+         i.check.current_value = land_occupancy_arrangement,
          i.check.value = "",
          i.check.issue_id = "logic_c_land_occupancy_arrangement_renting_5",
-         i.check.issue = glue("land_occupancy_arrangement: {land_occupancy_arrangement}, but hh_primary_livelihood or 
-                              other_livelihoods_hh_engaged_in has no crop production or/and livestock farming as options"),
+         i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, other_livelihoods_hh_engaged_in: {other_livelihoods_hh_engaged_in}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
