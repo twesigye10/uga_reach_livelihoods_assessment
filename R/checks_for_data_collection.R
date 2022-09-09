@@ -664,11 +664,10 @@ df_hh_not_able_to_meet_basic_needs_24 <- df_tool_data %>%
          if_all(c(increase_the_number_of_family_members_searching_for_work_outside_your_village:sold_more_animals_than_usual), ~ . == "no")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "hh_able_to_meet_basic_needs",
-         i.check.current_value = as.character(hh_able_to_meet_basic_needs),
+         i.check.current_value = hh_able_to_meet_basic_needs,
          i.check.value = "",
          i.check.issue_id = "logic_c_hh_able_to_meet_basic_needs_no_24",
-         i.check.issue = glue("hh_able_to_meet_basic_needs: {hh_able_to_meet_basic_needs}, 
-                              but household does not report adopting any coping strategies for survival"),
+         i.check.issue = glue("hh_able_to_meet_basic_needs: {hh_able_to_meet_basic_needs}, but household does not report adopting any coping strategies for survival"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
