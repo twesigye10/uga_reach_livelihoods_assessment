@@ -554,7 +554,7 @@ df_type_work_done_in_towns_farming_others_land_17 <- df_tool_data %>%
                                        !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others|livestock_farming_on_land_of_others")) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "type_work_done_by_hh_member_in_towns",
-         i.check.current_value = as.character(type_work_done_by_hh_member_in_towns),
+         i.check.current_value = type_work_done_by_hh_member_in_towns,
          i.check.value = "",
          i.check.issue_id = "logic_c_type_work_done_by_hh_member_in_towns_farming_others_land_17",
          i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, other_livelihoods_hh_engaged_in: {other_livelihoods_hh_engaged_in}"),
@@ -578,17 +578,14 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ty
 
 df_type_work_done_in_towns_non_agric_labour_18 <- df_tool_data %>% 
   filter(str_detect(string = type_work_done_by_hh_member_in_towns, pattern = "non_agricultural_daily_labour"), 
-                                       !str_detect(string = hh_primary_livelihood, pattern = "casual_or_daily_labour_non_farming") |
-                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "casual_or_daily_labour_non_farming") |
-                                       !str_detect(string = hh_primary_livelihood, pattern = "salaried_employment_in_a_business") |
-                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "salaried_employment_in_a_business")) %>% 
+                                       (!hh_primary_livelihood %in% c("casual_or_daily_labour_non_farming", "salaried_employment_in_a_business") &
+                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "casual_or_daily_labour_non_farming|salaried_employment_in_a_business"))) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "type_work_done_by_hh_member_in_towns",
-         i.check.current_value = as.character(type_work_done_by_hh_member_in_towns),
+         i.check.current_value = type_work_done_by_hh_member_in_towns,
          i.check.value = "",
          i.check.issue_id = "logic_c_type_work_done_by_hh_member_in_towns_non_agric_labour_18",
-         i.check.issue = glue("type_work_done_by_hh_member_in_towns: {type_work_done_by_hh_member_in_towns}, but hh_primary_livelihood or 
-                              other_livelihoods_hh_engaged_in has no 'casual or daily labour' or/and 'salaried employment in a business' as options"),
+         i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, other_livelihoods_hh_engaged_in: {other_livelihoods_hh_engaged_in}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
