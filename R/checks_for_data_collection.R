@@ -607,20 +607,14 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ty
 
 df_type_work_done_by_hh_member_in_towns_salaried_job_19 <- df_tool_data %>% 
   filter(str_detect(string = type_work_done_by_hh_member_in_towns, pattern = "permanent_salaried_job"), 
-                                       !str_detect(string = hh_primary_livelihood, pattern = "salaried_employment_in_a_business") |
-                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "salaried_employment_in_a_business") |
-                                       !str_detect(string = hh_primary_livelihood, pattern = "salaried_employment_with_an_ngo") |
-                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "salaried_employment_with_an_ngo") |
-                                       !str_detect(string = hh_primary_livelihood, pattern = "salaried_employment_with_the_government") |
-                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "salaried_employment_with_the_government")) %>% 
+                                       (!hh_primary_livelihood %in% c("salaried_employment_in_a_business", "salaried_employment_with_an_ngo", "salaried_employment_with_the_government") &
+                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "salaried_employment_in_a_business|salaried_employment_with_an_ngo|salaried_employment_with_the_government"))) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "type_work_done_by_hh_member_in_towns",
-         i.check.current_value = as.character(type_work_done_by_hh_member_in_towns),
+         i.check.current_value = type_work_done_by_hh_member_in_towns,
          i.check.value = "",
          i.check.issue_id = "logic_c_type_work_done_by_hh_member_in_towns_salaried_job_19",
-         i.check.issue = glue("type_work_done_by_hh_member_in_towns: {type_work_done_by_hh_member_in_towns}, but hh_primary_livelihood or 
-                              other_livelihoods_hh_engaged_in has no 'salaried employment in a business', 'salaried employment with an NGO' or/and 
-                              'salaried employment with the government' as options"),
+         i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, other_livelihoods_hh_engaged_in: {other_livelihoods_hh_engaged_in}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
