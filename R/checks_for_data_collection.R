@@ -522,15 +522,14 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_fa
 
 df_reason_hh_member_travels_to_towns_business_16 <- df_tool_data %>% 
   filter(str_detect(string = reason_hh_member_travels_to_towns, pattern = "to_run_businesses"),
-                                   !str_detect(string = hh_primary_livelihood, pattern = "own_business_non_farming") |
-                                   !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "own_business_non_farming")) %>% 
+                                   (!hh_primary_livelihood %in% c("own_business_non_farming") &
+                                   !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "own_business_non_farming"))) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "reason_hh_member_travels_to_towns",
-         i.check.current_value = as.character(reason_hh_member_travels_to_towns),
+         i.check.current_value = reason_hh_member_travels_to_towns,
          i.check.value = "",
          i.check.issue_id = "logic_c_reason_hh_member_travels_to_towns_business_16",
-         i.check.issue = glue("reason_hh_member_travels_to_towns: {reason_hh_member_travels_to_towns}, but hh_primary_livelihood or 
-                              other_livelihoods_hh_engaged_in has no 'Own business' selected as an option"),
+         i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, other_livelihoods_hh_engaged_in: {other_livelihoods_hh_engaged_in}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
