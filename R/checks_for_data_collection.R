@@ -496,14 +496,13 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_re
 # reason_hh_member_travels_to_towns = 'to_work_on_own_land' AND farming_land_availability = 'no' 
 
 df_farming_land_availability_in_towns_15 <- df_tool_data %>% 
-  filter(farming_land_availability == "no", !str_detect(string = reason_hh_member_travels_to_towns, pattern = "to_work_on_own_land")) %>% 
+  filter(farming_land_availability == "no", str_detect(string = reason_hh_member_travels_to_towns, pattern = "to_work_on_own_land")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "farming_land_availability",
-         i.check.current_value = as.character(farming_land_availability),
+         i.check.current_value = farming_land_availability,
          i.check.value = "",
          i.check.issue_id = "logic_c_farming_land_availability_in_towns_no_15",
-         i.check.issue = glue("farming_land_availability: {farming_land_availability}, but reason_hh_member_travels_to_towns: 
-                              {reason_hh_member_travels_to_towns}"),
+         i.check.issue = glue("farming_land_availability: {farming_land_availability}, but reason_hh_member_travels_to_towns: {reason_hh_member_travels_to_towns}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
