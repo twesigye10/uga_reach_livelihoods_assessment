@@ -471,17 +471,14 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ty
 
 df_reason_hh_member_travels_to_towns_farming_own_land_14 <- df_tool_data %>% 
   filter(str_detect(string = reason_hh_member_travels_to_towns, pattern = "to_work_on_own_land"), 
-                                     !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_own_land") |
-                                     !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land") |
-                                     !str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_own_land") |
-                                     !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land")) %>% 
+                                     (!hh_primary_livelihood %in% c("crop_production_on_own_land", "livestock_farming_on_own_land") &
+                                     !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|livestock_farming_on_own_land"))) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "reason_hh_member_travels_to_towns",
-         i.check.current_value = as.character(reason_hh_member_travels_to_towns),
+         i.check.current_value = reason_hh_member_travels_to_towns,
          i.check.value = "",
          i.check.issue_id = "logic_c_reason_hh_member_travels_to_towns_farming_own_land_14",
-         i.check.issue = glue("reason_hh_member_travels_to_towns: {reason_hh_member_travels_to_towns}, but hh_primary_livelihood or 
-                              other_livelihoods_hh_engaged_in has no 'crop production on own land' or/and 'livestock farming on own land' as options"),
+         i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, other_livelihoods_hh_engaged_in: {other_livelihoods_hh_engaged_in}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
