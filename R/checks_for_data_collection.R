@@ -28,7 +28,7 @@ df_tool_data <- readxl::read_excel(path = "inputs/livelihoods_assessment_data.xl
 df_survey <- readxl::read_excel(path = "inputs/livelihoods_assessment_tool.xlsx", sheet = "survey")
 df_choices <- readxl::read_excel(path = "inputs/livelihoods_assessment_tool.xlsx", sheet = "choices")
 
-df_sample_data <- sf::st_read("inputs/anif_rapid_settlement_samples.gpkg", quiet = TRUE)
+df_sample_data <- sf::st_read("inputs/livelihoods_settlement_host_samples.gpkg", quiet = TRUE)
 
 # output holder -----------------------------------------------------------
 
@@ -684,10 +684,10 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # HH reports that 'child is too young' as a reason for non-attendance i.e. why_child_not_regularly_attending = 'child_or_children_were_too_young'
 
 df_why_child_not_regularly_attending_25 <- df_tool_data %>% 
-  filter(why_child_not_regularly_attending == "child_or_children_were_too_young") %>% 
+  filter(str_detect(string = why_child_not_regularly_attending, pattern = "child_or_children_were_too_young")) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "why_child_not_regularly_attending",
-         i.check.current_value = as.character(why_child_not_regularly_attending),
+         i.check.current_value = why_child_not_regularly_attending,
          i.check.value = "",
          i.check.issue_id = "logic_c_why_child_not_regularly_attending_25",
          i.check.issue = glue("why_child_not_regularly_attending: {why_child_not_regularly_attending}, 
