@@ -710,13 +710,12 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_wh
 # not(selected(financial_service_providers_present, any('banking_agents', 'banks_full_service'))))
 
 df_hh_access_bank_loans_26 <- df_tool_data %>% 
-  filter(str_detect(string = name_fsp_hh_sought_loan, pattern = "bank") |
-                                str_detect(string = name_fsp_hh_to_seek_loan, pattern = "bank"),
-                               !str_detect(string = financial_service_providers_present, pattern = "banking_agents") |
-                               !str_detect(string = financial_service_providers_present, pattern = "banks_full_service")) %>% 
+  filter((str_detect(string = name_fsp_hh_sought_loan, pattern = "bank") |
+                                str_detect(string = name_fsp_hh_to_seek_loan, pattern = "bank")),
+                               (!str_detect(financial_service_providers_present, pattern = "(?=.*banking_agents)(?=.*banks_full_service)"))) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "financial_service_providers_present",
-         i.check.current_value = as.character(financial_service_providers_present),
+         i.check.current_value = financial_service_providers_present,
          i.check.value = "",
          i.check.issue_id = "logic_c_financial_service_providers_present_bank_no_26",
          i.check.issue = glue("name_fsp_hh_sought_loan: {name_fsp_hh_sought_loan} or name_fsp_hh_to_seek_loan: {name_fsp_hh_to_seek_loan} 
