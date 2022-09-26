@@ -56,12 +56,10 @@ df_tool_data <- readxl::read_excel("../inputs/livelihoods_assessment_data.xlsx")
          latitude = as.numeric(`_geopoint_latitude`),
          longitude = as.numeric(`_geopoint_longitude`),
          location = str_to_lower(location)) %>% 
-  filter(consent_two == "yes",  hoh_equivalent == "yes", respondent_age >= 18,
-         start_date > as_date("2022-08-10"), 
-         !str_detect(string = point_number, pattern = fixed('test', ignore_case = TRUE))
-  ) %>% 
-  mutate(
-    location_type = ifelse(location == "kampala" & status == "refugee", location, refugee_settlement))
+  filter((consent_two == "yes" | hoh_equivalent == "yes"), respondent_age >= 18,
+         start_date >= as_date("2022-08-10")#, 
+         # !str_detect(string = point_number, pattern = fixed('test', ignore_case = TRUE))
+  )
 
 # days that contain data
 df_days_for_data_collection <- df_tool_data %>% select(start_date) %>% unique() %>% arrange(start_date) %>% pull()
@@ -229,5 +227,14 @@ df_updated_tool_data %>%
 
 ```
 
+### Daily enumerator performance
+
+The average survey time for all the data is: **`r round(mean(df_enum_performance$int.survey_time_interval), 0)`** Minutes
+
 ```{r, echo = FALSE}
+
+df_enum_performance %>% 
+  group_by(location_type, start_date, enumerator_id) %>% 
+  summarise(number_of_interviews_done = n(), `average_survey_time(minutes)` = round(mean(int.survey_time_interval, na.rm = TRUE), 0)) %>% 
+  dt_enum_performance_options()
 ```
