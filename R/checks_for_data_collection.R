@@ -815,16 +815,15 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # not(selected(financial_service_providers_present, 'financial_services_provided_by_local_businesses_or_community_members'))
 
 df_hh_access_local_business_or_community_member_loans_30 <- df_tool_data %>% 
-  filter(str_detect(string = name_fsp_hh_sought_loan, pattern = "local_business_or_community_member") |
-           str_detect(string = name_fsp_hh_to_seek_loan, pattern = "local_business_or_community_member"),
+  filter((str_detect(string = name_fsp_hh_sought_loan, pattern = "local_business_or_community_member") |
+           str_detect(string = name_fsp_hh_to_seek_loan, pattern = "local_business_or_community_member")),
          !str_detect(string = financial_service_providers_present, pattern = "financial_services_provided_by_local_businesses_or_community_members")) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "financial_service_providers_present",
-         i.check.current_value = as.character(financial_service_providers_present),
-         i.check.value = "",
-         i.check.issue_id = "logic_c_financial_service_providers_present_local_business_no_29",
-         i.check.issue = glue("name_fsp_hh_sought_loan: {name_fsp_hh_sought_loan} or name_fsp_hh_to_seek_loan: {name_fsp_hh_to_seek_loan} 
-                              but financial_service_providers_present has no 'Financial services provided by local businesses or community members'selected as an option"),
+         i.check.current_value = financial_service_providers_present,
+         i.check.value = "financial_services_provided_by_local_businesses_or_community_members",
+         i.check.issue_id = "logic_c_financial_service_providers_present_local_business_no_30",
+         i.check.issue = glue("name_fsp_hh_sought_loan: {name_fsp_hh_sought_loan} or name_fsp_hh_to_seek_loan: {name_fsp_hh_to_seek_loan}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
