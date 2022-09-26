@@ -690,8 +690,7 @@ df_why_child_not_regularly_attending_25 <- df_tool_data %>%
          i.check.current_value = why_child_not_regularly_attending,
          i.check.value = "",
          i.check.issue_id = "logic_c_why_child_not_regularly_attending_25",
-         i.check.issue = glue("why_child_not_regularly_attending: {why_child_not_regularly_attending}, 
-                              check child age"),
+         i.check.issue = glue("why_child_not_regularly_attending: {why_child_not_regularly_attending}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
@@ -718,8 +717,7 @@ df_hh_access_bank_loans_26 <- df_tool_data %>%
          i.check.current_value = financial_service_providers_present,
          i.check.value = "",
          i.check.issue_id = "logic_c_financial_service_providers_present_bank_no_26",
-         i.check.issue = glue("name_fsp_hh_sought_loan: {name_fsp_hh_sought_loan} or name_fsp_hh_to_seek_loan: {name_fsp_hh_to_seek_loan} 
-                              but financial_service_providers_present has no 'banking_agents' or 'banks_full_service' selected as an option"),
+         i.check.issue = glue("name_fsp_hh_sought_loan: {name_fsp_hh_sought_loan} or name_fsp_hh_to_seek_loan: {name_fsp_hh_to_seek_loan}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
@@ -740,13 +738,12 @@ df_hh_access_mfi_loans_27 <- df_tool_data %>%
   filter(str_detect(string = name_fsp_hh_sought_loan, pattern = "mfi") |
                                           str_detect(string = name_fsp_hh_to_seek_loan, pattern = "mfi"),
                                          !str_detect(string = financial_service_providers_present, pattern = "mfi")) %>% 
-  mutate(i.check.type = "remove_option",
+  mutate(i.check.type = "add_option",
          i.check.name = "financial_service_providers_present",
-         i.check.current_value = as.character(financial_service_providers_present),
-         i.check.value = "",
+         i.check.current_value = financial_service_providers_present,
+         i.check.value = "mfi",
          i.check.issue_id = "logic_c_financial_service_providers_present_mfi_no_27",
-         i.check.issue = glue("name_fsp_hh_sought_loan: {name_fsp_hh_sought_loan} or name_fsp_hh_to_seek_loan: {name_fsp_hh_to_seek_loan} 
-                              but financial_service_providers_present has no 'microfinance institutions'selected as an option"),
+         i.check.issue = glue("name_fsp_hh_sought_loan: {name_fsp_hh_sought_loan} or name_fsp_hh_to_seek_loan: {name_fsp_hh_to_seek_loan} "),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
