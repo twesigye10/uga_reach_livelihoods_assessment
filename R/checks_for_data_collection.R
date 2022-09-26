@@ -764,7 +764,7 @@ df_hh_access_vsla_loans_28 <- df_tool_data %>%
   filter((str_detect(string = name_fsp_hh_sought_loan, pattern = "vsla") |
                                      str_detect(string = name_fsp_hh_to_seek_loan, pattern = "vsla")),
                                     !str_detect(string = financial_service_providers_present, pattern = "vsla")) %>% 
-  mutate(i.check.type = "remove_option",
+  mutate(i.check.type = "add_option",
          i.check.name = "financial_service_providers_present",
          i.check.current_value = financial_service_providers_present,
          i.check.value = "vsla",
@@ -787,16 +787,15 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # (name_fsp_hh_sought_loan = 'sacco' OR name_fsp_hh_to_seek_loan = 'sacco') AND not(selected(financial_service_providers_present, 'sacco'))
 
 df_hh_access_sacco_loans_29 <- df_tool_data %>% 
-  filter(str_detect(string = name_fsp_hh_sought_loan, pattern = "sacco") |
-                                       str_detect(string = name_fsp_hh_to_seek_loan, pattern = "sacco"),
+  filter((str_detect(string = name_fsp_hh_sought_loan, pattern = "sacco") |
+                                       str_detect(string = name_fsp_hh_to_seek_loan, pattern = "sacco")),
                                       !str_detect(string = financial_service_providers_present, pattern = "sacco")) %>% 
-  mutate(i.check.type = "remove_option",
+  mutate(i.check.type = "add_option",
          i.check.name = "financial_service_providers_present",
-         i.check.current_value = as.character(financial_service_providers_present),
-         i.check.value = "",
+         i.check.current_value = financial_service_providers_present,
+         i.check.value = "sacco",
          i.check.issue_id = "logic_c_financial_service_providers_present_sacco_no_29",
-         i.check.issue = glue("name_fsp_hh_sought_loan: {name_fsp_hh_sought_loan} or name_fsp_hh_to_seek_loan: {name_fsp_hh_to_seek_loan} 
-                              but financial_service_providers_present has no 'sacco'selected as an option"),
+         i.check.issue = glue("name_fsp_hh_sought_loan: {name_fsp_hh_sought_loan} or name_fsp_hh_to_seek_loan: {name_fsp_hh_to_seek_loan}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
