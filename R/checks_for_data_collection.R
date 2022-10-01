@@ -840,11 +840,16 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # Respondent gives the same answer to all intra-group social cohesion questions for refugee i.e [all grp_intra_group_social_cohesion rows] = [same answer]
 
 df_intra_group_social_cohesion_refugee_31a <- df_tool_data %>% 
-  filter(joining_other_refugee_to_address_issues == trust_among_refugee & trust_among_refugee == friendliness_between_refugee & friendliness_between_refugee == 
-           sense_of_belonging_to_refugee_community & sense_of_belonging_to_refugee_community == taken_advantage_of_by_fellow_refugee) %>% 
+  filter(if_all(.cols = c(joining_other_refugee_to_address_issues, 
+                          trust_among_refugee, 
+                          friendliness_between_refugee, 
+                          sense_of_belonging_to_refugee_community,
+                          taken_advantage_of_by_fellow_refugee), 
+                ~ joining_other_refugee_to_address_issues == .x)
+         ) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "joining_other_refugee_to_address_issues",
-         i.check.current_value = as.character(joining_other_refugee_to_address_issues),
+         i.check.current_value = joining_other_refugee_to_address_issues,
          i.check.value = "",
          i.check.issue_id = "logic_c_intra_group_social_cohesion_refugee_31a",
          i.check.issue = glue("All intra-group social cohesion questions have similar response"),
