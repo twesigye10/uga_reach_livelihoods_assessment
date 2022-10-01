@@ -893,14 +893,16 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_in
 
 
 # Respondent gives the same answer to all inter-group social cohesion questions for refugee i.e. [all grp_inter_group_social_cohesion rows] = [same answer]
-
 df_inter_group_social_cohesion_refugee_32a <- df_tool_data %>% 
-  filter(joining_any_nationals_to_address_issues == trust_among_nationals & trust_among_nationals == friendliness_among_refugee_and_nationals &
-           friendliness_among_refugee_and_nationals == sense_of_belonging_both_refugee_and_nationals & sense_of_belonging_both_refugee_and_nationals == 
-           taken_advantage_of_by_nationals) %>% 
+  filter(if_all(c(joining_any_nationals_to_address_issues, 
+                  trust_among_nationals,
+                  friendliness_among_refugee_and_nationals,
+                  sense_of_belonging_both_refugee_and_nationals, 
+                  taken_advantage_of_by_nationals), 
+           ~ joining_any_nationals_to_address_issues == .x ))%>% 
   mutate(i.check.type = "change_response",
          i.check.name = "joining_any_nationals_to_address_issues",
-         i.check.current_value = as.character(joining_any_nationals_to_address_issues),
+         i.check.current_value = joining_any_nationals_to_address_issues,
          i.check.value = "",
          i.check.issue_id = "logic_c_inter_group_social_cohesion_refugee_32a",
          i.check.issue = glue("All inter-group social cohesion questions have similar response"),
@@ -920,12 +922,15 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_in
 # Respondent gives the same answer to all inter-group social cohesion questions for host community i.e. [all grp_inter_group_social_cohesion rows] = [same answer]
 
 df_inter_group_social_cohesion_host_32b <- df_tool_data %>% 
-  filter(joining_any_refugee_to_address_issues == trust_any_refugee & trust_any_refugee == friendliness_among_refugee & 
-           friendliness_among_refugee == sense_of_belonging_to_both_refugee_and_nationals & sense_of_belonging_to_both_refugee_and_nationals == 
-           taken_advantage_of_by_any_refugee) %>% 
+  filter(if_all(c(joining_any_refugee_to_address_issues, 
+                trust_any_refugee, 
+                friendliness_among_refugee, 
+                sense_of_belonging_to_both_refugee_and_nationals, 
+           taken_advantage_of_by_any_refugee), 
+           ~ joining_any_refugee_to_address_issues == .x)) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "joining_any_refugee_to_address_issues",
-         i.check.current_value = as.character(joining_any_refugee_to_address_issues),
+         i.check.current_value = joining_any_refugee_to_address_issues,
          i.check.value = "",
          i.check.issue_id = "logic_c_inter_group_social_cohesion_host_32b",
          i.check.issue = glue("All inter-group social cohesion questions have similar response"),
