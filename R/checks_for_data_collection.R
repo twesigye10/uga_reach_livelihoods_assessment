@@ -951,14 +951,13 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_in
 
 df_shelter_type_hh_live_33 <- df_tool_data %>% 
   filter(!shelter_occupancy_arrangement %in% c("squatting", "no_answer"), 
-         shelter_type_hh_live =="none") %>% 
+         shelter_type_hh_live %in% c("none")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "shelter_type_hh_live",
-         i.check.current_value = as.character(shelter_type_hh_live),
+         i.check.current_value = shelter_type_hh_live,
          i.check.value = "",
          i.check.issue_id = "logic_c_shelter_type_hh_live_none_33",
-         i.check.issue = glue("shelter_type_hh_live: {shelter_type_hh_live},  but shelter_occupancy_arrangement: 
-                              {shelter_occupancy_arrangement}"),
+         i.check.issue = glue("shelter_occupancy_arrangement: {shelter_occupancy_arrangement}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
