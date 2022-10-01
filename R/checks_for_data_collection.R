@@ -838,7 +838,6 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 
 
 # Respondent gives the same answer to all intra-group social cohesion questions for refugee i.e [all grp_intra_group_social_cohesion rows] = [same answer]
-
 df_intra_group_social_cohesion_refugee_31a <- df_tool_data %>% 
   filter(if_all(.cols = c(joining_other_refugee_to_address_issues, 
                           trust_among_refugee, 
@@ -867,13 +866,16 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_in
 
 
 # Respondent gives the same answer to all intra-group social cohesion questions for host i.e [all grp_intra_group_social_cohesion rows] = [same answer]
-
 df_intra_group_social_cohesion_host_31b <- df_tool_data %>% 
-  filter(joining_other_nationals_to_address_issues == trust_among_other_nationals & trust_among_other_nationals == friendliness_among_nationals &
-           friendliness_among_nationals == sense_of_belonging_to_community_here & sense_of_belonging_to_community_here == taken_advantage_of_by_other_nationals) %>% 
+  filter(if_all(.cols = c(joining_other_nationals_to_address_issues,
+                          trust_among_other_nationals,
+                          friendliness_among_nationals,
+                          sense_of_belonging_to_community_here,
+                          taken_advantage_of_by_other_nationals), 
+                ~ joining_other_nationals_to_address_issues == .x)) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "joining_other_nationals_to_address_issues",
-         i.check.current_value = as.character(joining_other_nationals_to_address_issues),
+         i.check.current_value = joining_other_nationals_to_address_issues,
          i.check.value = "",
          i.check.issue_id = "logic_c_intra_group_social_cohesion_host_31b",
          i.check.issue = glue("All intra-group social cohesion questions have similar response"),
