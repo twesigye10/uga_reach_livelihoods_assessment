@@ -942,16 +942,15 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_sh
 
 
 # HH entered the same value for all FCS categories i.e. cereals == pulses == vegetables == fruits == tubers == protein == dairy == sugar == oils
-
 df_grp_fd_consumption_score_same_34 <- df_tool_data %>% 
-  filter(cereals == pulses, vegetables == cereals, cereals == fruits, cereals == tubers, cereals == protein, protein == dairy,  
-         cereals == sugar, cereals == oils) %>% 
+  filter(if_all(c(cereals, pulses, vegetables, fruits, tubers, 
+                  protein, dairy, sugar, oils), ~ cereals == .x))  %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "cereals",
-         i.check.current_value = as.character(cereals),
+         i.check.current_value = cereals,
          i.check.value = "",
          i.check.issue_id = "logic_c_grp_fd_consumption_score_same_34",
-         i.check.issue = glue("All questions about foods eaten in the past seven days have similar response"),
+         i.check.issue = glue("cereals :{cereals}, pulses :{pulses}, vegetables :{vegetables}, fruits :{fruits}, tubers :{tubers}, protein :{protein}, dairy :{dairy}, sugar :{sugar}, oils :{oils}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
