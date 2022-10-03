@@ -7,8 +7,9 @@ library(glue)
 library(sf)
 
 # read data ---------------------------------------------------------------
+dataset_location <- "inputs/livelihoods_assessment_data.xlsx"
 
-df_tool_data <- readxl::read_excel(path = "inputs/livelihoods_assessment_data.xlsx") %>% 
+df_tool_data <- readxl::read_excel(path = dataset_location) %>% 
   mutate(i.check.uuid = `_uuid`,
          i.check.start_date = as_date(start),
          i.check.enumerator_id = as.character(enumerator_id),
@@ -1502,9 +1503,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 
 
 # HH reports shelter is 'finished' but also reports shelter is too damaged for living i.e. shelter_type_hh_live = 'finished_house' AND
- # selected(shelter_issues,  any=c('total collapse or shelter too damaged for living')
-
-
+# selected(shelter_issues,  any=c('total collapse or shelter too damaged for living')
 df_shelter_type_hh_lives_finished_54 <- df_tool_data %>% 
   filter(shelter_type_hh_live %in% c("finished_house"), 
          str_detect(string = shelter_issues, pattern = "total_collapse_or_shelter_too_damaged_for_living")) %>% 
