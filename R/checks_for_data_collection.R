@@ -1057,14 +1057,13 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_th
 
 # HH got poor FCS, but reported to never have used coping strategies i.e. cereals/tubers * 2 + pulses * 3 + vegetables + fruits + protein *4 + 
 # dairy *4 + sugar * 0.5 + oils * 0.5 <=21 AND [all grp_lcsi rows] = 'no' 
-
 df_fd_consumption_score_poor_37 <- df_tool_data %>% 
-  mutate(poor_fcs = (cereals > tubers | tubers > cereals) * 2 + pulses * 3 + (vegetables +  fruits + protein) * 4 + dairy * 4 + sugar * 0.5 + oils * 0.5, 
-         round(0)) %>% 
-  filter(poor_fcs <= 21, if_all(c(increase_the_number_of_family_members_searching_for_work_outside_your_village:sold_more_animals_than_usual), ~ . != "yes")) %>% 
+  mutate(int.ceral_tuber = ifelse(cereals > tubers, cereals*2, tubers*2),
+         int.fc_score = int.ceral_tuber + pulses*3 + vegetables +  fruits + protein*4 + dairy*4 + sugar*0.5 + oils*0.5) %>% 
+  filter(int.fc_score <= 21, if_all(c(increase_the_number_of_family_members_searching_for_work_outside_your_village:sold_more_animals_than_usual), ~ .x != "yes")) %>% 
   mutate(i.check.type = "change_response",
-         i.check.name = "poor_fcs",
-         i.check.current_value = as.numeric(poor_fcs),
+         i.check.name = "cereals",
+         i.check.current_value = as.numeric(cereals),
          i.check.value = "",
          i.check.issue_id = "logic_c_fd_consumption_score_poor_37",
          i.check.issue = glue("Household has poor fcs but has not reported any coping strategy"),
@@ -1075,6 +1074,28 @@ df_fd_consumption_score_poor_37 <- df_tool_data %>%
          i.check.reviewed = "",
          i.check.adjust_log = "",
          i.check.so_sm_choices = "") %>% 
+  slice(rep(1:n(), each = 9)) %>% 
+  group_by(i.check.uuid, i.check.start_date, i.check.enumerator_id, i.check.type,  i.check.name,  i.check.current_value) %>% 
+  mutate(rank = row_number(),
+         i.check.name = case_when(rank == 1 ~ "cereals", 
+                                  rank == 2 ~ "tubers",
+                                  rank == 3 ~ "pulses", 
+                                  rank == 4 ~ "vegetables", 
+                                  rank == 5 ~ "fruits", 
+                                  rank == 6 ~ "protein", 
+                                  rank == 7 ~ "dairy", 
+                                  rank == 8 ~ "sugar", 
+                                  TRUE ~ "oils"),
+         i.check.current_value = case_when(rank == 1 ~ as.character(cereals),
+                                           rank == 2 ~ as.character(tubers),
+                                           rank == 3 ~ as.character(pulses), 
+                                           rank == 4 ~ as.character(vegetables), 
+                                           rank == 5 ~ as.character(fruits), 
+                                           rank == 6 ~ as.character(protein), 
+                                           rank == 7 ~ as.character(dairy), 
+                                           rank == 8 ~ as.character(sugar), 
+                                           TRUE ~ as.character(oils))
+  ) %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
@@ -1085,23 +1106,22 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_fd
 # sugar * 0.5 + oils * 0.5 <=21 AND hh_able_to_meet_basic_needs = 'yes'
 
 df_poor_fcs_but_meets_needs_38 <- df_tool_data %>% 
-  mutate(poor_fcs = (cereals > tubers | tubers > cereals) * 2 + pulses * 3 + (vegetables +  fruits + protein) * 4 + dairy * 4 + sugar * 0.5 + oils * 0.5, 
-         round(0)) %>% 
-  filter(poor_fcs <= 21, hh_able_to_meet_basic_needs == "yes") %>% 
+  mutate(int.ceral_tuber = ifelse(cereals > tubers, cereals*2, tubers*2),
+         int.fc_score = int.ceral_tuber + pulses*3 + vegetables +  fruits + protein*4 + dairy*4 + sugar*0.5 + oils*0.5) %>% 
+  filter(int.fc_score <= 21, hh_able_to_meet_basic_needs == "yes") %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "hh_able_to_meet_basic_needs",
-         i.check.current_value = as.character(hh_able_to_meet_basic_needs),
+         i.check.current_value = hh_able_to_meet_basic_needs,
          i.check.value = "",
          i.check.issue_id = "logic_c_poor_fcs_but_meets_needs_38",
-         i.check.issue = glue("hh_able_to_meet_basic_needs: {hh_able_to_meet_basic_needs}, 
-                              but hh does not have enough food"),
+         i.check.issue = glue("fc_score: {int.fc_score}, but  reported to be able to meet all their needs"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
          i.check.comment = "", 
          i.check.reviewed = "",
          i.check.adjust_log = "",
-         i.check.so_sm_choices = "") %>% 
+         i.check.so_sm_choices = "") %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
