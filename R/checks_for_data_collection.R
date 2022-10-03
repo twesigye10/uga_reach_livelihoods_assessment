@@ -65,6 +65,13 @@ df_c_outliers <- checksupporteR::check_outliers_cleaninginspector(input_tool_dat
 
 add_checks_data_to_list(input_list_name = "logic_output",input_df_name = "df_c_outliers")
 
+df_c_outliers_hh_roster <- checksupporteR::check_outliers_cleaninginspector_repeats(input_tool_data = df_repeat_hh_roster_data,
+                                                                                    input_sheet_name = "hh_roster", input_repeat_cols = c("age")
+  
+)
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_c_outliers_hh_roster")
+
+
 # spatial checks ----------------------------------------------------------
 
 if("status" %in% colnames(df_sample_data)){
