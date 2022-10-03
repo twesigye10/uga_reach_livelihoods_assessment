@@ -1561,7 +1561,6 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_sh
 
 
 # HH reports rent under expenditures, but does not report renting as the occupancy status i.e. rent > 0 AND shelter_occupancy_arrangement != 'renting'
-
 df_shelter_occupancy_arrangement_no_rent_56 <- df_tool_data %>% 
   filter(rent > 0, !shelter_occupancy_arrangement %in% c("renting")) %>% 
   mutate(i.check.type = "change_response",
@@ -1584,12 +1583,11 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_sh
 
 
 #HH reports 0 under rent expenditure i.e. rent = 0 AND shelter_occupancy_arrangement = 'renting'
-
 df_shelter_occupancy_arrangement_rent_57 <- df_tool_data %>% 
   filter(rent == 0, shelter_occupancy_arrangement %in% c("renting")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "shelter_occupancy_arrangement",
-         i.check.current_value = as.character(shelter_occupancy_arrangement),
+         i.check.current_value = shelter_occupancy_arrangement,
          i.check.value = "",
          i.check.issue_id = "logic_c_shelter_occupancy_arrangement_rent_57",
          i.check.issue = glue("rent: {rent}, yet  shelter_occupancy_arrangement: {shelter_occupancy_arrangement}"),
