@@ -1559,7 +1559,6 @@ df_shelter_type_hh_lives_unfinished_55 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_shelter_type_hh_lives_unfinished_55")
 
 
-
 # HH reports rent under expenditures, but does not report renting as the occupancy status i.e. rent > 0 AND shelter_occupancy_arrangement != 'renting'
 df_shelter_occupancy_arrangement_no_rent_56 <- df_tool_data %>% 
   filter(rent > 0, !shelter_occupancy_arrangement %in% c("renting")) %>% 
@@ -1604,9 +1603,7 @@ df_shelter_occupancy_arrangement_rent_57 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_shelter_occupancy_arrangement_rent_57")
 
 
-
 # HH reports not owning a boda but also reports bodaboda as a livelihood i.e. motorcycle = 0 AND casual_labour_hh_engaged = 'bodabodalocal_transport'
-
 df_hh_owns_no_bodaboda_58 <- df_tool_data %>% 
   filter(motorcycle == 0, str_detect(string = casual_labour_hh_engaged, pattern = "bodabodalocal_transport")) %>%
   mutate(i.check.type = "change_response",
