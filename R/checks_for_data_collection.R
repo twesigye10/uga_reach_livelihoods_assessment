@@ -947,7 +947,7 @@ df_grp_fd_consumption_score_same_34 <- df_tool_data %>%
                   protein, dairy, sugar, oils), ~ cereals == .x))  %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "cereals",
-         i.check.current_value = cereals,
+         i.check.current_value = as.character(cereals),
          i.check.value = "",
          i.check.issue_id = "logic_c_grp_fd_consumption_score_same_34",
          i.check.issue = glue("cereals :{cereals}, pulses :{pulses}, vegetables :{vegetables}, fruits :{fruits}, tubers :{tubers}, protein :{protein}, dairy :{dairy}, sugar :{sugar}, oils :{oils}"),
@@ -965,10 +965,9 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_gr
 
 
 # HH got a total FCS of 10 or less i.e. cereals/tubers * 2 + pulses * 3 + vegetables + fruits + protein *4 + dairy *4 + sugar * 0.5 + oils * 0.5 <=10
-# Can be done in excel 
-
 df_fd_consumption_score_less_than_ten_35 <- df_tool_data %>% 
-  filter(((cereals > tubers | tubers > cereals) * 2 + pulses * 3 + (vegetables +  fruits + protein) * 4 + dairy * 4 + sugar * 0.5 + oils * 0.5) <= 10) %>% 
+  mutate(int.ceral_tuber = ifelse(cereals > tubers, cereals*2, tubers*2)) %>% 
+  filter((int.ceral_tuber + pulses*3 + vegetables +  fruits + protein*4 + dairy*4 + sugar*0.5 + oils*0.5) <= 10) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "cereals",
          i.check.current_value = as.character(cereals),
@@ -982,6 +981,27 @@ df_fd_consumption_score_less_than_ten_35 <- df_tool_data %>%
          i.check.reviewed = "",
          i.check.adjust_log = "",
          i.check.so_sm_choices = "") %>% 
+  slice(rep(1:n(), each = 9)) %>% 
+  group_by(i.check.uuid, i.check.start_date, i.check.enumerator_id, i.check.type,  i.check.name,  i.check.current_value) %>% 
+  mutate(rank = row_number(),
+         i.check.name = case_when(rank == 2 ~ "tubers", 
+                                  rank == 3 ~ "pulses", 
+                                  rank == 4 ~ "vegetables", 
+                                  rank == 5 ~ "fruits", 
+                                  rank == 6 ~ "protein", 
+                                  rank == 7 ~ "dairy", 
+                                  rank == 8 ~ "sugar", 
+                                  TRUE ~ "oils"),
+         i.check.current_value = case_when(rank == 2 ~ as.character(tubers),
+                                  rank == 3 ~ as.character(pulses), 
+                                  rank == 4 ~ as.character(vegetables), 
+                                  rank == 5 ~ as.character(fruits), 
+                                  rank == 6 ~ as.character(protein), 
+                                  rank == 7 ~ as.character(dairy), 
+                                  rank == 8 ~ as.character(sugar), 
+                                  TRUE ~ as.character(oils))
+         ) %>% 
+  dplyr::select(starts_with("i.check.")) %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
