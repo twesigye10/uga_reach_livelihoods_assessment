@@ -1382,18 +1382,17 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_fr
 # HH reports both crop production on own land and crop production on land of others i.e. (selected(${hh_primary_livelihood}, 
 # "crop_production_on_own_land") OR selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_own_land")) AND (selected(${hh_primary_livelihood}, 
 # "crop_production_on_land_of_others") OR selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_land_of_others"))
-
-
 df_crop_prodn_own_and_others_land_49 <- df_tool_data %>% 
-  filter(hh_primary_livelihood == "crop_production_on_own_land" | other_livelihoods_hh_engaged_in == "crop_production_on_own_land",
-         hh_primary_livelihood == "crop_production_on_land_of_others" | other_livelihoods_hh_engaged_in == "crop_production_on_land_of_others") %>% 
-  mutate(i.check.type = "",
-         i.check.name = "hh_primary_livelihood/other_livelihoods_hh_engaged_in",
-         i.check.current_value = "",
+  filter((hh_primary_livelihood %in% c("crop_production_on_own_land") & str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others")) | 
+           (hh_primary_livelihood %in% c("crop_production_on_land_of_others") & str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land")) |
+           (str_detect(other_livelihoods_hh_engaged_in, pattern = "(?=.*crop_production_on_own_land)(?=.*crop_production_on_land_of_others)"))
+         ) %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "hh_primary_livelihood",
+         i.check.current_value = hh_primary_livelihood,
          i.check.value = "",
          i.check.issue_id = "logic_c_crop_prodn_own_and_others_land_49",
-         i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, but also hh reports the same for other_livelihoods_hh_engaged_in: 
-                              {other_livelihoods_hh_engaged_in}"),
+         i.check.issue = glue("other_livelihoods_hh_engaged_in: {other_livelihoods_hh_engaged_in}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
