@@ -1435,7 +1435,6 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_li
 
 # HH reports loans as an income sources but reports to not have taken out any loans in the last 6 months i.e.income_loans > 0 AND
 # hh_taken_loan_last_six_month != 'yes'
-
 df_income_loan_51 <- df_tool_data %>%
 filter(income_loans > 0, !hh_taken_loan_last_six_month %in% c("yes")) %>%
 mutate(i.check.type = "change_response",
@@ -1460,14 +1459,13 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_in
 # HH reports owning livestock but reports 0 for all livestock options i.e. hh_own_livestock = 'yes AND
 # cows_and_calves = 0 AND goats = 0 AND sheep  = 0 AND pigs = 0 AND donkeys  = 0 AND poultry  = 0 AND colonized_beehive  = 0 AND other = 0
 df_hh_reported_zero_on_livestock_52 <- df_tool_data %>% 
-  filter(hh_own_livestock  == "yes", if_all(c(cows_and_calves:other), ~ . == 0)) %>% 
+  filter(hh_own_livestock  == "yes", if_all(c(cows_and_calves:other), ~ .x == 0)) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "hh_own_livestock ",
-         i.check.current_value = as.character(hh_own_livestock),
+         i.check.current_value = hh_own_livestock,
          i.check.value = "",
          i.check.issue_id = "logic_c_hh_reported_zero_on_livestock_52",
-         i.check.issue = glue("hh_own_livestock: {hh_own_livestock }, 
-                              but hh reports zeros on all the number of animals owned questions"),
+         i.check.issue = glue("cows_and_calves: {cows_and_calves},	goats: {goats},	sheep: {sheep},	pigs: {pigs}, donkeys: {donkeys}, poultry: {poultry}, colonized_beehive: {colonized_beehive}, other: {other}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
