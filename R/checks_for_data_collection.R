@@ -1626,27 +1626,6 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # combine and output checks -----------------------------------------------
 
 # combine checks
