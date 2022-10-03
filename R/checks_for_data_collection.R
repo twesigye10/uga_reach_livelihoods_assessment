@@ -1468,25 +1468,25 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_li
 # HH reports loans as an income sources but reports to not have taken out any loans in the last 6 months i.e.income_loans > 0 AND
 # hh_taken_loan_last_six_month != 'yes'
 
-# df_income_loan_51 <- df_tool_data %>% 
-# filter(income_loans > 0, hh_taken_loan_last_six_month != "yes") %>% 
-# mutate(i.check.type = "change_response",
-#        i.check.name = "hh_taken_loan_last_six_month",
-#        i.check.current_value = as.character(hh_taken_loan_last_six_month),
-#        i.check.value = "",
-#        i.check.issue_id = "logic_c_income_loan_51",
-#        i.check.issue = glue("hh_taken_loan_last_six_month: {hh_taken_loan_last_six_month}, but income_loans: {income_loans}"),
-#        i.check.other_text = "",
-#        i.check.checked_by = "",
-#        i.check.checked_date = as_date(today()),
-#        i.check.comment = "", 
-#        i.check.reviewed = "",
-#        i.check.adjust_log = "",
-#        i.check.so_sm_choices = "") %>% 
-#  dplyr::select(starts_with("i.check.")) %>% 
-#  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+ df_income_loan_51 <- df_tool_data %>% 
+ filter(income_loans > 0, hh_taken_loan_last_six_month != "yes") %>% 
+ mutate(i.check.type = "change_response",
+        i.check.name = "hh_taken_loan_last_six_month",
+        i.check.current_value = as.character(hh_taken_loan_last_six_month),
+        i.check.value = "",
+        i.check.issue_id = "logic_c_income_loan_51",
+        i.check.issue = glue("hh_taken_loan_last_six_month: {hh_taken_loan_last_six_month}, but income_loans: {income_loans}"),
+        i.check.other_text = "",
+        i.check.checked_by = "",
+        i.check.checked_date = as_date(today()),
+        i.check.comment = "", 
+        i.check.reviewed = "",
+        i.check.adjust_log = "",
+        i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-# add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_income_loan_51")
+ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_income_loan_51")
 
 
 # HH reports owning livestock but reports 0 for all livestock options i.e. hh_own_livestock = 'yes AND
@@ -1564,9 +1564,28 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_sh
 
 
 
+# HH reports shelter is 'unfinished' but also reports shelter has no damage or defects
 
+df_shelter_type_hh_lives_55 <- df_tool_data %>% 
+  filter(shelter_type_hh_live %in% c("finished_house"), 
+         str_detect(string = shelter_issues, pattern = "total_collapse_or_shelter_too_damaged_for_living")) %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "shelter_type_hh_live",
+         i.check.current_value = as.character(shelter_type_hh_live),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_shelter_type_hh_lives_54",
+         i.check.issue = glue("shelter_type_hh_live: {shelter_type_hh_live}, but shelter_issues: {shelter_issues} "),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_shelter_type_hh_lives_55")
 
 
 
