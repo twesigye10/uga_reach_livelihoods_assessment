@@ -1131,10 +1131,9 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_po
 # Remittances reported under income, but not said to receive remittances under movement section i.e. income_remittances > 0 
 # AND hh_receiving_money_from_family_or_friend_in_settlement = 'no' AND hh_receiving_money_from_family_or_friend_in_towns = 'no' AND
 # hh_receiving_money_from_family_or_friend_in_home_country = 'no'
-
 df_hh_reported_remittances_39 <- df_tool_data %>% 
   filter(income_remittances > 0, if_all(c(hh_receiving_money_from_family_or_friend_in_settlement, hh_receiving_money_from_family_or_friend_in_towns, 
-                                          hh_receiving_money_from_family_or_friend_in_home_country), ~ . == "no")) %>% 
+                                          hh_receiving_money_from_family_or_friend_in_home_country), ~ .x == "no")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "income_remittances",
          i.check.current_value = as.numeric(income_remittances),
