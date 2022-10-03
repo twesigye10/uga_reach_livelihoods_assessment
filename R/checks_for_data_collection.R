@@ -1060,7 +1060,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_th
 df_fd_consumption_score_poor_37 <- df_tool_data %>% 
   mutate(int.ceral_tuber = ifelse(cereals > tubers, cereals*2, tubers*2),
          int.fc_score = int.ceral_tuber + pulses*3 + vegetables +  fruits + protein*4 + dairy*4 + sugar*0.5 + oils*0.5) %>% 
-  filter(int.fc_score <= 21, if_all(c(increase_the_number_of_family_members_searching_for_work_outside_your_village:sold_more_animals_than_usual), ~ .x != "yes")) %>% 
+  filter(int.fc_score <= 21, if_all(c(increase_the_number_of_family_members_searching_for_work_outside_your_village:sold_more_animals_than_usual), ~ .x %in% c("no_exhausted", "not_available", "not_needed"))) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "cereals",
          i.check.current_value = as.numeric(cereals),
@@ -1112,7 +1112,7 @@ df_poor_fcs_but_meets_needs_38 <- df_tool_data %>%
   mutate(i.check.type = "change_response",
          i.check.name = "hh_able_to_meet_basic_needs",
          i.check.current_value = hh_able_to_meet_basic_needs,
-         i.check.value = "",
+         i.check.value = "no",
          i.check.issue_id = "logic_c_poor_fcs_but_meets_needs_38",
          i.check.issue = glue("fc_score: {int.fc_score}, but  reported to be able to meet all their needs"),
          i.check.other_text = "",
