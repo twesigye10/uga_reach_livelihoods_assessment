@@ -1015,7 +1015,7 @@ df_three_or_more_fcs_equal_zero_36 <- df_tool_data %>%
   mutate(i.check.type = "change_response",
          i.check.name = "cereals",
          i.check.current_value = as.character(cereals),
-         i.check.value = "",
+         i.check.value = "NA",
          i.check.issue_id = "logic_c_three_or_more_fcs_equal_zero_36",
          i.check.issue = glue("Household has not eaten three or more food categories in past seven days"),
          i.check.other_text = "",
