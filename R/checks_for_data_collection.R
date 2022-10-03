@@ -1184,12 +1184,11 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 
 
 # HH reports to have farm assets, but reports 0 for all items i.e. own_farm_land_items = 'yes' AND [all farm_items rows] = 0
-
 df_hh_own_farm_land_items_41 <- df_tool_data %>% 
-  filter(own_farm_land_items == "yes", if_all(c(hoe:water_pump), ~ . == 0)) %>% 
+  filter(own_farm_land_items == "yes", if_all(c(hoe:water_pump), ~ .x == 0)) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "own_farm_land_items",
-         i.check.current_value = as.character(own_farm_land_items),
+         i.check.current_value = own_farm_land_items,
          i.check.value = "",
          i.check.issue_id = "logic_c_hh_own_farm_land_items_41",
          i.check.issue = glue("income_remittances: {income_remittances}, 
@@ -1212,24 +1211,16 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # not(selected(${hh_primary_livelihood}, "crop_production_on_land_of_others")) AND not(selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_land_of_others")) AND
 # not(selected(${hh_primary_livelihood}, "livestock_farming_on_own_land")) AND not(selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_own_land")) AND
 # not(selected(${hh_primary_livelihood}, "livestock_farming_on_land_of_others")) AND not(selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others")))
-
-
 df_hh_own_farm_assets_42 <- df_tool_data %>% 
   filter(own_farm_land_items == "yes", 
-         !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_own_land"),
-         !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land"),
-         !str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_land_of_others"),
-         !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others"),
-         !str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_own_land"),
-         !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land"),
-         !str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_land_of_others"),
-         !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_land_of_others")) %>% 
+         (!hh_primary_livelihood %in% c("crop_production_on_own_land", "crop_production_on_land_of_others", "livestock_farming_on_own_land", "livestock_farming_on_land_of_others") &
+         !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|crop_production_on_land_of_others|livestock_farming_on_own_land|livestock_farming_on_land_of_others"))) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "own_farm_land_items",
          i.check.current_value = as.character(own_farm_land_items),
          i.check.value = "",
          i.check.issue_id = "logic_c_hh_own_farm_assets_42",
-         i.check.issue = glue("own_farm_land_items: {own_farm_land_items}, but hh has not reported to be engaged in agriculture as a livelihood"),
+         i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, but other_livelihoods_hh_engaged_in :{other_livelihoods_hh_engaged_in}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
