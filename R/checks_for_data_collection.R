@@ -1288,17 +1288,16 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_al
 
 # Same amount entered for all non-farm assets i.e. cell_phone = radio = car = tv = motorcycle = bicycle = solar_panel = fridge = generator = 
 # cooker_or_stove = iron_box_or_pressing = computer_or_laptop = tables = chairs_or_stools_or_benches = beds = mattresses = mosquito_nets = jerrycan
-
 df_all_non_farm_assets_response_same_45<- df_tool_data %>% 
-  filter(cell_phone==tv, radio==tv, car==tv, motorcycle==tv, bicycle==tv, solar_panel==tv, fridge==tv, generator==tv, cooker_or_stove==tv, iron_box_or_pressing==tv, 
-         computer_or_laptop==tv, tables==tv, chairs_or_stools_or_benches==tv, beds==tv, mattresses==tv, mosquito_nets==tv, jerrycan==tv) %>% 
+  filter(if_all(c(cell_phone, tv, radio, car, motorcycle, bicycle, solar_panel, fridge, generator, cooker_or_stove, iron_box_or_pressing, 
+                  computer_or_laptop, tables, chairs_or_stools_or_benches, beds, mattresses, mosquito_nets, jerrycan), ~ cell_phone == .x)
+         ) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "cell_phone",
          i.check.current_value = as.character(cell_phone),
          i.check.value = "",
          i.check.issue_id = "logic_c_all_non_farm_assets_response_same_45",
-         i.check.issue = glue("cell_phone: {cell_phone}, 
-                              all values are the same like for cell_phone"),
+         i.check.issue = glue("Same amount entered for all non-farm assets"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
