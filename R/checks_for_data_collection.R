@@ -115,7 +115,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ot
 #"crop_production_on_own_land")) AND farming_land_availability = 'no'
 df_hh_livelihood_crop_production_on_own_land_1 <- df_tool_data %>% 
   filter(farming_land_availability == "no", (hh_primary_livelihood %in% c("crop_production_on_own_land") |
-                                            str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land"))) %>% 
+                                               str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land"))) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "farming_land_availability",
          i.check.current_value = farming_land_availability,
@@ -140,7 +140,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 #"livestock_farming_on_own_land")) AND farming_land_availability = 'no' 
 df_hh_livelihood_livestock_farming_on_own_land_2 <- df_tool_data %>% 
   filter(farming_land_availability == "no", (hh_primary_livelihood %in% c("livestock_farming_on_own_land") |
-                                            str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land"))) %>% 
+                                               str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land"))) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "farming_land_availability",
          i.check.current_value = farming_land_availability,
@@ -166,7 +166,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # AND hh_own_livestock = 'no' or 'no_answer'
 df_livestock_ownership_3 <- df_tool_data %>% 
   filter(hh_own_livestock %in% c("no", "no_answer"), (hh_primary_livelihood %in% c("livestock_farming_on_own_land", "livestock_farming_on_land_of_others") |
-                                      str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land|livestock_farming_on_land_of_others"))) %>% 
+                                                        str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land|livestock_farming_on_land_of_others"))) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "hh_own_livestock",
          i.check.current_value = hh_own_livestock,
@@ -193,8 +193,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_li
 # "livestock_farming_on_own_land")))
 df_land_occupancy_arrangement_ownership_4 <- df_tool_data %>% 
   filter(land_occupancy_arrangement %in% c("ownership","land_was_assigned"), 
-                                       (!hh_primary_livelihood %in% c("crop_production_on_own_land", "livestock_farming_on_own_land") &
-                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|livestock_farming_on_own_land") )) %>% 
+         (!hh_primary_livelihood %in% c("crop_production_on_own_land", "livestock_farming_on_own_land") &
+            !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|livestock_farming_on_own_land") )) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "land_occupancy_arrangement",
          i.check.current_value = land_occupancy_arrangement,
@@ -220,7 +220,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_la
 # "livestock_farming_on_own_land")) AND not(selected(${hh_primary_livelihood}, "livestock_farming_on_land_of_others")) AND not(selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others")))
 df_land_occupancy_arrangement_renting_5 <- df_tool_data %>% 
   filter(land_occupancy_arrangement == "renting", (!hh_primary_livelihood %in% c("crop_production_on_own_land", "crop_production_on_land_of_others", "livestock_farming_on_own_land", "livestock_farming_on_land_of_others") &
-                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|crop_production_on_land_of_others|livestock_farming_on_own_land|livestock_farming_on_land_of_others"))) %>% 
+                                                     !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|crop_production_on_land_of_others|livestock_farming_on_own_land|livestock_farming_on_land_of_others"))) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "land_occupancy_arrangement",
          i.check.current_value = land_occupancy_arrangement,
@@ -247,7 +247,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_la
 df_land_occupancy_arrangement_using_unoccupied_land_6 <- df_tool_data %>% 
   filter(land_occupancy_arrangement == "squattingusing_unoccupied_land", 
          (!hh_primary_livelihood %in% c("crop_production_on_land_of_others", "livestock_farming_on_land_of_others") &
-           !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others|livestock_farming_on_land_of_others"))) %>% 
+            !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others|livestock_farming_on_land_of_others"))) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "land_occupancy_arrangement",
          i.check.current_value = land_occupancy_arrangement,
@@ -273,8 +273,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_la
 # "livestock_farming_on_land_of_others")) AND not(selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others")))
 df_land_occupancy_arrangement_borrowing_7 <- df_tool_data %>% 
   filter(land_occupancy_arrangement == "borrowing_friends_family_or_employer", 
-           (!hh_primary_livelihood %in% c("crop_production_on_land_of_others", "livestock_farming_on_land_of_others") &
-           !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others|livestock_farming_on_land_of_others"))) %>% 
+         (!hh_primary_livelihood %in% c("crop_production_on_land_of_others", "livestock_farming_on_land_of_others") &
+            !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others|livestock_farming_on_land_of_others"))) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "land_occupancy_arrangement",
          i.check.current_value = land_occupancy_arrangement,
@@ -300,8 +300,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_la
 # not(selected(${hh_primary_livelihood}, "livestock_farming_on_own_land")) AND not(selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_own_land")))
 df_reason_travel_back_to_settlement_work_own_land_8 <- df_tool_data %>% 
   filter(str_detect(string = reason_hh_member_travel_back_to_settlement, pattern = "to_work_on_own_land"), 
-                                           !hh_primary_livelihood %in% c("crop_production_on_own_land", "livestock_farming_on_own_land") &
-                                           !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|livestock_farming_on_own_land")) %>% 
+         !hh_primary_livelihood %in% c("crop_production_on_own_land", "livestock_farming_on_own_land") &
+           !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|livestock_farming_on_own_land")) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "reason_hh_member_travel_back_to_settlement",
          i.check.current_value = reason_hh_member_travel_back_to_settlement,
@@ -349,8 +349,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_fa
 # (not(selected(${hh_primary_livelihood}, "own_business_non_farming")) AND not(selected(${other_livelihoods_hh_engaged_in}, "own_business_non_farming")) 
 df_reason_travel_back_to_settlement_business_10 <- df_tool_data %>% 
   filter(str_detect(string = reason_hh_member_travel_back_to_settlement, pattern = "to_run_businesses"),
-                             (!hh_primary_livelihood %in% c("own_business_non_farming") &
-                             !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "own_business_non_farming"))) %>% 
+         (!hh_primary_livelihood %in% c("own_business_non_farming") &
+            !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "own_business_non_farming"))) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "reason_hh_member_travel_back_to_settlement",
          i.check.current_value = reason_hh_member_travel_back_to_settlement,
@@ -374,9 +374,9 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_re
 # (not(selected(${hh_primary_livelihood}, "crop_production_on_land_of_others")) AND not(selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_land_of_others")) AND
 # not(selected(${hh_primary_livelihood}, "livestock_farming_on_land_of_others")) AND not(selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others")))
 df_type_work_done_by_family_in_settlement_farming_11 <- df_tool_data %>% 
-filter(str_detect(string = type_work_done_by_close_family_member_in_settlement, pattern = "work_on_land_of_others"), 
-                                       (!hh_primary_livelihood %in% c("crop_production_on_land_of_others","livestock_farming_on_land_of_others") &
-                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others|livestock_farming_on_land_of_others"))) %>% 
+  filter(str_detect(string = type_work_done_by_close_family_member_in_settlement, pattern = "work_on_land_of_others"), 
+         (!hh_primary_livelihood %in% c("crop_production_on_land_of_others","livestock_farming_on_land_of_others") &
+            !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others|livestock_farming_on_land_of_others"))) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "type_work_done_by_close_family_member_in_settlement",
          i.check.current_value = type_work_done_by_close_family_member_in_settlement,
@@ -402,8 +402,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ty
 # not(selected(${hh_primary_livelihood}, "salaried_employment_in_a_business")) AND not(selected(${other_livelihoods_hh_engaged_in}, "salaried_employment_in_a_business")))
 df_type_work_done_by_family_in_settlement_non_agric_12 <- df_tool_data %>% 
   filter(str_detect(string = type_work_done_by_close_family_member_in_settlement, pattern = "non_agricultural_daily_labour"), 
-                                       (!hh_primary_livelihood %in% c("casual_or_daily_labour_non_farming", "salaried_employment_in_a_business") &
-                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "casual_or_daily_labour_non_farming|salaried_employment_in_a_business"))) %>% 
+         (!hh_primary_livelihood %in% c("casual_or_daily_labour_non_farming", "salaried_employment_in_a_business") &
+            !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "casual_or_daily_labour_non_farming|salaried_employment_in_a_business"))) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "type_work_done_by_close_family_member_in_settlement",
          i.check.current_value = type_work_done_by_close_family_member_in_settlement,
@@ -430,8 +430,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ty
 # not(selected(${hh_primary_livelihood}, "salaried_employment_with_the_government")) AND not(selected(${other_livelihoods_hh_engaged_in}, "salaried_employment_with_the_government"))
 df_type_work_done_by_family_in_settlement_salaried_job_13 <- df_tool_data %>% 
   filter(str_detect(string = type_work_done_by_close_family_member_in_settlement, pattern = "permanent_salaried_job"), 
-                                       (!hh_primary_livelihood %in% c("salaried_employment_in_a_business", "salaried_employment_with_an_ngo", "salaried_employment_with_the_government") |
-                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "salaried_employment_in_a_business|salaried_employment_with_an_ngo|salaried_employment_with_the_government"))) %>% 
+         (!hh_primary_livelihood %in% c("salaried_employment_in_a_business", "salaried_employment_with_an_ngo", "salaried_employment_with_the_government") |
+            !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "salaried_employment_in_a_business|salaried_employment_with_an_ngo|salaried_employment_with_the_government"))) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "type_work_done_by_close_family_member_in_settlement",
          i.check.current_value = type_work_done_by_close_family_member_in_settlement,
@@ -457,8 +457,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ty
 # not(selected(${hh_primary_livelihood}, "livestock_farming_on_own_land")) AND not(selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_own_land")))
 df_reason_hh_member_travels_to_towns_farming_own_land_14 <- df_tool_data %>% 
   filter(str_detect(string = reason_hh_member_travels_to_towns, pattern = "to_work_on_own_land"), 
-                                     (!hh_primary_livelihood %in% c("crop_production_on_own_land", "livestock_farming_on_own_land") &
-                                     !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|livestock_farming_on_own_land"))) %>% 
+         (!hh_primary_livelihood %in% c("crop_production_on_own_land", "livestock_farming_on_own_land") &
+            !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|livestock_farming_on_own_land"))) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "reason_hh_member_travels_to_towns",
          i.check.current_value = reason_hh_member_travels_to_towns,
@@ -505,8 +505,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_fa
 # 'to_run_businesses' AND (not(selected(${hh_primary_livelihood}, "own_business_non_farming")) AND not(selected(${other_livelihoods_hh_engaged_in}, "own_business_non_farming"))
 df_reason_hh_member_travels_to_towns_business_16 <- df_tool_data %>% 
   filter(str_detect(string = reason_hh_member_travels_to_towns, pattern = "to_run_businesses"),
-                                   (!hh_primary_livelihood %in% c("own_business_non_farming") &
-                                   !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "own_business_non_farming"))) %>% 
+         (!hh_primary_livelihood %in% c("own_business_non_farming") &
+            !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "own_business_non_farming"))) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "reason_hh_member_travels_to_towns",
          i.check.current_value = reason_hh_member_travels_to_towns,
@@ -532,8 +532,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_re
 # not(selected(${hh_primary_livelihood}, "livestock_farming_on_land_of_others")) AND not(selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others")))
 df_type_work_done_in_towns_farming_others_land_17 <- df_tool_data %>% 
   filter(str_detect(string = type_work_done_by_hh_member_in_towns, pattern = "work_on_land_of_others"), 
-                                       !hh_primary_livelihood %in% c("crop_production_on_land_of_others", "livestock_farming_on_land_of_others") &
-                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others|livestock_farming_on_land_of_others")) %>% 
+         !hh_primary_livelihood %in% c("crop_production_on_land_of_others", "livestock_farming_on_land_of_others") &
+           !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others|livestock_farming_on_land_of_others")) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "type_work_done_by_hh_member_in_towns",
          i.check.current_value = type_work_done_by_hh_member_in_towns,
@@ -559,8 +559,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ty
 # not(selected(${hh_primary_livelihood}, "salaried_employment_in_a_business")) AND not(selected(${other_livelihoods_hh_engaged_in}, "salaried_employment_in_a_business")))
 df_type_work_done_in_towns_non_agric_labour_18 <- df_tool_data %>% 
   filter(str_detect(string = type_work_done_by_hh_member_in_towns, pattern = "non_agricultural_daily_labour"), 
-                                       (!hh_primary_livelihood %in% c("casual_or_daily_labour_non_farming", "salaried_employment_in_a_business") &
-                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "casual_or_daily_labour_non_farming|salaried_employment_in_a_business"))) %>% 
+         (!hh_primary_livelihood %in% c("casual_or_daily_labour_non_farming", "salaried_employment_in_a_business") &
+            !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "casual_or_daily_labour_non_farming|salaried_employment_in_a_business"))) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "type_work_done_by_hh_member_in_towns",
          i.check.current_value = type_work_done_by_hh_member_in_towns,
@@ -587,8 +587,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ty
 # not(selected(${hh_primary_livelihood}, "salaried_employment_in_a_business")) AND not(selected(${other_livelihoods_hh_engaged_in}, "salaried_employment_in_a_business")))
 df_type_work_done_by_hh_member_in_towns_salaried_job_19 <- df_tool_data %>% 
   filter(str_detect(string = type_work_done_by_hh_member_in_towns, pattern = "permanent_salaried_job"), 
-                                       (!hh_primary_livelihood %in% c("salaried_employment_in_a_business", "salaried_employment_with_an_ngo", "salaried_employment_with_the_government") &
-                                       !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "salaried_employment_in_a_business|salaried_employment_with_an_ngo|salaried_employment_with_the_government"))) %>% 
+         (!hh_primary_livelihood %in% c("salaried_employment_in_a_business", "salaried_employment_with_an_ngo", "salaried_employment_with_the_government") &
+            !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "salaried_employment_in_a_business|salaried_employment_with_an_ngo|salaried_employment_with_the_government"))) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "type_work_done_by_hh_member_in_towns",
          i.check.current_value = type_work_done_by_hh_member_in_towns,
@@ -686,8 +686,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_wh
 # not(selected(financial_service_providers_present, any('banking_agents', 'banks_full_service'))))
 df_hh_access_bank_loans_26 <- df_tool_data %>% 
   filter((str_detect(string = name_fsp_hh_sought_loan, pattern = "bank") |
-                                str_detect(string = name_fsp_hh_to_seek_loan, pattern = "bank")),
-                               (!str_detect(financial_service_providers_present, pattern = "(?=.*banking_agents)(?=.*banks_full_service)"))) %>% 
+            str_detect(string = name_fsp_hh_to_seek_loan, pattern = "bank")),
+         (!str_detect(financial_service_providers_present, pattern = "(?=.*banking_agents)(?=.*banks_full_service)"))) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "financial_service_providers_present",
          i.check.current_value = financial_service_providers_present,
@@ -711,8 +711,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # (name_fsp_hh_sought_loan = 'mfi' OR name_fsp_hh_to_seek_loan = 'mfi') AND not(selected(financial_service_providers_present, 'mfi'))
 df_hh_access_mfi_loans_27 <- df_tool_data %>% 
   filter((str_detect(string = name_fsp_hh_sought_loan, pattern = "mfi") |
-                                          str_detect(string = name_fsp_hh_to_seek_loan, pattern = "mfi")),
-                                         !str_detect(string = financial_service_providers_present, pattern = "mfi")) %>% 
+            str_detect(string = name_fsp_hh_to_seek_loan, pattern = "mfi")),
+         !str_detect(string = financial_service_providers_present, pattern = "mfi")) %>% 
   mutate(i.check.type = "add_option",
          i.check.name = "financial_service_providers_present",
          i.check.current_value = financial_service_providers_present,
@@ -736,8 +736,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # (name_fsp_hh_sought_loan = 'vsla' OR name_fsp_hh_to_seek_loan = 'vsla') AND not(selected(financial_service_providers_present, 'vsla'))
 df_hh_access_vsla_loans_28 <- df_tool_data %>% 
   filter((str_detect(string = name_fsp_hh_sought_loan, pattern = "vsla") |
-                                     str_detect(string = name_fsp_hh_to_seek_loan, pattern = "vsla")),
-                                    !str_detect(string = financial_service_providers_present, pattern = "vsla")) %>% 
+            str_detect(string = name_fsp_hh_to_seek_loan, pattern = "vsla")),
+         !str_detect(string = financial_service_providers_present, pattern = "vsla")) %>% 
   mutate(i.check.type = "add_option",
          i.check.name = "financial_service_providers_present",
          i.check.current_value = financial_service_providers_present,
@@ -761,8 +761,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # (name_fsp_hh_sought_loan = 'sacco' OR name_fsp_hh_to_seek_loan = 'sacco') AND not(selected(financial_service_providers_present, 'sacco'))
 df_hh_access_sacco_loans_29 <- df_tool_data %>% 
   filter((str_detect(string = name_fsp_hh_sought_loan, pattern = "sacco") |
-                                       str_detect(string = name_fsp_hh_to_seek_loan, pattern = "sacco")),
-                                      !str_detect(string = financial_service_providers_present, pattern = "sacco")) %>% 
+            str_detect(string = name_fsp_hh_to_seek_loan, pattern = "sacco")),
+         !str_detect(string = financial_service_providers_present, pattern = "sacco")) %>% 
   mutate(i.check.type = "add_option",
          i.check.name = "financial_service_providers_present",
          i.check.current_value = financial_service_providers_present,
@@ -788,7 +788,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # not(selected(financial_service_providers_present, 'financial_services_provided_by_local_businesses_or_community_members'))
 df_hh_access_local_business_or_community_member_loans_30 <- df_tool_data %>% 
   filter((str_detect(string = name_fsp_hh_sought_loan, pattern = "local_business_or_community_member") |
-           str_detect(string = name_fsp_hh_to_seek_loan, pattern = "local_business_or_community_member")),
+            str_detect(string = name_fsp_hh_to_seek_loan, pattern = "local_business_or_community_member")),
          !str_detect(string = financial_service_providers_present, pattern = "financial_services_provided_by_local_businesses_or_community_members")) %>% 
   mutate(i.check.type = "remove_option",
          i.check.name = "financial_service_providers_present",
@@ -817,7 +817,7 @@ df_intra_group_social_cohesion_refugee_31a <- df_tool_data %>%
                           sense_of_belonging_to_refugee_community,
                           taken_advantage_of_by_fellow_refugee), 
                 ~ joining_other_refugee_to_address_issues == .x)
-         ) %>% 
+  ) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "joining_other_refugee_to_address_issues",
          i.check.current_value = joining_other_refugee_to_address_issues,
@@ -871,7 +871,7 @@ df_inter_group_social_cohesion_refugee_32a <- df_tool_data %>%
                   friendliness_among_refugee_and_nationals,
                   sense_of_belonging_both_refugee_and_nationals, 
                   taken_advantage_of_by_nationals), 
-           ~ joining_any_nationals_to_address_issues == .x ))%>% 
+                ~ joining_any_nationals_to_address_issues == .x ))%>% 
   mutate(i.check.type = "change_response",
          i.check.name = "joining_any_nationals_to_address_issues",
          i.check.current_value = joining_any_nationals_to_address_issues,
@@ -894,11 +894,11 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_in
 # Respondent gives the same answer to all inter-group social cohesion questions for host community i.e. [all grp_inter_group_social_cohesion rows] = [same answer]
 df_inter_group_social_cohesion_host_32b <- df_tool_data %>% 
   filter(if_all(c(joining_any_refugee_to_address_issues, 
-                trust_any_refugee, 
-                friendliness_among_refugee, 
-                sense_of_belonging_to_both_refugee_and_nationals, 
-           taken_advantage_of_by_any_refugee), 
-           ~ joining_any_refugee_to_address_issues == .x)) %>% 
+                  trust_any_refugee, 
+                  friendliness_among_refugee, 
+                  sense_of_belonging_to_both_refugee_and_nationals, 
+                  taken_advantage_of_by_any_refugee), 
+                ~ joining_any_refugee_to_address_issues == .x)) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "joining_any_refugee_to_address_issues",
          i.check.current_value = joining_any_refugee_to_address_issues,
@@ -984,7 +984,8 @@ df_fd_consumption_score_less_than_ten_35 <- df_tool_data %>%
   slice(rep(1:n(), each = 9)) %>% 
   group_by(i.check.uuid, i.check.start_date, i.check.enumerator_id, i.check.type,  i.check.name,  i.check.current_value) %>% 
   mutate(rank = row_number(),
-         i.check.name = case_when(rank == 2 ~ "tubers", 
+         i.check.name = case_when(rank == 1 ~ "cereals",
+                                  rank == 2 ~ "tubers", 
                                   rank == 3 ~ "pulses", 
                                   rank == 4 ~ "vegetables", 
                                   rank == 5 ~ "fruits", 
@@ -992,15 +993,16 @@ df_fd_consumption_score_less_than_ten_35 <- df_tool_data %>%
                                   rank == 7 ~ "dairy", 
                                   rank == 8 ~ "sugar", 
                                   TRUE ~ "oils"),
-         i.check.current_value = case_when(rank == 2 ~ as.character(tubers),
-                                  rank == 3 ~ as.character(pulses), 
-                                  rank == 4 ~ as.character(vegetables), 
-                                  rank == 5 ~ as.character(fruits), 
-                                  rank == 6 ~ as.character(protein), 
-                                  rank == 7 ~ as.character(dairy), 
-                                  rank == 8 ~ as.character(sugar), 
-                                  TRUE ~ as.character(oils))
-         ) %>% 
+         i.check.current_value = case_when(rank == 1 ~ as.character(cereals),
+                                           rank == 2 ~ as.character(tubers),
+                                           rank == 3 ~ as.character(pulses), 
+                                           rank == 4 ~ as.character(vegetables), 
+                                           rank == 5 ~ as.character(fruits), 
+                                           rank == 6 ~ as.character(protein), 
+                                           rank == 7 ~ as.character(dairy), 
+                                           rank == 8 ~ as.character(sugar), 
+                                           TRUE ~ as.character(oils))
+  ) %>% 
   dplyr::select(starts_with("i.check.")) %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
@@ -1028,7 +1030,8 @@ df_three_or_more_fcs_equal_zero_36 <- df_tool_data %>%
   slice(rep(1:n(), each = 9)) %>% 
   group_by(i.check.uuid, i.check.start_date, i.check.enumerator_id, i.check.type,  i.check.name,  i.check.current_value) %>% 
   mutate(rank = row_number(),
-         i.check.name = case_when(rank == 2 ~ "tubers", 
+         i.check.name = case_when(rank == 1 ~ "cereals", 
+                                  rank == 2 ~ "tubers",
                                   rank == 3 ~ "pulses", 
                                   rank == 4 ~ "vegetables", 
                                   rank == 5 ~ "fruits", 
@@ -1036,7 +1039,8 @@ df_three_or_more_fcs_equal_zero_36 <- df_tool_data %>%
                                   rank == 7 ~ "dairy", 
                                   rank == 8 ~ "sugar", 
                                   TRUE ~ "oils"),
-         i.check.current_value = case_when(rank == 2 ~ as.character(tubers),
+         i.check.current_value = case_when(rank == 1 ~ as.character(cereals),
+                                           rank == 2 ~ as.character(tubers),
                                            rank == 3 ~ as.character(pulses), 
                                            rank == 4 ~ as.character(vegetables), 
                                            rank == 5 ~ as.character(fruits), 
@@ -1527,4 +1531,3 @@ write_csv(x = df_combined_checks, file = paste0("outputs/", butteR::date_file_pr
 
 
 
-  
