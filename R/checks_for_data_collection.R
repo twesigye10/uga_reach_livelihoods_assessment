@@ -1139,8 +1139,7 @@ df_hh_reported_remittances_39 <- df_tool_data %>%
          i.check.current_value = as.numeric(income_remittances),
          i.check.value = "",
          i.check.issue_id = "logic_c_hh_reported_remittances_39",
-         i.check.issue = glue("income_remittances: {income_remittances}, 
-                              but hh has not reported receiving remittances under movement section"),
+         i.check.issue = glue("income_remittances: {income_remittances}, but hh has not reported receiving remittances under movement section"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
@@ -1161,27 +1160,16 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # 'approximately_3_times_a_month'  or 'approximately_more_than_3_times_a_month'  
 # OR frequency_hh_receives_money_from_family_or_friend_in_home_country = 'approximately_once_a_month' or 'approximately_twice_a_month' or 
 #'approximately_3_times_a_month'  or 'approximately_more_than_3_times_a_month' )
-
 df_hh_reported_no_remittances_40 <- df_tool_data %>% 
-  filter(income_remittances == 0, (frequency_hh_receives_money_from_family_or_friend_in_settlement == "approximately_once_a_month" |
-                                     frequency_hh_receives_money_from_family_or_friend_in_settlement == "approximately_twice_a_month"|
-                                     frequency_hh_receives_money_from_family_or_friend_in_settlement == "approximately_3_times_a_month" |
-                                     frequency_hh_receives_money_from_family_or_friend_in_settlement == "approximately_more_than_3_times_a_month")|
-           (frequency_hh_receives_money_from_family_or_friend_in_towns == "approximately_once_a_month" |
-              frequency_hh_receives_money_from_family_or_friend_in_towns == "approximately_twice_a_month"|
-              frequency_hh_receives_money_from_family_or_friend_in_towns == "approximately_3_times_a_month" |
-              frequency_hh_receives_money_from_family_or_friend_in_towns == "approximately_more_than_3_times_a_month")|
-           (frequency_hh_receives_money_from_family_or_friend_in_home_country == "approximately_once_a_month" |
-              frequency_hh_receives_money_from_family_or_friend_in_home_country == "approximately_twice_a_month"|
-              frequency_hh_receives_money_from_family_or_friend_in_home_country == "approximately_3_times_a_month" |
-              frequency_hh_receives_money_from_family_or_friend_in_home_country == "approximately_more_than_3_times_a_month")) %>% 
+  filter(income_remittances == 0, (frequency_hh_receives_money_from_family_or_friend_in_settlement %in% c("approximately_once_a_month", "approximately_twice_a_month", "approximately_3_times_a_month", "approximately_more_than_3_times_a_month")|
+           frequency_hh_receives_money_from_family_or_friend_in_towns  %in% c("approximately_once_a_month", "approximately_twice_a_month", "approximately_3_times_a_month", "approximately_more_than_3_times_a_month")|
+           frequency_hh_receives_money_from_family_or_friend_in_home_country  %in% c("approximately_once_a_month", "approximately_twice_a_month", "approximately_3_times_a_month", "approximately_more_than_3_times_a_month"))) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "income_remittances",
          i.check.current_value = as.numeric(income_remittances),
          i.check.value = "",
          i.check.issue_id = "logic_c_hh_reported_no_remittances_40",
-         i.check.issue = glue("income_remittances: {income_remittances}, 
-                              but hh has reported frequently receiving remittances under movement section"),
+         i.check.issue = glue("frequency_hh_receives_money_from_family_or_friend_in_settlement: {frequency_hh_receives_money_from_family_or_friend_in_settlement}, frequency_hh_receives_money_from_family_or_friend_in_towns: {frequency_hh_receives_money_from_family_or_friend_in_towns}, frequency_hh_receives_money_from_family_or_friend_in_home_country: {frequency_hh_receives_money_from_family_or_friend_in_home_country}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
