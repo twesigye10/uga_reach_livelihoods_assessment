@@ -1615,7 +1615,6 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_sh
 
 #HH reports 0 under rent expenditure i.e. rent = 0 AND shelter_occupancy_arrangement = 'renting'
 
-
 df_shelter_occupancy_arrangement_rent_57 <- df_tool_data %>% 
   filter(rent == 0, shelter_occupancy_arrangement %in% c("renting")) %>% 
   mutate(i.check.type = "change_response",
@@ -1638,8 +1637,27 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_sh
 
 
 
+# HH reports not owning a boda but also reports bodaboda as a livelihood i.e. motorcycle = 0 AND casual_labour_hh_engaged = 'bodabodalocal_transport'
 
+df_hh_owns_no_bodaboda_58 <- df_tool_data %>% 
+  filter(motorcycle == 0, str_detect(string = casual_labour_hh_engaged, pattern = "bodabodalocal_transport")) %>%
+  mutate(i.check.type = "change_response",
+         i.check.name = "motorcycle",
+         i.check.current_value = as.numeric(motorcycle),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_hh_owns_no_bodaboda_58",
+         i.check.issue = glue("motorcycle: {motorcycle}, but  casual_labour_hh_engaged: {casual_labour_hh_engaged}"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_owns_no_bodaboda_58")
 
 
 
