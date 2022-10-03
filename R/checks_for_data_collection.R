@@ -26,6 +26,9 @@ df_tool_data <- readxl::read_excel(path = dataset_location) %>%
          i.check.point_number = point_number) %>% 
   filter(i.check.start_date > as_date("2022-08-07"))
 
+df_repeat_hh_roster_data <- readxl::read_excel(path = dataset_location, sheet = "hh_roster")
+df_repeat_school_enrollment_data <- readxl::read_excel(path = dataset_location, sheet = "repeat_school_enrollment")
+
 df_survey <- readxl::read_excel(path = "inputs/livelihoods_assessment_tool.xlsx", sheet = "survey")
 df_choices <- readxl::read_excel(path = "inputs/livelihoods_assessment_tool.xlsx", sheet = "choices")
 
