@@ -1537,6 +1537,57 @@ df_hh_livestock_owned_same_53 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_livestock_owned_same_53")
 
 
+# HH reports shelter is 'finished' but also reports shelter is too damaged for living i.e. shelter_type_hh_live = 'finished_house' AND
+ # selected(shelter_issues,  any=c('total collapse or shelter too damaged for living')
+
+
+df_shelter_type_hh_lives_54 <- df_tool_data %>% 
+  filter(shelter_type_hh_live %in% c("finished_house"), 
+         str_detect(string = shelter_issues, pattern = "total_collapse_or_shelter_too_damaged_for_living")) %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "shelter_type_hh_live",
+         i.check.current_value = as.character(shelter_type_hh_live),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_shelter_type_hh_lives_54",
+         i.check.issue = glue("shelter_type_hh_live: {shelter_type_hh_live}, but shelter_issues: {shelter_issues} "),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_shelter_type_hh_lives_54")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # combine and output checks -----------------------------------------------
 
 # combine checks
