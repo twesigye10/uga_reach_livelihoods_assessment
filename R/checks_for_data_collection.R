@@ -1312,7 +1312,6 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_al
 
 
 # Amount of generators in unreasonable i.e. generator > 1  
-
 df_generator_greater_than_one_46 <- df_tool_data %>% 
   filter(generator > 1) %>% 
   mutate(i.check.type = "change_response",
@@ -1320,7 +1319,7 @@ df_generator_greater_than_one_46 <- df_tool_data %>%
          i.check.current_value = as.character(generator),
          i.check.value = "",
          i.check.issue_id = "logic_c_generator_greater_than_one_46",
-         i.check.issue = glue("generator: {generator}, confirm hh has more than one generator"),
+         i.check.issue = glue("generator: {generator}, confirm hh has more than one generators"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
@@ -1335,7 +1334,6 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ge
 
 
 # Amount of fridges is unreasonable i.e. fridge  > 1  
-
 df_fridge_greater_than_one_47 <- df_tool_data %>% 
   filter(fridge  > 1) %>% 
   mutate(i.check.type = "change_response",
