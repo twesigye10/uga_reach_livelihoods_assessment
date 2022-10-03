@@ -1480,15 +1480,14 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 
 
 # HH reports same amount for all livestock i.e.cows_and_calves =  goats =  sheep =  pigs =  donkeys =  poultry =  colonized_beehive =  other 
-
 df_hh_livestock_owned_same_53 <- df_tool_data %>% 
-  filter(cows_and_calves==goats, sheep==goats, pigs==goats, donkeys==goats, poultry==goats, colonized_beehive==goats, other==goats) %>% 
+  filter(if_all(c(cows_and_calves:other), ~ cows_and_calves == .x & cows_and_calves != 0)) %>% 
   mutate(i.check.type = "change_response",
-         i.check.name = "goats ",
-         i.check.current_value = as.character(goats),
+         i.check.name = "cows_and_calves ",
+         i.check.current_value = as.character(cows_and_calves),
          i.check.value = "",
          i.check.issue_id = "logic_c_hh_livestock_owned_same_53",
-         i.check.issue = glue("goats: {goats}, all values are the same like for goats"),
+         i.check.issue = glue("cows_and_calves: {cows_and_calves},	goats: {goats},	sheep: {sheep},	pigs: {pigs}, donkeys: {donkeys}, poultry: {poultry}, colonized_beehive: {colonized_beehive}, other: {other}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
