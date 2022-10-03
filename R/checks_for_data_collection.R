@@ -1191,8 +1191,7 @@ df_hh_own_farm_land_items_41 <- df_tool_data %>%
          i.check.current_value = own_farm_land_items,
          i.check.value = "",
          i.check.issue_id = "logic_c_hh_own_farm_land_items_41",
-         i.check.issue = glue("income_remittances: {income_remittances}, 
-                              but hh has not reported receiving remittances under movement section"),
+         i.check.issue = glue("income_remittances: {income_remittances}, but hh has not reported receiving remittances under movement section"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
@@ -1217,10 +1216,10 @@ df_hh_own_farm_assets_42 <- df_tool_data %>%
          !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|crop_production_on_land_of_others|livestock_farming_on_own_land|livestock_farming_on_land_of_others"))) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "own_farm_land_items",
-         i.check.current_value = as.character(own_farm_land_items),
+         i.check.current_value = own_farm_land_items,
          i.check.value = "",
          i.check.issue_id = "logic_c_hh_own_farm_assets_42",
-         i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, but other_livelihoods_hh_engaged_in :{other_livelihoods_hh_engaged_in}"),
+         i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, other_livelihoods_hh_engaged_in :{other_livelihoods_hh_engaged_in}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
@@ -1239,23 +1238,16 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # selected(${hh_primary_livelihood}, "crop_production_on_land_of_others") OR selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_land_of_others") OR
 # selected(${hh_primary_livelihood}, "livestock_farming_on_own_land") OR selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_own_land") OR
 # selected(${hh_primary_livelihood}, "livestock_farming_on_land_of_others") OR selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others"))
-
 df_hh_own_no_farm_assets_43 <- df_tool_data %>% 
-  filter(own_farm_land_items != "yes", 
-         str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_own_land") |
-           str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land") |
-           str_detect(string = hh_primary_livelihood, pattern = "crop_production_on_land_of_others") |
-           str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_land_of_others") |
-           str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_own_land") |
-           str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_own_land") |
-           str_detect(string = hh_primary_livelihood, pattern = "livestock_farming_on_land_of_others") |
-           str_detect(string = other_livelihoods_hh_engaged_in, pattern = "livestock_farming_on_land_of_others")) %>% 
+  filter(!own_farm_land_items %in% c("yes"), 
+         (hh_primary_livelihood %in% c("crop_production_on_own_land", "crop_production_on_land_of_others", "livestock_farming_on_own_land", "livestock_farming_on_land_of_others") |
+            str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|crop_production_on_land_of_others|livestock_farming_on_own_land|livestock_farming_on_land_of_others"))) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "own_farm_land_items",
-         i.check.current_value = as.character(own_farm_land_items),
+         i.check.current_value = own_farm_land_items,
          i.check.value = "",
          i.check.issue_id = "logic_c_hh_own_no_farm_assets_43",
-         i.check.issue = glue("own_farm_land_items: {own_farm_land_items}, but hh reports to be engaged in agriculture as a livelihood"),
+         i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, other_livelihoods_hh_engaged_in: {other_livelihoods_hh_engaged_in}"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
