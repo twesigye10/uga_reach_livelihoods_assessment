@@ -1264,15 +1264,15 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # Same amount entered for all farm assets i.e. hoe = axe = spraying_machine = shovel = pick_axe = sickle = 
 # rake = cart = tractor = conventional_yoke = ox_plough = wheelbarrow = panga_slasher = pruning_knife = water_pump
 df_all_farm_assets_response_same_44 <- df_tool_data %>% 
-  filter(hoe==axe, spraying_machine==hoe, shovel==hoe, pick_axe==hoe, sickle==hoe, rake==hoe, cart==hoe, tractor==hoe, conventional_yoke==hoe, 
-         ox_plough==hoe, wheelbarrow==hoe, panga_slasher==hoe, pruning_knife==hoe, water_pump==hoe) %>% 
+  filter(if_all(c(hoe, axe, spraying_machine, shovel, pick_axe, sickle, rake, cart, tractor, conventional_yoke, 
+                  ox_plough, wheelbarrow, panga_slasher, pruning_knife, water_pump), ~ hoe == .x)
+    ) %>% 
   mutate(i.check.type = "change_response",
-         i.check.name = "panga_slasher",
-         i.check.current_value = as.character(panga_slasher),
+         i.check.name = "hoe",
+         i.check.current_value = as.character(hoe),
          i.check.value = "",
          i.check.issue_id = "logic_c_all_farm_assets_response_same_44",
-         i.check.issue = glue("panga_slasher: {panga_slasher}, 
-                              all values are the same like for panga"),
+         i.check.issue = glue("Same amount entered for all farm assets"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
