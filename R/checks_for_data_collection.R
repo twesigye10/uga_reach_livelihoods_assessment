@@ -1341,7 +1341,7 @@ df_fridge_greater_than_one_47 <- df_tool_data %>%
          i.check.current_value = as.numeric(fridge),
          i.check.value = "",
          i.check.issue_id = "logic_c_fridge_greater_than_one_47",
-         i.check.issue = glue("fridge : {fridge}, confirm hh has more than one fridge"),
+         i.check.issue = glue("fridge : {fridge}, confirm hh has more than one fridges"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
