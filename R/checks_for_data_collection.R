@@ -1590,6 +1590,43 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_sh
 
 
 
+# HH reports rent under expenditures, but does not report renting as the occupancy status i.e. rent > 0 AND shelter_occupancy_arrangement != 'renting'
+
+df_shelter_occupancy_arrangement_56 <- df_tool_data %>% 
+  filter(rent > 0, shelter_occupancy_arrangement != "renting") %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "shelter_occupancy_arrangement",
+         i.check.current_value = as.character(shelter_occupancy_arrangement),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_shelter_occupancy_arrangement_56",
+         i.check.issue = glue("rent: {rent}, yet  shelter_occupancy_arrangement: {shelter_occupancy_arrangement}"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_shelter_occupancy_arrangement_56")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
