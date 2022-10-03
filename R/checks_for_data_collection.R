@@ -1263,7 +1263,6 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 
 # Same amount entered for all farm assets i.e. hoe = axe = spraying_machine = shovel = pick_axe = sickle = 
 # rake = cart = tractor = conventional_yoke = ox_plough = wheelbarrow = panga_slasher = pruning_knife = water_pump
-
 df_all_farm_assets_response_same_44 <- df_tool_data %>% 
   filter(hoe==axe, spraying_machine==hoe, shovel==hoe, pick_axe==hoe, sickle==hoe, rake==hoe, cart==hoe, tractor==hoe, conventional_yoke==hoe, 
          ox_plough==hoe, wheelbarrow==hoe, panga_slasher==hoe, pruning_knife==hoe, water_pump==hoe) %>% 
