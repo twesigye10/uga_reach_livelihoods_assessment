@@ -608,6 +608,90 @@ df_type_work_done_by_hh_member_in_towns_salaried_job_19 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_type_work_done_by_hh_member_in_towns_salaried_job_19")
 
 
+# HH reports no or low income (bottom 10% for the location), but also reports to be able to meet all their basic needs i.e.
+# calc_total_income = bottom 10% for the location AND hh_able_to_meet_basic_needs = 'yes'
+
+df_low_income_vs_basic_needs_affordable_20 <- df_tool_data %>% 
+  group_by(location) %>% 
+  mutate(calc_total_income = as.numeric(calc_total_income),
+         quat_lower_limit = quantile(calc_total_income, 0.05, na.rm = TRUE)) %>% 
+  filter(calc_total_income < quat_lower_limit,  hh_able_to_meet_basic_needs %in% c("yes")) %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "calc_total_income",
+         i.check.current_value = calc_total_income,
+         i.check.value = "",
+         i.check.issue_id = "logic_c_low_income_vs_basic_needs_affordable_20",
+         i.check.issue = glue("hh_able_to_meet_basic_needs: {hh_able_to_meet_basic_needs}, yet income is low i.e calc_total_income: {calc_total_income}"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_low_income_vs_basic_needs_affordable_20")
+
+
+# HH reports high income (top 10% for the location), but also reports to not be able to meet their basic needs i.e. 
+# calc_total_income = top 10% for the location AND hh_able_to_meet_basic_needs = 'no'
+
+df_high_income_vs_basic_needs_unaffordable_21 <- df_tool_data %>% 
+  group_by(location) %>% 
+  mutate(calc_total_income = as.numeric(calc_total_income),
+         quat_upper_limit = quantile(calc_total_income, 0.95, na.rm = TRUE)
+  ) %>% 
+  filter(calc_total_income < quat_upper_limit,  hh_able_to_meet_basic_needs %in% c("no")) %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "calc_total_income",
+         i.check.current_value = calc_total_income,
+         i.check.value = "",
+         i.check.issue_id = "logic_c_high_income_vs_basic_needs_unaffordable_21",
+         i.check.issue = glue("hh_able_to_meet_basic_needs: {hh_able_to_meet_basic_needs}, yet income is low i.e calc_total_income: {calc_total_income}"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_high_income_vs_basic_needs_unaffordable_21")
+
+
+# HH reports no or low income (bottom 10% for the location), but also reports to have not used any coping strategies i.e.
+# calc_total_income = bottom 10% for the location AND [all grp_lcsi rows] = 'no' 
+
+
+df_low_income_vs_no_coping_strategy_22 <- df_tool_data %>% 
+  group_by(location) %>% 
+  mutate(calc_total_income = as.numeric(calc_total_income),
+         quat_lower_limit = quantile(calc_total_income, 0.05, na.rm = TRUE)) %>% 
+  filter(calc_total_income < quat_lower_limit,  if_all(c(increase_the_number_of_family_members_searching_for_work_outside_your_village:
+                                                           sold_more_animals_than_usual), ~ .x == "no")) %>%
+  mutate(i.check.type = "change_response",
+         i.check.name = "calc_total_income",
+         i.check.current_value = calc_total_income,
+         i.check.value = "",
+         i.check.issue_id = "logic_c_low_income_vs_no_coping_strategy_22",
+         i.check.issue = glue(" Income is low i.e. calc_total_income: {calc_total_income}, but no coping strategy reported"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "", 
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>% 
+  dplyr::select(starts_with("i.check.")) %>% 
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+
+  add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_low_income_vs_no_coping_strategy_22")
+
+
 # HH reports no or low income (below MEB), but also reports to be able to meet all their basic needs i.e. 
 # HH reports high income (above MEB), but also reports to not be able to meet their basic needs
 # HH reports no or low income (below MEB), but also reports to have not used any coping strategies
@@ -615,7 +699,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_ty
 # AND [ANY grp_lcsi rows] = 'yes' 
 df_hh_able_to_meet_basic_needs_23 <- df_tool_data %>% 
   filter(hh_able_to_meet_basic_needs == "yes", 
-         if_any(c(increase_the_number_of_family_members_searching_for_work_outside_your_village:sold_more_animals_than_usual), ~ . == "yes")) %>% 
+         if_any(c(increase_the_number_of_family_members_searching_for_work_outside_your_village:sold_more_animals_than_usual), ~ .x == "yes")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "hh_able_to_meet_basic_needs",
          i.check.current_value = hh_able_to_meet_basic_needs,
@@ -639,7 +723,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # AND [all grp_lcsi rows] = 'no' 
 df_hh_not_able_to_meet_basic_needs_24 <- df_tool_data %>%
   filter(hh_able_to_meet_basic_needs == "no", 
-         if_all(c(increase_the_number_of_family_members_searching_for_work_outside_your_village:sold_more_animals_than_usual), ~ . == "no")) %>% 
+         if_all(c(increase_the_number_of_family_members_searching_for_work_outside_your_village:sold_more_animals_than_usual), ~ .x == "no")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "hh_able_to_meet_basic_needs",
          i.check.current_value = hh_able_to_meet_basic_needs,
@@ -1003,13 +1087,12 @@ df_fd_consumption_score_less_than_ten_35 <- df_tool_data %>%
                                            rank == 8 ~ as.character(sugar), 
                                            TRUE ~ as.character(oils))
   ) %>% 
-  dplyr::select(starts_with("i.check.")) %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_fd_consumption_score_less_than_ten_35")
 
-
+view(df_fd_consumption_score_less_than_ten_35)
 # HH entered 0 for at least 3 categories of the FCS i.e. [at least 3 grp_fcs groups] = 0
 df_three_or_more_fcs_equal_zero_36 <- df_tool_data %>%
   mutate(three_fcs_gps_equal_zero = rowSums(across(cereals:oils) == 0, na.rm = TRUE)) %>% 
