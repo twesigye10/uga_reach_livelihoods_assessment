@@ -26,7 +26,10 @@ df_tool_data <- readxl::read_excel(path = dataset_location) %>%
          i.check.point_number = point_number) %>% 
   filter(i.check.start_date > as_date("2022-08-07"))
 
-df_repeat_hh_roster_data <- readxl::read_excel(path = dataset_location, sheet = "hh_roster")
+hh_roster_data <- readxl::read_excel(path = dataset_location, sheet = "hh_roster")
+df_repeat_hh_roster_data <- df_tool_data %>% 
+  inner_join(hh_roster_data, by = c("_uuid" = "_submission__uuid"))
+
 df_repeat_school_enrollment_data <- readxl::read_excel(path = dataset_location, sheet = "repeat_school_enrollment")
 
 df_survey <- readxl::read_excel(path = "inputs/livelihoods_assessment_tool.xlsx", sheet = "survey")
@@ -101,13 +104,13 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_pt
 
 # check for exceeded threshold distance
 
-#threshold_dist <- 150
+threshold_dist <- 150
 
-#df_greater_thresh_distance <- check_threshold_distance(input_sample_data = df_sample_data, 
-                                                       #input_tool_data = df_tool_data, 
-                                                       #input_threshold_dist = threshold_dist)
+df_greater_thresh_distance <- check_threshold_distance(input_sample_data = df_sample_data,
+                                                       input_tool_data = df_tool_data,
+                                                       input_threshold_dist = threshold_dist)
 
-#add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_greater_thresh_distance")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_greater_thresh_distance")
 
 # others checks -----------------------------------------------------------
 
@@ -1455,26 +1458,30 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_fr
 
 # Respondent is not HoH & did not include HoH details in the household composition i.e. gender_hoh & age_hoh != age + gender (in hh_roster)
 # No hoh related question  
+df_hoh_details_and_hh_roster_48 <- df_repeat_hh_roster_data %>%
+  filter(consent_two == "no")  %>%
+  group_by(`_uuid`) %>%
+  mutate(int.hoh_bio = ifelse(gender_hoh == gender & age_hoh == age, "given", "not")) %>% 
+  filter(!str_detect(string = paste(int.hoh_bio, collapse = ":"), pattern = "given")) %>% 
+  filter(row_number() == 1) %>% 
+  ungroup() %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "age_hoh ",
+         i.check.current_value = as.character(age_hoh),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_hoh_details_and_hh_roster_48",
+         i.check.issue = glue("gender_hoh : {gender_hoh}, details not given in the hh_roster"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "",
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>%
+  dplyr::select(starts_with("i.check.")) %>%
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
-# df_hoh_details_and_hh_roster_48a <- df_hh_roster_loop_data %>% 
-# filter(consent_two == "no",  %>% 
-# mutate(i.check.type = "change_response",
-#       i.check.name = "fridge ",
-#      i.check.current_value = as.numeric(cell_phone),
-#     i.check.value = "",
-#    i.check.issue_id = "logic_c_hoh_details_and_hh_roster_47a",
-#       i.check.issue = glue("fridge : {fridge}, confirm hh has more than one fridge"),
-#      i.check.other_text = "",
-#     i.check.checked_by = "",
-#    i.check.checked_date = as_date(today()),
-#       i.check.comment = "", 
-#      i.check.reviewed = "",
-#     i.check.adjust_log = "",
-#    i.check.so_sm_choices = "") %>% 
-#  dplyr::select(starts_with("i.check.")) %>% 
-#  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
-
-# add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hoh_details_and_hh_roster_48a")
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hoh_details_and_hh_roster_48")
 
 
 # HH reports both crop production on own land and crop production on land of others i.e. (selected(${hh_primary_livelihood}, 
