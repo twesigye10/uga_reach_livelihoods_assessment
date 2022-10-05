@@ -1808,7 +1808,7 @@ data_similartiy <- df_tool_data %>%
   select(- any_of(omit_cols))
 
 df_sil_data <- calculateEnumeratorSimilarity(data = data_similartiy,
-                                             input_df_survey = df_tool_data, 
+                                             input_df_survey = df_survey, 
                                              col_enum = "enumerator_id",
                                              col_admin = "district_name") %>% 
   mutate(si2= abs(si))
@@ -1819,6 +1819,6 @@ df_sil_data[order(df_sil_data$`si2`, decreasing = TRUE),!colnames(df_sil_data)%i
 
 # similarity analysis
 df_sim_data <- calculateDifferences(data = data_similartiy, 
-                                    input_df_survey = df_tool_data) %>% 
+                                    input_df_survey = df_survey) %>% 
   openxlsx::write.xlsx(data2, paste0("outputs/", butteR::date_file_prefix(), 
                                      "_most_similar_analysis_livelihood.xlsx"))
