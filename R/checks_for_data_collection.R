@@ -1399,8 +1399,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # Same amount entered for all farm assets i.e. hoe = axe = spraying_machine = shovel = pick_axe = sickle = 
 # rake = cart = tractor = conventional_yoke = ox_plough = wheelbarrow = panga_slasher = pruning_knife = water_pump
 df_all_farm_assets_response_same_44 <- df_tool_data %>% 
-  filter(if_all(c(hoe, axe, spraying_machine, shovel, pick_axe, sickle, rake, cart, tractor, conventional_yoke, 
-                  ox_plough, wheelbarrow, panga_slasher, pruning_knife, water_pump), ~ hoe == .x)
+  filter(if_all(c(hoe : water_pump), ~ hoe == .x &  hoe != 0)
     ) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "hoe",
