@@ -158,6 +158,26 @@ dt_enum_performance_options <- function(x){
 
 >There are **`r nrow(df_updated_tool_data)`** total number of surveys done as of **`r df_days_for_data_collection[length(df_days_for_data_collection)]`**.
 
+### General outlook
+
+```{r, echo = FALSE}
+df_modified_data <- df_updated_tool_data %>% 
+  mutate(location_and_type = paste0(location_type, "_", location)) %>% 
+  group_by(location_and_type, start_date) %>% 
+  arrange(location_and_type, desc(start_date)) %>% 
+  summarise(number_of_surveys = n()) 
+
+# chart
+ggplot(data = df_modified_data, aes(x = start_date, y = number_of_surveys, color = location_and_type)) +
+  geom_line(size=0.8, alpha=0.9) +
+  geom_point()+
+  labs(x = "",
+       y = "Number of surveys", 
+       title = "Number of surveys per location")+
+  scale_x_date(date_labels = "%d/%b/%Y")+
+  theme_bw()
+```
+
 ### Settlements:  **`r df_updated_tool_data %>% filter(status == "refugee") %>% nrow()`** surveys
 
 ```{r, echo = FALSE}
