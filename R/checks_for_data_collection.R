@@ -114,7 +114,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_gr
 
 # others checks -----------------------------------------------------------
 
-df_others_data <- extract_other_specify_data(input_tool_data = df_tool_data %>% select(-c(livestock_other, income_other, hh_main_fuel_source_other)), 
+df_others_data <- extract_other_specify_data(input_tool_data = df_tool_data, 
                                              input_survey = df_survey, 
                                              input_choices = df_choices)
 
@@ -1730,3 +1730,26 @@ write_csv(x = df_combined_checks, file = paste0("outputs/", butteR::date_file_pr
 
 
 
+# similarity and silhouette analysis --------------------------------------
+# silhouette analysis
+omit_cols<- c("start", "end", "today", "duration", "duration_minutes", "consent_one", "consent_two",  "consent","hoh", "hoh_equivalent","deviceid", "audit", "audit_URL", "instance_name", "end_survey","corrected_id","id_aid",
+              "demo_check", "hh_roster_note","edu_note","cami_note", "lcsi_note","fcs_note", "mdd_note", "end_note", "geopoint", "_geopoint_latitude", "_geopoint_altitude", "_geopoint_precision", "_id" ,"_submission_time","_validation_status","_notes","_status","_submitted_by","_tags","_index","Too short", "pmi_issues")
+
+data_similartiy <- df_tool_data %>% 
+  select(- any_of(omit_cols))
+
+df_sil_data <- calculateEnumeratorSimilarity(data = data_similartiy,
+                                             input_df_survey = df_tool_data, 
+                                             col_enum = "enumerator_id",
+                                             col_admin = "district_name") %>% 
+  mutate(si2= abs(si))
+
+df_sil_data[order(df_sil_data$`si2`, decreasing = TRUE),!colnames(df_sil_data)%in%"si2"] %>%  
+  openxlsx::write.xlsx(paste0("outputs/", butteR::date_file_prefix(), "_silhouette_analysis_livelihood.xlsx"))
+
+
+# similarity analysis
+df_sim_data <- calculateDifferences(data = data_similartiy, 
+                                    input_df_survey = df_tool_data) %>% 
+  openxlsx::write.xlsx(data2, paste0("outputs/", butteR::date_file_prefix(), 
+                                     "_most_similar_analysis_livelihood.xlsx"))
