@@ -6,6 +6,8 @@ library(lubridate)
 library(glue)
 library(sf)
 
+source("R/support_functions.R")
+
 # read data ---------------------------------------------------------------
 dataset_location <- "inputs/livelihoods_assessment_data.xlsx"
 
@@ -114,7 +116,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_gr
 
 # others checks -----------------------------------------------------------
 
-df_others_data <- extract_other_specify_data(input_tool_data = df_tool_data, 
+df_others_data <- extract_other_specify_data(input_tool_data = df_tool_data %>% select( -any_of(c("livestock_other", "income_other", "hh_main_fuel_source_other"))), 
                                              input_survey = df_survey, 
                                              input_choices = df_choices)
 
@@ -1286,13 +1288,13 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 
 # HH reports to have farm assets, but reports 0 for all items i.e. own_farm_land_items = 'yes' AND [all farm_items rows] = 0
 df_hh_own_farm_land_items_41 <- df_tool_data %>% 
-  filter(own_farm_land_items == "yes", if_all(c(hoe:water_pump), ~ .x == 0)) %>% 
+  filter(if_all(c(hoe:water_pump), ~ .x == 0)) %>% 
   mutate(i.check.type = "change_response",
-         i.check.name = "own_farm_land_items",
-         i.check.current_value = own_farm_land_items,
+         i.check.name = "hoe",
+         i.check.current_value = hoe,
          i.check.value = "",
          i.check.issue_id = "logic_c_hh_own_farm_land_items_41",
-         i.check.issue = glue("income_remittances: {income_remittances}, but hh has not reported receiving remittances under movement section"),
+         i.check.issue = glue("reports not having any farm items"),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
@@ -1300,6 +1302,40 @@ df_hh_own_farm_land_items_41 <- df_tool_data %>%
          i.check.reviewed = "",
          i.check.adjust_log = "",
          i.check.so_sm_choices = "") %>% 
+  slice(rep(1:n(), each = 15)) %>% 
+  group_by(i.check.uuid, i.check.start_date, i.check.enumerator_id, i.check.type,  i.check.name,  i.check.current_value) %>% 
+  mutate(rank = row_number(),
+         i.check.name = case_when(rank == 1 ~ "hoe", 
+                                  rank == 2 ~ "axe",
+                                  rank == 3 ~ "spraying_machine", 
+                                  rank == 4 ~ "shovel", 
+                                  rank == 5 ~ "pick_axe", 
+                                  rank == 6 ~ "sickle", 
+                                  rank == 7 ~ "rake", 
+                                  rank == 8 ~ "cart", 
+                                  rank == 9 ~ "tractor", 
+                                  rank == 10 ~ "conventional_yoke", 
+                                  rank == 11 ~ "ox_plough", 
+                                  rank == 12 ~ "wheelbarrow", 
+                                  rank == 13 ~ "panga_slasher", 
+                                  rank == 14 ~ "pruning_knife", 
+                                  TRUE ~ "water_pump"),
+         i.check.current_value = case_when(rank == 1 ~ as.character(hoe),
+                                           rank == 2 ~ as.character(axe),
+                                           rank == 3 ~ as.character(spraying_machine), 
+                                           rank == 4 ~ as.character(shovel), 
+                                           rank == 5 ~ as.character(pick_axe), 
+                                           rank == 6 ~ as.character(sickle), 
+                                           rank == 7 ~ as.character(rake), 
+                                           rank == 8 ~ as.character(cart), 
+                                           rank == 9 ~ as.character(tractor), 
+                                           rank == 10 ~ as.character(conventional_yoke), 
+                                           rank == 11 ~ as.character(ox_plough), 
+                                           rank == 12 ~ as.character(wheelbarrow), 
+                                           rank == 13 ~ as.character(panga_slasher), 
+                                           rank == 14 ~ as.character(pruning_knife), 
+                                           TRUE ~ as.character(water_pump))
+  ) %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
@@ -1311,62 +1347,61 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 # not(selected(${hh_primary_livelihood}, "crop_production_on_land_of_others")) AND not(selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_land_of_others")) AND
 # not(selected(${hh_primary_livelihood}, "livestock_farming_on_own_land")) AND not(selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_own_land")) AND
 # not(selected(${hh_primary_livelihood}, "livestock_farming_on_land_of_others")) AND not(selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others")))
-df_hh_own_farm_assets_42 <- df_tool_data %>% 
-  filter(own_farm_land_items == "yes", 
-         (!hh_primary_livelihood %in% c("crop_production_on_own_land", "crop_production_on_land_of_others", "livestock_farming_on_own_land", "livestock_farming_on_land_of_others") &
-         !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|crop_production_on_land_of_others|livestock_farming_on_own_land|livestock_farming_on_land_of_others"))) %>% 
-  mutate(i.check.type = "change_response",
-         i.check.name = "own_farm_land_items",
-         i.check.current_value = own_farm_land_items,
-         i.check.value = "",
-         i.check.issue_id = "logic_c_hh_own_farm_assets_42",
-         i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, other_livelihoods_hh_engaged_in :{other_livelihoods_hh_engaged_in}"),
-         i.check.other_text = "",
-         i.check.checked_by = "",
-         i.check.checked_date = as_date(today()),
-         i.check.comment = "", 
-         i.check.reviewed = "",
-         i.check.adjust_log = "",
-         i.check.so_sm_choices = "") %>% 
-  dplyr::select(starts_with("i.check.")) %>% 
-  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+# df_hh_own_farm_assets_42 <- df_tool_data %>% 
+#   filter(own_farm_land_items == "yes", 
+#          (!hh_primary_livelihood %in% c("crop_production_on_own_land", "crop_production_on_land_of_others", "livestock_farming_on_own_land", "livestock_farming_on_land_of_others") &
+#          !str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|crop_production_on_land_of_others|livestock_farming_on_own_land|livestock_farming_on_land_of_others"))) %>% 
+#   mutate(i.check.type = "change_response",
+#          i.check.name = "own_farm_land_items",
+#          i.check.current_value = own_farm_land_items,
+#          i.check.value = "",
+#          i.check.issue_id = "logic_c_hh_own_farm_assets_42",
+#          i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, other_livelihoods_hh_engaged_in :{other_livelihoods_hh_engaged_in}"),
+#          i.check.other_text = "",
+#          i.check.checked_by = "",
+#          i.check.checked_date = as_date(today()),
+#          i.check.comment = "", 
+#          i.check.reviewed = "",
+#          i.check.adjust_log = "",
+#          i.check.so_sm_choices = "") %>% 
+#   dplyr::select(starts_with("i.check.")) %>% 
+#   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+# 
+# add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_own_farm_assets_42")
 
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_own_farm_assets_42")
 
-
-# HH reports to not have farm assets, but does report to have agriculture as a livelihood i.e. own_farm_land_items != 'yes' AND
-# selected(${hh_primary_livelihood}, "crop_production_on_own_land") OR selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_own_land") OR
-# selected(${hh_primary_livelihood}, "crop_production_on_land_of_others") OR selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_land_of_others") OR
-# selected(${hh_primary_livelihood}, "livestock_farming_on_own_land") OR selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_own_land") OR
-# selected(${hh_primary_livelihood}, "livestock_farming_on_land_of_others") OR selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others"))
-df_hh_own_no_farm_assets_43 <- df_tool_data %>% 
-  filter(!own_farm_land_items %in% c("yes"), 
-         (hh_primary_livelihood %in% c("crop_production_on_own_land", "crop_production_on_land_of_others", "livestock_farming_on_own_land", "livestock_farming_on_land_of_others") |
-            str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|crop_production_on_land_of_others|livestock_farming_on_own_land|livestock_farming_on_land_of_others"))) %>% 
-  mutate(i.check.type = "change_response",
-         i.check.name = "own_farm_land_items",
-         i.check.current_value = own_farm_land_items,
-         i.check.value = "",
-         i.check.issue_id = "logic_c_hh_own_no_farm_assets_43",
-         i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, other_livelihoods_hh_engaged_in: {other_livelihoods_hh_engaged_in}"),
-         i.check.other_text = "",
-         i.check.checked_by = "",
-         i.check.checked_date = as_date(today()),
-         i.check.comment = "", 
-         i.check.reviewed = "",
-         i.check.adjust_log = "",
-         i.check.so_sm_choices = "") %>% 
-  dplyr::select(starts_with("i.check.")) %>% 
-  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
-
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_own_no_farm_assets_43")
+# # HH reports to not have farm assets, but does report to have agriculture as a livelihood i.e. own_farm_land_items != 'yes' AND
+# # selected(${hh_primary_livelihood}, "crop_production_on_own_land") OR selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_own_land") OR
+# # selected(${hh_primary_livelihood}, "crop_production_on_land_of_others") OR selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_land_of_others") OR
+# # selected(${hh_primary_livelihood}, "livestock_farming_on_own_land") OR selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_own_land") OR
+# # selected(${hh_primary_livelihood}, "livestock_farming_on_land_of_others") OR selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others"))
+# df_hh_own_no_farm_assets_43 <- df_tool_data %>% 
+#   filter(!own_farm_land_items %in% c("yes"), 
+#          (hh_primary_livelihood %in% c("crop_production_on_own_land", "crop_production_on_land_of_others", "livestock_farming_on_own_land", "livestock_farming_on_land_of_others") |
+#             str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|crop_production_on_land_of_others|livestock_farming_on_own_land|livestock_farming_on_land_of_others"))) %>% 
+#   mutate(i.check.type = "change_response",
+#          i.check.name = "own_farm_land_items",
+#          i.check.current_value = own_farm_land_items,
+#          i.check.value = "",
+#          i.check.issue_id = "logic_c_hh_own_no_farm_assets_43",
+#          i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, other_livelihoods_hh_engaged_in: {other_livelihoods_hh_engaged_in}"),
+#          i.check.other_text = "",
+#          i.check.checked_by = "",
+#          i.check.checked_date = as_date(today()),
+#          i.check.comment = "", 
+#          i.check.reviewed = "",
+#          i.check.adjust_log = "",
+#          i.check.so_sm_choices = "") %>% 
+#   dplyr::select(starts_with("i.check.")) %>% 
+#   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+# 
+# add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_own_no_farm_assets_43")
 
 
 # Same amount entered for all farm assets i.e. hoe = axe = spraying_machine = shovel = pick_axe = sickle = 
 # rake = cart = tractor = conventional_yoke = ox_plough = wheelbarrow = panga_slasher = pruning_knife = water_pump
 df_all_farm_assets_response_same_44 <- df_tool_data %>% 
-  filter(if_all(c(hoe, axe, spraying_machine, shovel, pick_axe, sickle, rake, cart, tractor, conventional_yoke, 
-                  ox_plough, wheelbarrow, panga_slasher, pruning_knife, water_pump), ~ hoe == .x)
+  filter(if_all(c(hoe : water_pump), ~ hoe == .x &  hoe != 0)
     ) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "hoe",
@@ -1380,7 +1415,41 @@ df_all_farm_assets_response_same_44 <- df_tool_data %>%
          i.check.comment = "", 
          i.check.reviewed = "",
          i.check.adjust_log = "",
-         i.check.so_sm_choices = "") %>% 
+         i.check.so_sm_choices = "") %>%
+  slice(rep(1:n(), each = 15)) %>% 
+  group_by(i.check.uuid, i.check.start_date, i.check.enumerator_id, i.check.type,  i.check.name,  i.check.current_value) %>% 
+  mutate(rank = row_number(),
+         i.check.name = case_when(rank == 1 ~ "hoe", 
+                                  rank == 2 ~ "axe",
+                                  rank == 3 ~ "spraying_machine", 
+                                  rank == 4 ~ "shovel", 
+                                  rank == 5 ~ "pick_axe", 
+                                  rank == 6 ~ "sickle", 
+                                  rank == 7 ~ "rake", 
+                                  rank == 8 ~ "cart", 
+                                  rank == 9 ~ "tractor", 
+                                  rank == 10 ~ "conventional_yoke", 
+                                  rank == 11 ~ "ox_plough", 
+                                  rank == 12 ~ "wheelbarrow", 
+                                  rank == 13 ~ "panga_slasher", 
+                                  rank == 14 ~ "pruning_knife", 
+                                  TRUE ~ "water_pump"),
+         i.check.current_value = case_when(rank == 1 ~ as.character(hoe),
+                                           rank == 2 ~ as.character(axe),
+                                           rank == 3 ~ as.character(spraying_machine), 
+                                           rank == 4 ~ as.character(shovel), 
+                                           rank == 5 ~ as.character(pick_axe), 
+                                           rank == 6 ~ as.character(sickle), 
+                                           rank == 7 ~ as.character(rake), 
+                                           rank == 8 ~ as.character(cart), 
+                                           rank == 9 ~ as.character(tractor), 
+                                           rank == 10 ~ as.character(conventional_yoke), 
+                                           rank == 11 ~ as.character(ox_plough), 
+                                           rank == 12 ~ as.character(wheelbarrow), 
+                                           rank == 13 ~ as.character(panga_slasher), 
+                                           rank == 14 ~ as.character(pruning_knife), 
+                                           TRUE ~ as.character(water_pump))
+  ) %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
@@ -1439,7 +1508,7 @@ df_fridge_greater_than_one_47 <- df_tool_data %>%
   filter(fridge  > 1) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "fridge",
-         i.check.current_value = as.numeric(fridge),
+         i.check.current_value = as.character(fridge),
          i.check.value = "",
          i.check.issue_id = "logic_c_fridge_greater_than_one_47",
          i.check.issue = glue("fridge : {fridge}, confirm hh has more than one fridges"),
@@ -1541,7 +1610,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_li
 # HH reports loans as an income sources but reports to not have taken out any loans in the last 6 months i.e.income_loans > 0 AND
 # hh_taken_loan_last_six_month != 'yes'
 df_income_loan_51 <- df_tool_data %>%
-filter(income_loans > 0, !hh_taken_loan_last_six_month %in% c("yes")) %>%
+filter(income_loans > 0, !str_detect(string = income_loans, pattern = "^[9]{2,9}$"), !hh_taken_loan_last_six_month %in% c("yes")) %>%
 mutate(i.check.type = "change_response",
        i.check.name = "hh_taken_loan_last_six_month",
        i.check.current_value = hh_taken_loan_last_six_month,
@@ -1564,7 +1633,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_in
 # HH reports owning livestock but reports 0 for all livestock options i.e. hh_own_livestock = 'yes AND
 # cows_and_calves = 0 AND goats = 0 AND sheep  = 0 AND pigs = 0 AND donkeys  = 0 AND poultry  = 0 AND colonized_beehive  = 0 AND other = 0
 df_hh_reported_zero_on_livestock_52 <- df_tool_data %>% 
-  filter(hh_own_livestock  == "yes", if_all(c(cows_and_calves:other), ~ .x == 0)) %>% 
+  filter(hh_own_livestock  == "yes", if_all(c(cows_and_calves:other_livestock), ~ .x == 0)) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "hh_own_livestock ",
          i.check.current_value = hh_own_livestock,
@@ -1586,7 +1655,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 
 # HH reports same amount for all livestock i.e.cows_and_calves =  goats =  sheep =  pigs =  donkeys =  poultry =  colonized_beehive =  other 
 df_hh_livestock_owned_same_53 <- df_tool_data %>% 
-  filter(if_all(c(cows_and_calves:other), ~ cows_and_calves == .x & cows_and_calves != 0)) %>% 
+  filter(if_all(c(cows_and_calves:other_livestock), ~ cows_and_calves == .x & cows_and_calves != 0)) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "cows_and_calves ",
          i.check.current_value = as.character(cows_and_calves),
@@ -1739,7 +1808,7 @@ data_similartiy <- df_tool_data %>%
   select(- any_of(omit_cols))
 
 df_sil_data <- calculateEnumeratorSimilarity(data = data_similartiy,
-                                             input_df_survey = df_tool_data, 
+                                             input_df_survey = df_survey, 
                                              col_enum = "enumerator_id",
                                              col_admin = "district_name") %>% 
   mutate(si2= abs(si))
@@ -1750,6 +1819,6 @@ df_sil_data[order(df_sil_data$`si2`, decreasing = TRUE),!colnames(df_sil_data)%i
 
 # similarity analysis
 df_sim_data <- calculateDifferences(data = data_similartiy, 
-                                    input_df_survey = df_tool_data) %>% 
+                                    input_df_survey = df_survey) %>% 
   openxlsx::write.xlsx(data2, paste0("outputs/", butteR::date_file_prefix(), 
                                      "_most_similar_analysis_livelihood.xlsx"))
