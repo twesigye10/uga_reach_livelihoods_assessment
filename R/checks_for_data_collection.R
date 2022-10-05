@@ -1608,7 +1608,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_li
 # HH reports loans as an income sources but reports to not have taken out any loans in the last 6 months i.e.income_loans > 0 AND
 # hh_taken_loan_last_six_month != 'yes'
 df_income_loan_51 <- df_tool_data %>%
-filter(income_loans > 0, !hh_taken_loan_last_six_month %in% c("yes")) %>%
+filter(income_loans > 0, !str_detect(string = income_loans, pattern = "^[9]{2,9}$"), !hh_taken_loan_last_six_month %in% c("yes")) %>%
 mutate(i.check.type = "change_response",
        i.check.name = "hh_taken_loan_last_six_month",
        i.check.current_value = hh_taken_loan_last_six_month,
