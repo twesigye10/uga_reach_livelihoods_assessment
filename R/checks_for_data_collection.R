@@ -1459,26 +1459,27 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_fr
 # Respondent is not HoH & did not include HoH details in the household composition i.e. gender_hoh & age_hoh != age + gender (in hh_roster)
 # No hoh related question  
 df_hoh_details_and_hh_roster_48 <- df_repeat_hh_roster_data %>%
-filter(consent_two == "no")  %>%
-  group_by("_uuid") %>%
-  mutate(int.hoh_bio = ifelse(gender_hoh == gender & age_hoh == age, "given", "not_given")) %>% 
-  filter(str_detect(string = paste(int.hoh_bio, collapse = ":"), pattern = "^given$")) %>% 
+  filter(consent_two == "no")  %>%
+  group_by(`_uuid`) %>%
+  mutate(int.hoh_bio = ifelse(gender_hoh == gender & age_hoh == age, "given", "not")) %>% 
+  filter(!str_detect(string = paste(int.hoh_bio, collapse = ":"), pattern = "given")) %>% 
   filter(row_number() == 1) %>% 
-mutate(i.check.type = "change_response",
-      i.check.name = "age_hoh ",
-     i.check.current_value = as.character(age_hoh),
-    i.check.value = "",
-   i.check.issue_id = "logic_c_hoh_details_and_hh_roster_48",
-      i.check.issue = glue("gender_hoh : {gender_hoh}, details not given in the hh_roster"),
-     i.check.other_text = "",
-    i.check.checked_by = "",
-   i.check.checked_date = as_date(today()),
-      i.check.comment = "",
-     i.check.reviewed = "",
-    i.check.adjust_log = "",
-   i.check.so_sm_choices = "") %>%
- dplyr::select(starts_with("i.check.")) %>%
- rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+  ungroup() %>% 
+  mutate(i.check.type = "change_response",
+         i.check.name = "age_hoh ",
+         i.check.current_value = as.character(age_hoh),
+         i.check.value = "",
+         i.check.issue_id = "logic_c_hoh_details_and_hh_roster_48",
+         i.check.issue = glue("gender_hoh : {gender_hoh}, details not given in the hh_roster"),
+         i.check.other_text = "",
+         i.check.checked_by = "",
+         i.check.checked_date = as_date(today()),
+         i.check.comment = "",
+         i.check.reviewed = "",
+         i.check.adjust_log = "",
+         i.check.so_sm_choices = "") %>%
+  dplyr::select(starts_with("i.check.")) %>%
+  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hoh_details_and_hh_roster_48")
 
