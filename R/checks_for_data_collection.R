@@ -7,8 +7,9 @@ library(glue)
 library(sf)
 
 # read data ---------------------------------------------------------------
+dataset_location <- "inputs/livelihoods_assessment_data.xlsx"
 
-df_tool_data <- readxl::read_excel(path = "inputs/livelihoods_assessment_data.xlsx") %>% 
+df_tool_data <- readxl::read_excel(path = dataset_location) %>% 
   mutate(i.check.uuid = `_uuid`,
          i.check.start_date = as_date(start),
          i.check.enumerator_id = as.character(enumerator_id),
@@ -24,6 +25,9 @@ df_tool_data <- readxl::read_excel(path = "inputs/livelihoods_assessment_data.xl
          district_name = i.check.district_name,
          i.check.point_number = point_number) %>% 
   filter(i.check.start_date > as_date("2022-08-07"))
+
+df_repeat_hh_roster_data <- readxl::read_excel(path = dataset_location, sheet = "hh_roster")
+df_repeat_school_enrollment_data <- readxl::read_excel(path = dataset_location, sheet = "repeat_school_enrollment")
 
 df_survey <- readxl::read_excel(path = "inputs/livelihoods_assessment_tool.xlsx", sheet = "survey")
 df_choices <- readxl::read_excel(path = "inputs/livelihoods_assessment_tool.xlsx", sheet = "choices")
@@ -60,6 +64,12 @@ add_checks_data_to_list(input_list_name = "logic_output",input_df_name = "df_tim
 df_c_outliers <- checksupporteR::check_outliers_cleaninginspector(input_tool_data = df_tool_data)
 
 add_checks_data_to_list(input_list_name = "logic_output",input_df_name = "df_c_outliers")
+
+df_c_outliers_hh_roster <- checksupporteR::check_outliers_cleaninginspector_repeats(input_tool_data = df_repeat_hh_roster_data,
+                                                                                    input_sheet_name = "hh_roster", input_repeat_cols = c("age"))
+
+add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_c_outliers_hh_roster")
+
 
 # spatial checks ----------------------------------------------------------
 
@@ -1590,18 +1600,16 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 
 
 # HH reports shelter is 'finished' but also reports shelter is too damaged for living i.e. shelter_type_hh_live = 'finished_house' AND
- # selected(shelter_issues,  any=c('total collapse or shelter too damaged for living')
-
-
+# selected(shelter_issues,  any=c('total collapse or shelter too damaged for living')
 df_shelter_type_hh_lives_finished_54 <- df_tool_data %>% 
   filter(shelter_type_hh_live %in% c("finished_house"), 
          str_detect(string = shelter_issues, pattern = "total_collapse_or_shelter_too_damaged_for_living")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "shelter_type_hh_live",
-         i.check.current_value = as.character(shelter_type_hh_live),
+         i.check.current_value = shelter_type_hh_live,
          i.check.value = "",
          i.check.issue_id = "logic_c_shelter_type_hh_lives_finished_54",
-         i.check.issue = glue("shelter_type_hh_live: {shelter_type_hh_live}, but shelter_issues: {shelter_issues} "),
+         i.check.issue = glue("shelter_type_hh_live: {shelter_type_hh_live}, shelter_issues: {shelter_issues} "),
          i.check.other_text = "",
          i.check.checked_by = "",
          i.check.checked_date = as_date(today()),
@@ -1615,10 +1623,8 @@ df_shelter_type_hh_lives_finished_54 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_shelter_type_hh_lives_finished_54")
 
 
-
 # HH reports shelter is 'unfinished' but also reports shelter has no damage or defects i.e shelter_type_hh_live = 'unfinished_house' AND
 #shelter_issues = 'none'
-
 df_shelter_type_hh_lives_unfinished_55 <- df_tool_data %>% 
   filter(shelter_type_hh_live %in% c("unfinished_house"), 
          str_detect(string = shelter_issues, pattern = "none")) %>% 
@@ -1641,14 +1647,12 @@ df_shelter_type_hh_lives_unfinished_55 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_shelter_type_hh_lives_unfinished_55")
 
 
-
 # HH reports rent under expenditures, but does not report renting as the occupancy status i.e. rent > 0 AND shelter_occupancy_arrangement != 'renting'
-
 df_shelter_occupancy_arrangement_no_rent_56 <- df_tool_data %>% 
-  filter(rent > 0, shelter_occupancy_arrangement != "renting") %>% 
+  filter(rent > 0, !shelter_occupancy_arrangement %in% c("renting")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "shelter_occupancy_arrangement",
-         i.check.current_value = as.character(shelter_occupancy_arrangement),
+         i.check.current_value = shelter_occupancy_arrangement,
          i.check.value = "",
          i.check.issue_id = "logic_c_shelter_occupancy_arrangement_no_rent_56",
          i.check.issue = glue("rent: {rent}, yet  shelter_occupancy_arrangement: {shelter_occupancy_arrangement}"),
@@ -1666,12 +1670,11 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_sh
 
 
 #HH reports 0 under rent expenditure i.e. rent = 0 AND shelter_occupancy_arrangement = 'renting'
-
 df_shelter_occupancy_arrangement_rent_57 <- df_tool_data %>% 
   filter(rent == 0, shelter_occupancy_arrangement %in% c("renting")) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "shelter_occupancy_arrangement",
-         i.check.current_value = as.character(shelter_occupancy_arrangement),
+         i.check.current_value = shelter_occupancy_arrangement,
          i.check.value = "",
          i.check.issue_id = "logic_c_shelter_occupancy_arrangement_rent_57",
          i.check.issue = glue("rent: {rent}, yet  shelter_occupancy_arrangement: {shelter_occupancy_arrangement}"),
@@ -1688,9 +1691,7 @@ df_shelter_occupancy_arrangement_rent_57 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_shelter_occupancy_arrangement_rent_57")
 
 
-
 # HH reports not owning a boda but also reports bodaboda as a livelihood i.e. motorcycle = 0 AND casual_labour_hh_engaged = 'bodabodalocal_transport'
-
 df_hh_owns_no_bodaboda_58 <- df_tool_data %>% 
   filter(motorcycle == 0, str_detect(string = casual_labour_hh_engaged, pattern = "bodabodalocal_transport")) %>%
   mutate(i.check.type = "change_response",
