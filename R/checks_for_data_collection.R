@@ -1821,5 +1821,5 @@ df_sil_data[order(df_sil_data$`si2`, decreasing = TRUE),!colnames(df_sil_data)%i
 # similarity analysis
 df_sim_data <- calculateDifferences(data = data_similartiy, 
                                     input_df_survey = df_survey) %>% 
-  openxlsx::write.xlsx(data2, paste0("outputs/", butteR::date_file_prefix(), 
+  openxlsx::write.xlsx(paste0("outputs/", butteR::date_file_prefix(), 
                                      "_most_similar_analysis_livelihood.xlsx"))
