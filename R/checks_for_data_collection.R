@@ -114,7 +114,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_gr
 
 # others checks -----------------------------------------------------------
 
-df_others_data <- extract_other_specify_data(input_tool_data = df_tool_data %>% select(-c(livestock_other, income_other, hh_main_fuel_source_other)), 
+df_others_data <- extract_other_specify_data(input_tool_data = df_tool_data, 
                                              input_survey = df_survey, 
                                              input_choices = df_choices)
 
