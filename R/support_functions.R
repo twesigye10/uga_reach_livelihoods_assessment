@@ -23,12 +23,12 @@ get_average_survey_time <- function(input_tool_data) {
 # similarity analysis -----------------------------------------------------
 
 # for each survey, it finds the closest matching survey with the minimum number of different columns
-calculateDifferences <- function(data, tool.survey){
+calculateDifferences <- function(data, input_df_survey){
   # 1) convert all columns to character
   data <- mutate_all(data, as.character)
   # 2) remove columns that are naturally different in each survey
   cols <- data.frame(column=colnames(data)) %>% 
-    left_join(select(tool.survey, name, type), by=c("column"="name")) %>% 
+    left_join(select(input_df_survey, name, type), by=c("column"="name")) %>% 
     filter(!(type %in% c("_uuid", "enumerator_id")) &
              !str_starts(column, "_other$") &
              !str_detect(column, "_specify$"))
@@ -54,13 +54,13 @@ calculateDifferences <- function(data, tool.survey){
 
 # silhouette analysis based on gower distance between surveys -------------
 
-calculateEnumeratorSimilarity <- function(data, tool.survey, col_enum, col_admin){
+calculateEnumeratorSimilarity <- function(data, input_df_survey, col_enum, col_admin){
   
   # helper function
-  convertColTypes <- function(data, tool.survey){
+  convertColTypes <- function(data, input_df_survey){
     # select_multiple: numeric or factor?
     col.types <- data.frame(column=colnames(data)) %>% 
-      left_join(select(tool.survey, name, type), by=c("column"="name")) %>% 
+      left_join(select(input_df_survey, name, type), by=c("column"="name")) %>% 
       mutate(type.edited = case_when(type %in% c("integer", "decimal", "calculate") ~ "numeric",
                                      str_starts(type, "select_") ~ "factor",
                                      str_detect(column, "/") ~ "factor",
@@ -77,10 +77,10 @@ calculateEnumeratorSimilarity <- function(data, tool.survey, col_enum, col_admin
   }
   
   # convert columns using the tool
-  data <- convertColTypes(data, tool.survey)
+  data <- convertColTypes(data, input_df_survey)
   # keep only relevant columns
   cols <- data.frame(column=colnames(data)) %>% 
-    left_join(select(tool.survey, name, type), by=c("column"="name")) %>% 
+    left_join(select(input_df_survey, name, type), by=c("column"="name")) %>% 
     filter(!(type %in% c("_uuid", "enumerator_id")) &
              !str_starts(column, "_other$") &
              !str_detect(column, "_specify$"))
