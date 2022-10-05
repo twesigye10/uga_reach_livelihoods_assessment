@@ -109,16 +109,6 @@ df_enum_performance <- df_updated_tool_data %>%
          int.survey_time_interval = ceiling(int.survey_time_interval))
 
 # functions for changing some options in the table
-dt_set_options<- function(x){
-  DT::datatable(x,
-                options = list(
-                  autoWidth=F,
-                  dom= 't',
-                  list(list(width = '20%', targets = list(1,2,3,4,5)))
-                )
-  )
-}
-
 dt_with_modified_options <- function(x){
   DT::datatable(x,
                 rownames = FALSE,
