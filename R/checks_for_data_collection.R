@@ -1368,32 +1368,32 @@ df_hh_own_farm_assets_42 <- df_tool_data %>%
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_own_farm_assets_42")
 
 
-# HH reports to not have farm assets, but does report to have agriculture as a livelihood i.e. own_farm_land_items != 'yes' AND
-# selected(${hh_primary_livelihood}, "crop_production_on_own_land") OR selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_own_land") OR
-# selected(${hh_primary_livelihood}, "crop_production_on_land_of_others") OR selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_land_of_others") OR
-# selected(${hh_primary_livelihood}, "livestock_farming_on_own_land") OR selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_own_land") OR
-# selected(${hh_primary_livelihood}, "livestock_farming_on_land_of_others") OR selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others"))
-df_hh_own_no_farm_assets_43 <- df_tool_data %>% 
-  filter(!own_farm_land_items %in% c("yes"), 
-         (hh_primary_livelihood %in% c("crop_production_on_own_land", "crop_production_on_land_of_others", "livestock_farming_on_own_land", "livestock_farming_on_land_of_others") |
-            str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|crop_production_on_land_of_others|livestock_farming_on_own_land|livestock_farming_on_land_of_others"))) %>% 
-  mutate(i.check.type = "change_response",
-         i.check.name = "own_farm_land_items",
-         i.check.current_value = own_farm_land_items,
-         i.check.value = "",
-         i.check.issue_id = "logic_c_hh_own_no_farm_assets_43",
-         i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, other_livelihoods_hh_engaged_in: {other_livelihoods_hh_engaged_in}"),
-         i.check.other_text = "",
-         i.check.checked_by = "",
-         i.check.checked_date = as_date(today()),
-         i.check.comment = "", 
-         i.check.reviewed = "",
-         i.check.adjust_log = "",
-         i.check.so_sm_choices = "") %>% 
-  dplyr::select(starts_with("i.check.")) %>% 
-  rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
-
-add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_own_no_farm_assets_43")
+# # HH reports to not have farm assets, but does report to have agriculture as a livelihood i.e. own_farm_land_items != 'yes' AND
+# # selected(${hh_primary_livelihood}, "crop_production_on_own_land") OR selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_own_land") OR
+# # selected(${hh_primary_livelihood}, "crop_production_on_land_of_others") OR selected(${other_livelihoods_hh_engaged_in}, "crop_production_on_land_of_others") OR
+# # selected(${hh_primary_livelihood}, "livestock_farming_on_own_land") OR selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_own_land") OR
+# # selected(${hh_primary_livelihood}, "livestock_farming_on_land_of_others") OR selected(${other_livelihoods_hh_engaged_in}, "livestock_farming_on_land_of_others"))
+# df_hh_own_no_farm_assets_43 <- df_tool_data %>% 
+#   filter(!own_farm_land_items %in% c("yes"), 
+#          (hh_primary_livelihood %in% c("crop_production_on_own_land", "crop_production_on_land_of_others", "livestock_farming_on_own_land", "livestock_farming_on_land_of_others") |
+#             str_detect(string = other_livelihoods_hh_engaged_in, pattern = "crop_production_on_own_land|crop_production_on_land_of_others|livestock_farming_on_own_land|livestock_farming_on_land_of_others"))) %>% 
+#   mutate(i.check.type = "change_response",
+#          i.check.name = "own_farm_land_items",
+#          i.check.current_value = own_farm_land_items,
+#          i.check.value = "",
+#          i.check.issue_id = "logic_c_hh_own_no_farm_assets_43",
+#          i.check.issue = glue("hh_primary_livelihood: {hh_primary_livelihood}, other_livelihoods_hh_engaged_in: {other_livelihoods_hh_engaged_in}"),
+#          i.check.other_text = "",
+#          i.check.checked_by = "",
+#          i.check.checked_date = as_date(today()),
+#          i.check.comment = "", 
+#          i.check.reviewed = "",
+#          i.check.adjust_log = "",
+#          i.check.so_sm_choices = "") %>% 
+#   dplyr::select(starts_with("i.check.")) %>% 
+#   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
+# 
+# add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh_own_no_farm_assets_43")
 
 
 # Same amount entered for all farm assets i.e. hoe = axe = spraying_machine = shovel = pick_axe = sickle = 
