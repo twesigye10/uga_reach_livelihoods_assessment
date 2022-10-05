@@ -20,6 +20,8 @@ library(lubridate)
 library(glue)
 library(leaflet)
 
+source("../R/support_functions.R")
+
 df_logical_check_description <- readr::read_csv("../inputs/SLA_Logical_checks_overview.csv") %>% 
   janitor::clean_names() %>% 
   select(check_number, check_description) %>% 
@@ -158,6 +160,8 @@ dt_enum_performance_options <- function(x){
 
 >There are **`r nrow(df_updated_tool_data)`** total number of surveys done as of **`r df_days_for_data_collection[length(df_days_for_data_collection)]`**.
 
+>The average survey time for all the data is: **`r get_average_survey_time(df_updated_tool_data)`** Minutes
+
 ### General outlook
 
 ```{r, echo = FALSE}
@@ -242,8 +246,6 @@ df_updated_tool_data %>%
 ```
 
 ### Daily enumerator performance
-
-The average survey time for all the data is: **`r round(mean(df_enum_performance$int.survey_time_interval), 0)`** Minutes
 
 ```{r, echo = FALSE}
 df_enum_performance %>% 
