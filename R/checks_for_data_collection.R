@@ -1413,7 +1413,41 @@ df_all_farm_assets_response_same_44 <- df_tool_data %>%
          i.check.comment = "", 
          i.check.reviewed = "",
          i.check.adjust_log = "",
-         i.check.so_sm_choices = "") %>% 
+         i.check.so_sm_choices = "") %>%
+  slice(rep(1:n(), each = 15)) %>% 
+  group_by(i.check.uuid, i.check.start_date, i.check.enumerator_id, i.check.type,  i.check.name,  i.check.current_value) %>% 
+  mutate(rank = row_number(),
+         i.check.name = case_when(rank == 1 ~ "hoe", 
+                                  rank == 2 ~ "axe",
+                                  rank == 3 ~ "spraying_machine", 
+                                  rank == 4 ~ "shovel", 
+                                  rank == 5 ~ "pick_axe", 
+                                  rank == 6 ~ "sickle", 
+                                  rank == 7 ~ "rake", 
+                                  rank == 8 ~ "cart", 
+                                  rank == 9 ~ "tractor", 
+                                  rank == 10 ~ "conventional_yoke", 
+                                  rank == 11 ~ "ox_plough", 
+                                  rank == 12 ~ "wheelbarrow", 
+                                  rank == 13 ~ "panga_slasher", 
+                                  rank == 14 ~ "pruning_knife", 
+                                  TRUE ~ "water_pump"),
+         i.check.current_value = case_when(rank == 1 ~ as.character(hoe),
+                                           rank == 2 ~ as.character(axe),
+                                           rank == 3 ~ as.character(spraying_machine), 
+                                           rank == 4 ~ as.character(shovel), 
+                                           rank == 5 ~ as.character(pick_axe), 
+                                           rank == 6 ~ as.character(sickle), 
+                                           rank == 7 ~ as.character(rake), 
+                                           rank == 8 ~ as.character(cart), 
+                                           rank == 9 ~ as.character(tractor), 
+                                           rank == 10 ~ as.character(conventional_yoke), 
+                                           rank == 11 ~ as.character(ox_plough), 
+                                           rank == 12 ~ as.character(wheelbarrow), 
+                                           rank == 13 ~ as.character(panga_slasher), 
+                                           rank == 14 ~ as.character(pruning_knife), 
+                                           TRUE ~ as.character(water_pump))
+  ) %>%
   dplyr::select(starts_with("i.check.")) %>% 
   rename_with(~str_replace(string = .x, pattern = "i.check.", replacement = ""))
 
@@ -1472,7 +1506,7 @@ df_fridge_greater_than_one_47 <- df_tool_data %>%
   filter(fridge  > 1) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "fridge",
-         i.check.current_value = as.numeric(fridge),
+         i.check.current_value = as.character(fridge),
          i.check.value = "",
          i.check.issue_id = "logic_c_fridge_greater_than_one_47",
          i.check.issue = glue("fridge : {fridge}, confirm hh has more than one fridges"),
