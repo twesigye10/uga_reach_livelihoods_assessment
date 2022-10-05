@@ -1564,7 +1564,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_in
 # HH reports owning livestock but reports 0 for all livestock options i.e. hh_own_livestock = 'yes AND
 # cows_and_calves = 0 AND goats = 0 AND sheep  = 0 AND pigs = 0 AND donkeys  = 0 AND poultry  = 0 AND colonized_beehive  = 0 AND other = 0
 df_hh_reported_zero_on_livestock_52 <- df_tool_data %>% 
-  filter(hh_own_livestock  == "yes", if_all(c(cows_and_calves:other), ~ .x == 0)) %>% 
+  filter(hh_own_livestock  == "yes", if_all(c(cows_and_calves:other_livestock), ~ .x == 0)) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "hh_own_livestock ",
          i.check.current_value = hh_own_livestock,
@@ -1586,7 +1586,7 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_hh
 
 # HH reports same amount for all livestock i.e.cows_and_calves =  goats =  sheep =  pigs =  donkeys =  poultry =  colonized_beehive =  other 
 df_hh_livestock_owned_same_53 <- df_tool_data %>% 
-  filter(if_all(c(cows_and_calves:other), ~ cows_and_calves == .x & cows_and_calves != 0)) %>% 
+  filter(if_all(c(cows_and_calves:other_livestock), ~ cows_and_calves == .x & cows_and_calves != 0)) %>% 
   mutate(i.check.type = "change_response",
          i.check.name = "cows_and_calves ",
          i.check.current_value = as.character(cows_and_calves),
