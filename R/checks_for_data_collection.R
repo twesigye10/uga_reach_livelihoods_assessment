@@ -5,6 +5,7 @@ library(tidyverse)
 library(lubridate)
 library(glue)
 library(sf)
+library(cluster)
 
 # read data ---------------------------------------------------------------
 dataset_location <- "inputs/livelihoods_assessment_data.xlsx"
