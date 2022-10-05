@@ -69,7 +69,7 @@ df_tool_data <- readxl::read_excel("../inputs/livelihoods_assessment_data.xlsx")
 df_days_for_data_collection <- df_tool_data %>% select(start_date) %>% unique() %>% arrange(start_date) %>% pull()
 
 df_data_support_cl_log <- df_tool_data %>% 
-  select(uuid, status,	location, latitude,	longitude )
+  select(uuid, status, location_type, location, latitude,	longitude )
 # cleaning log handling
 df_cl_log <- read_csv(file = "../inputs/combined_checks_livelihood.csv") %>% 
   mutate(adjust_log = ifelse(is.na(adjust_log), "apply_suggested_change", adjust_log)) %>% 
@@ -237,7 +237,7 @@ The average survey time for all the data is: **`r round(mean(df_enum_performance
 
 ```{r, echo = FALSE}
 df_enum_performance %>% 
-  group_by(location, start_date, enumerator_id) %>% 
+  group_by(location_type, location, start_date, enumerator_id) %>% 
   summarise(number_of_interviews_done = n(), `average_survey_time(minutes)` = round(mean(int.survey_time_interval, na.rm = TRUE), 0)) %>% 
   dt_enum_performance_options()
 ```
@@ -261,7 +261,7 @@ df_cl_log %>%
 
 ```{r, echo = FALSE}
 df_cl_log %>% 
-  group_by(location, enumerator_id) %>% 
+  group_by(location_type, location, enumerator_id) %>% 
   summarise(number_of_issues_by_enumerator_id = n()) %>%
   dt_options_fewcols()
 ```
@@ -284,15 +284,17 @@ df_cl_log %>%
 ```{r, echo = FALSE}
 
 df_enum_n_surveys <- df_updated_tool_data %>% 
-  group_by(enumerator_id) %>% 
+  group_by(location_type, location, enumerator_id) %>% 
   summarise(no_surveys = n())
 
 df_cl_log %>% 
   filter(type == "remove_survey", reviewed == 1, adjust_log != "delete_log") %>% 
-  group_by(enumerator_id) %>% 
+  group_by(location_type, location, enumerator_id) %>% 
   summarise(number_of_surveys_for_deletion_by_enumerator = n()) %>%
   arrange(desc(number_of_surveys_for_deletion_by_enumerator)) %>%
   left_join(df_enum_n_surveys, by = "enumerator_id") %>% 
+  rename(location_type = location_type.x, location = location.x) %>% 
+  select(-c(location_type.y, location.y)) %>% 
   mutate(`% of deletion` = round((number_of_surveys_for_deletion_by_enumerator/ no_surveys)*100, 0)) %>% 
   dt_options_fewcols()
 ```
