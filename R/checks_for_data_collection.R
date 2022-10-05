@@ -6,6 +6,8 @@ library(lubridate)
 library(glue)
 library(sf)
 
+source("R/support_functions.R")
+
 # read data ---------------------------------------------------------------
 dataset_location <- "inputs/livelihoods_assessment_data.xlsx"
 
