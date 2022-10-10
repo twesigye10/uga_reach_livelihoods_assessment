@@ -133,8 +133,8 @@ add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_pt
 
 threshold_dist <- 150
 
-df_greater_thresh_distance <- check_threshold_distance(input_sample_data = df_sample_data,
-                                                       input_tool_data = df_tool_data,
+df_greater_thresh_distance <- check_threshold_distance(input_sample_data = df_sample_data ,
+                                                       input_tool_data = df_tool_data %>% filter(!is.na(`_geopoint_longitude`)),
                                                        input_threshold_dist = threshold_dist)
 
 add_checks_data_to_list(input_list_name = "logic_output", input_df_name = "df_greater_thresh_distance")
