@@ -1825,14 +1825,20 @@ write_csv(x = df_combined_checks, file = paste0("outputs/", butteR::date_file_pr
 
 
 # similarity and silhouette analysis --------------------------------------
+
 # silhouette analysis
-omit_cols<- c("start", "end", "today", "duration", "duration_minutes", "consent_one", "consent_two",  "consent","hoh", "hoh_equivalent","deviceid", "audit", "audit_URL", "instance_name", "end_survey","district_name", "location",
-              "demo_check", "hh_roster_note","edu_note","cami_note", "lcsi_note","fcs_note", "mdd_note", "end_note", "geopoint", "_geopoint_latitude", "_geopoint_altitude", "_geopoint_precision", "_id" ,"_submission_time","_validation_status","_notes","_status","_submitted_by","_tags","_index","Too short", "pmi_issues")
 
-data_similartiy <- df_tool_data %>% 
-  select(- any_of(omit_cols))
+# NOTE: the column for "col_admin" is kept in the data
+omit_cols_sil <- c("start", "end", "today", "duration", "duration_minutes", 
+                   "consent_one", "consent_two",  "consent","hoh", "hoh_equivalent",
+                   "deviceid", "audit", "audit_URL", "instance_name", "end_survey","district_name",
+              "demo_check", "hh_roster_note","edu_note","cami_note", "lcsi_note","fcs_note", "mdd_note", "end_note", "geopoint", "_geopoint_latitude", "_geopoint_altitude", "_geopoint_precision", "_id" ,"_submission_time","_validation_status","_notes","_status","_submitted_by","_tags","_index","Too short", "pmi_issues",
+              "i.check.enumerator_id")
 
-df_sil_data <- calculateEnumeratorSimilarity(data = data_similartiy,
+data_similartiy_sil <- df_tool_data %>% 
+  select(- any_of(omit_cols_sil))
+
+df_sil_data <- calculateEnumeratorSimilarity(data = data_similartiy_sil,
                                              input_df_survey = df_survey, 
                                              col_enum = "enumerator_id",
                                              col_admin = "location") %>% 
@@ -1843,6 +1849,10 @@ df_sil_data[order(df_sil_data$`si2`, decreasing = TRUE),!colnames(df_sil_data)%i
 
 
 # similarity analysis
+
+data_similartiy <- df_tool_data %>% 
+  select(- any_of(c(omit_cols_sil, "location")))
+
 df_sim_data <- calculateDifferences(data = data_similartiy, 
                                     input_df_survey = df_survey) %>% 
   openxlsx::write.xlsx(paste0("outputs/", butteR::date_file_prefix(), 
