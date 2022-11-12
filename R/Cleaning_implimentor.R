@@ -32,9 +32,7 @@ df_raw_data <- readxl::read_excel(path = data_path, col_types = c_types) %>%
   filter(as_date(as_datetime(start)) > as_date("2022-08-10")) %>%
   mutate(across(.cols = -c(contains(cols_to_escape)), 
                 .fns = ~ifelse(str_detect(string = ., 
-                                          pattern = fixed(pattern = "N/A", ignore_case = TRUE)), "NA", .))) #%>% 
-  # mutate(across(.cols = -c(contains(cols_to_escape), matches("_age$|^age_|uuid")), 
-  #               .fns = ~ifelse(str_detect(string = ., pattern = "^[9]{2,9}$"), "NA", .)))
+                                          pattern = fixed(pattern = "N/A", ignore_case = TRUE)), "NA", .)))
 
 # loops
 hh_roster <- readxl::read_excel(path = data_path, sheet = "hh_roster")
@@ -58,7 +56,9 @@ df_choices <- readxl::read_excel("inputs/livelihoods_assessment_tool.xlsx", shee
 df_cleaned_data <- implement_cleaning_support(input_df_raw_data = df_raw_data %>% select(-employee_business_hh_engaged_text),
                                             input_df_survey = df_survey,
                                             input_df_choices = df_choices,
-                                            input_df_cleaning_log = df_cleaning_log_main)
+                                            input_df_cleaning_log = df_cleaning_log_main) %>% 
+mutate(across(.cols = -c(contains(cols_to_escape), matches("_age$|^age_|uuid")),
+              .fns = ~ifelse(str_detect(string = ., pattern = "^[9]{2,9}$"), "NA", .)))
 
 
 # clean repeats -----------------------------------------------------------
@@ -67,6 +67,7 @@ other_repeat_col <- c("start", "end", "today", "consent_one", "consent_two", "ho
                       "education_hoh", "location", "location_type", "status_intro", "ctry_origin_not_uganda", 
                       "ctry_origin_not_uganda_other", "date_arrival", "hh_living_status", "town_hh_living_in", 
                       "settlement_name", "status")
+
 df_cleaning_log_roster <- df_cleaning_log %>% 
   filter(!is.na(sheet), uuid %in% df_raw_data_hh_roster$`_uuid`, name %in% colnames(df_raw_data_hh_roster))
 
@@ -74,7 +75,9 @@ df_cleaned_data_hh_roster <- implement_cleaning_support(input_df_raw_data = df_r
                                                       input_df_survey = df_survey,
                                                       input_df_choices = df_choices,
                                                       input_df_cleaning_log = df_cleaning_log_roster) %>% 
-  select(other_repeat_col, any_of(colnames(hh_roster)), `_index` = index, `_submission__uuid` = uuid)
+  select(other_repeat_col, any_of(colnames(hh_roster)), `_index` = index, `_submission__uuid` = uuid) %>% 
+  mutate(across(.cols = -c(contains(cols_to_escape), matches("_age$|^age_|uuid")),
+                .fns = ~ifelse(str_detect(string = ., pattern = "^[9]{2,9}$"), "NA", .)))
 
 df_cleaning_log_school <- df_cleaning_log %>% 
   filter(!is.na(sheet), uuid %in% df_raw_data_hh_repeat_school_enrollment$`_uuid`, name %in% colnames(df_raw_data_hh_repeat_school_enrollment))
@@ -83,7 +86,9 @@ df_clean_data_hh_repeat_school_enrollment <- implement_cleaning_support(input_df
                                                                         input_df_survey = df_survey,
                                                                         input_df_choices = df_choices,
                                                                         input_df_cleaning_log = df_cleaning_log_school) %>% 
-  select(other_repeat_col, any_of(colnames(hh_repeat_school_enrollment)), `_index` = index, `_submission__uuid` = uuid)
+  select(other_repeat_col, any_of(colnames(hh_repeat_school_enrollment)), `_index` = index, `_submission__uuid` = uuid) %>% 
+  mutate(across(.cols = -c(contains(cols_to_escape), matches("_age$|^age_|uuid")),
+                .fns = ~ifelse(str_detect(string = ., pattern = "^[9]{2,9}$"), "NA", .)))
 
 
 # write final modified data -----------------------------------------------
