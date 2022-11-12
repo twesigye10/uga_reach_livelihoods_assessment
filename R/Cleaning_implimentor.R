@@ -81,7 +81,7 @@ df_cleaned_data_hh_roster <- implement_cleaning_support(input_df_raw_data = df_r
                                                       input_df_survey = df_survey,
                                                       input_df_choices = df_choices,
                                                       input_df_cleaning_log = df_cleaning_log_roster) %>% 
-  select(other_repeat_col, any_of(colnames(hh_roster)), `_index` = index, `_submission__uuid` = uuid) %>% 
+  select(any_of(other_repeat_col), any_of(colnames(hh_roster)), `_index` = index, `_submission__uuid` = uuid) %>% 
   mutate(across(.cols = -c(contains(cols_to_escape), matches("_age$|^age_|uuid")),
                 .fns = ~ifelse(str_detect(string = ., pattern = "^[9]{2,9}$"), "NA", .)))
 
@@ -92,7 +92,7 @@ df_clean_data_hh_repeat_school_enrollment <- implement_cleaning_support(input_df
                                                                         input_df_survey = df_survey,
                                                                         input_df_choices = df_choices,
                                                                         input_df_cleaning_log = df_cleaning_log_school) %>% 
-  select(other_repeat_col, any_of(colnames(hh_repeat_school_enrollment)), `_index` = index, `_submission__uuid` = uuid) %>% 
+  select(any_of(other_repeat_col), any_of(colnames(hh_repeat_school_enrollment)), `_index` = index, `_submission__uuid` = uuid) %>% 
   mutate(across(.cols = -c(contains(cols_to_escape), matches("_age$|^age_|uuid")),
                 .fns = ~ifelse(str_detect(string = ., pattern = "^[9]{2,9}$"), "NA", .)))
 
