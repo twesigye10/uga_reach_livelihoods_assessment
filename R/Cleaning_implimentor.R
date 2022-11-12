@@ -11,7 +11,7 @@ library(kobold)
 
 df_cleaning_log <- read_csv("inputs/combined_checks_livelihood.csv", col_types = cols(sheet = "c", index = "i")) %>% 
   filter(!adjust_log %in% c("delete_log")) %>%
-  mutate(sheet = NA, index = NA, relevant = NA) %>% 
+  mutate(relevant = NA) %>% 
   mutate(adjust_log = ifelse(is.na(adjust_log), "apply_suggested_change", adjust_log),
          value = ifelse(is.na(value) & str_detect(string = issue_id, pattern = "logic_c_"), "blank", value),
          value = ifelse(type %in% c("remove_survey"), "blank", value),
@@ -30,7 +30,7 @@ df_raw_data <- readxl::read_excel(path = "inputs/livelihoods_assessment_data.xls
   mutate(across(.cols = everything(), .fns = ~ifelse(str_detect(string = ., 
                                                                 pattern = fixed(pattern = "N/A", ignore_case = TRUE)), 
                                                      "NA", .))) %>% 
-  mutate(start = as_datetime(start), end = as_datetime(end), today = as_date(as_datetime(today)), date_arrival = as_date(as_datetime(date_arrival)))
+  mutate(start = as_datetime(start), end = as_datetime(end), today = as_date(as_datetime(today)))
 
 df_survey <- readxl::read_excel("inputs/livelihoods_assessment_tool.xlsx", sheet = "survey")
 df_choices <- readxl::read_excel("inputs/livelihoods_assessment_tool.xlsx", sheet = "choices")
@@ -42,16 +42,18 @@ df_grouped_choices<- df_choices %>%
   group_by(list_name) %>% 
   summarise(choice_options = paste(name, collapse = " : "))
 
+df_cleaning_log_main <- df_cleaning_log |> 
+  filter(is.na(sheet))
 
 # get new name and ad_option pairs to add to the choices sheet
-new_vars <- df_cleaning_log %>% 
+new_vars <- df_cleaning_log_main %>% 
   filter(type %in% c("change_response", "add_option")) %>% 
   left_join(df_survey, by = "name") %>% 
   filter(str_detect(string = type.y, pattern = "select_one|select one|select_multiple|select multiple")) %>% 
   separate(col = type.y, into = c("select_type", "list_name"), sep =" ", remove = TRUE, extra = "drop") %>% 
   left_join(df_grouped_choices, by = "list_name") %>%
   filter(!str_detect(string = choice_options, pattern = value )) %>%
-  rename(choice = value ) %>%
+  dplyr::rename(choice = value ) %>%
   select(name, choice) %>%
   distinct() %>% # to make sure there are no duplicates
   arrange(name)
@@ -60,8 +62,8 @@ new_vars <- df_cleaning_log %>%
 
 kbo <- kobold::kobold(survey = df_survey, 
                       choices = df_choices, 
-                      data = df_raw_data, 
-                      cleaning = df_cleaning_log)
+                      data = df_raw_data %>% select(-employee_business_hh_engaged_text), 
+                      cleaning = df_cleaning_log_main)
 
 
 # modified choices for the survey tool ------------------------------------
@@ -86,7 +88,7 @@ new_vars_sm <- new_vars %>%
 
 # add new columns to the raw data -----------------------------------------
 
-df_raw_data_modified <- df_raw_data %>% 
+df_raw_data_modified <- df_raw_data %>% select(-employee_business_hh_engaged_text) %>% 
   butteR:::mutate_batch(nm = new_vars_sm$new_cols, value = F )
 
 
@@ -95,7 +97,7 @@ df_raw_data_modified <- df_raw_data %>%
 kbo_modified <- kobold::kobold(survey = df_survey %>% filter(name %in% colnames(df_raw_data_modified)), 
                                choices = df_choises_modified, 
                                data = df_raw_data_modified, 
-                               cleaning = df_cleaning_log )
+                               cleaning = df_cleaning_log_main)
 kbo_cleaned <- kobold::kobold_cleaner(kbo_modified)
 
 
