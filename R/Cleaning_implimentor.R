@@ -22,16 +22,35 @@ filter(!is.na(value), !is.na(uuid)) %>%
          relevant = NA) %>%
   select(uuid, type, name, value, issue_id, sheet, index, relevant, issue)
 
-data_nms <- names(readxl::read_excel(path = "inputs/livelihoods_assessment_data.xlsx", n_max = 500))
+data_path <- "inputs/livelihoods_assessment_data.xlsx"
+
+# main data
+cols_to_escape <- c("index", "start", "end", "today", "starttime",	"endtime", "_submission__submission_time")
+
+data_nms <- names(readxl::read_excel(path = data_path, n_max = 500))
 c_types <- ifelse(str_detect(string = data_nms, pattern = "_other$"), "text", "guess")
 
-df_raw_data <- readxl::read_excel(path = "inputs/livelihoods_assessment_data.xlsx", col_types = c_types) %>% 
+df_raw_data <- readxl::read_excel(path = data_path, col_types = c_types) %>% 
   filter(as_date(as_datetime(start)) > as_date("2022-08-10")) %>%
-  mutate(across(.cols = everything(), .fns = ~ifelse(str_detect(string = ., 
-                                                                pattern = fixed(pattern = "N/A", ignore_case = TRUE)), 
-                                                     "NA", .))) %>% 
-  mutate(start = as_datetime(start), end = as_datetime(end), today = as_date(as_datetime(today)))
+  mutate(across(.cols = -c(contains(cols_to_escape)), 
+                .fns = ~ifelse(str_detect(string = ., 
+                                          pattern = fixed(pattern = "N/A", ignore_case = TRUE)), "NA", .))) %>% 
+  mutate(across(.cols = -c(contains(cols_to_escape), matches("_age$|^age_|uuid")), 
+                .fns = ~ifelse(str_detect(string = ., pattern = "^[9]{2,9}$"), "NA", .)))
 
+# loops
+hh_roster <- readxl::read_excel(path = data_path, sheet = "hh_roster")
+hh_repeat_school_enrollment <- readxl::read_excel(path = data_path, sheet = "repeat_school_enrollment")
+
+df_raw_data_hh_roster <- df_raw_data %>% 
+  select(-`_index`) %>% 
+  inner_join(hh_roster, by = c("_uuid" = "_submission__uuid") )
+
+df_raw_data_hh_repeat_school_enrollment <- df_raw_data %>% 
+  select(-`_index`) %>% 
+  inner_join(hh_repeat_school_enrollment, by = c("_uuid" = "_submission__uuid") )
+
+# tool
 df_survey <- readxl::read_excel("inputs/livelihoods_assessment_tool.xlsx", sheet = "survey")
 df_choices <- readxl::read_excel("inputs/livelihoods_assessment_tool.xlsx", sheet = "choices")
 
@@ -42,7 +61,7 @@ df_grouped_choices<- df_choices %>%
   group_by(list_name) %>% 
   summarise(choice_options = paste(name, collapse = " : "))
 
-df_cleaning_log_main <- df_cleaning_log |> 
+df_cleaning_log_main <- df_cleaning_log %>% 
   filter(is.na(sheet))
 
 # get new name and ad_option pairs to add to the choices sheet
@@ -147,7 +166,22 @@ write_csv(df_final_cleaned_data, file = paste0("outputs/", butteR::date_file_pre
 write_csv(df_final_cleaned_data, file = paste0("inputs/clean_data_livelihood.csv"))
 
 
+# clean repeats -----------------------------------------------------------
+df_cleaning_log_roster <- df_cleaning_log %>% 
+  filter(!is.na(sheet), uuid %in% df_raw_data_hh_roster$`_uuid`, name %in% colnames(df_raw_data_hh_roster))
 
+df_clean_data_hh_roster <- implement_cleaning_support(input_df_raw_data = df_raw_data_hh_roster,
+                                                      input_df_survey = df_survey,
+                                                      input_df_choices = df_choices,
+                                                      input_df_cleaning_log = df_cleaning_log_roster)
+
+df_cleaning_log_school <- df_cleaning_log %>% 
+  filter(!is.na(sheet), uuid %in% df_raw_data_hh_repeat_school_enrollment$`_uuid`, name %in% colnames(df_raw_data_hh_repeat_school_enrollment))
+
+df_clean_data_hh_repeat_school_enrollment <- implement_cleaning_support(input_df_raw_data = df_raw_data_hh_repeat_school_enrollment,
+                                                                        input_df_survey = df_survey,
+                                                                        input_df_choices = df_choices,
+                                                                        input_df_cleaning_log = df_cleaning_log_school)
 
 
 
