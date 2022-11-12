@@ -9,7 +9,7 @@ library(kobold)
 
 # Read data and checking log
 
-df_cleaning_log <- read_csv("inputs/combined_checks_livelihood.csv") %>% 
+df_cleaning_log <- read_csv("inputs/combined_checks_livelihood.csv", col_types = cols(sheet = "c", index = "i")) %>% 
   filter(!adjust_log %in% c("delete_log")) %>%
   mutate(sheet = NA, index = NA, relevant = NA) %>% 
   mutate(adjust_log = ifelse(is.na(adjust_log), "apply_suggested_change", adjust_log),
