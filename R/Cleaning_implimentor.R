@@ -29,14 +29,17 @@ data_nms <- names(readxl::read_excel(path = data_path, n_max = 2000))
 c_types <- ifelse(str_detect(string = data_nms, pattern = "_other$"), "text", "guess")
 
 df_raw_data <- readxl::read_excel(path = data_path, col_types = c_types) %>% 
-  filter(as_date(as_datetime(start)) > as_date("2022-08-10")) %>%
+  filter(as_date(as_datetime(start)) > as_date("2022-05-10")) %>%
   mutate(across(.cols = -c(contains(cols_to_escape)), 
                 .fns = ~ifelse(str_detect(string = ., 
                                           pattern = fixed(pattern = "N/A", ignore_case = TRUE)), "NA", .)))
 
 # loops
-hh_roster <- readxl::read_excel(path = data_path, sheet = "hh_roster")
-hh_repeat_school_enrollment <- readxl::read_excel(path = data_path, sheet = "repeat_school_enrollment")
+hh_roster <- readxl::read_excel(path = data_path, sheet = "hh_roster") %>% 
+  mutate(name = openssl::md5(name),
+         memberinfo = openssl::md5(memberinfo))
+hh_repeat_school_enrollment <- readxl::read_excel(path = data_path, sheet = "repeat_school_enrollment") %>% 
+  mutate(child_name_edu = openssl::md5(child_name_edu))
 
 df_raw_data_hh_roster <- df_raw_data %>% 
   select(-`_index`) %>% 
@@ -52,6 +55,9 @@ df_choices <- readxl::read_excel("inputs/livelihoods_assessment_tool.xlsx", shee
 
 
 # main dataset ------------------------------------------------------------
+
+df_cleaning_log_main <-  df_cleaning_log %>% 
+  filter(is.na(sheet))
 
 df_cleaned_data <- implement_cleaning_support(input_df_raw_data = df_raw_data %>% select(-employee_business_hh_engaged_text),
                                             input_df_survey = df_survey,
@@ -69,7 +75,7 @@ other_repeat_col <- c("start", "end", "today", "consent_one", "consent_two", "ho
                       "settlement_name", "status")
 
 df_cleaning_log_roster <- df_cleaning_log %>% 
-  filter(!is.na(sheet), uuid %in% df_raw_data_hh_roster$`_uuid`, name %in% colnames(df_raw_data_hh_roster))
+  filter(uuid %in% df_raw_data_hh_roster$`_uuid`, name %in% colnames(df_raw_data_hh_roster))
 
 df_cleaned_data_hh_roster <- implement_cleaning_support(input_df_raw_data = df_raw_data_hh_roster,
                                                       input_df_survey = df_survey,
@@ -80,7 +86,7 @@ df_cleaned_data_hh_roster <- implement_cleaning_support(input_df_raw_data = df_r
                 .fns = ~ifelse(str_detect(string = ., pattern = "^[9]{2,9}$"), "NA", .)))
 
 df_cleaning_log_school <- df_cleaning_log %>% 
-  filter(!is.na(sheet), uuid %in% df_raw_data_hh_repeat_school_enrollment$`_uuid`, name %in% colnames(df_raw_data_hh_repeat_school_enrollment))
+  filter(uuid %in% df_raw_data_hh_repeat_school_enrollment$`_uuid`, name %in% colnames(df_raw_data_hh_repeat_school_enrollment))
 
 df_clean_data_hh_repeat_school_enrollment <- implement_cleaning_support(input_df_raw_data = df_raw_data_hh_repeat_school_enrollment,
                                                                         input_df_survey = df_survey,
