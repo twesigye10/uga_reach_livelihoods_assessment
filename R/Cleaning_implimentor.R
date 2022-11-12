@@ -160,17 +160,13 @@ for (cur_sm_col in sm_colnames) {
 df_final_cleaned_data <- df_handle_sm_data
 
 
-# write final modified data -----------------------------------------------
-
-write_csv(df_final_cleaned_data, file = paste0("outputs/", butteR::date_file_prefix(), "_clean_data_livelihood.csv"))
-write_csv(df_final_cleaned_data, file = paste0("inputs/clean_data_livelihood.csv"))
 
 
 # clean repeats -----------------------------------------------------------
 df_cleaning_log_roster <- df_cleaning_log %>% 
   filter(!is.na(sheet), uuid %in% df_raw_data_hh_roster$`_uuid`, name %in% colnames(df_raw_data_hh_roster))
 
-df_clean_data_hh_roster <- implement_cleaning_support(input_df_raw_data = df_raw_data_hh_roster,
+df_cleaned_data_hh_roster <- implement_cleaning_support(input_df_raw_data = df_raw_data_hh_roster,
                                                       input_df_survey = df_survey,
                                                       input_df_choices = df_choices,
                                                       input_df_cleaning_log = df_cleaning_log_roster)
@@ -184,9 +180,17 @@ df_clean_data_hh_repeat_school_enrollment <- implement_cleaning_support(input_df
                                                                         input_df_cleaning_log = df_cleaning_log_school)
 
 
+# write final modified data -----------------------------------------------
 
+list_of_clean_datasets <- list("UGA2205_HH Livelihood" = df_final_cleaned_data,
+                               "hh_roster" = df_cleaned_data_hh_roster,
+                               "hh_repeat_school_enrollment" = df_clean_data_hh_repeat_school_enrollment
+)
 
-
+openxlsx::write.xlsx(x = list_of_clean_datasets,
+                     file = paste0("outputs/", butteR::date_file_prefix(), 
+                                   "_clean_data_livelihood.xlsx"), 
+                     overwrite = TRUE, keepNA = TRUE, na.string = "NA")
 
 
 
