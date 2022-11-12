@@ -38,7 +38,7 @@ implement_cleaning_support <- function(input_df_raw_data, input_df_survey, input
     separate(col = type.y, into = c("select_type", "list_name"), sep =" ", remove = TRUE, extra = "drop") %>% 
     left_join(df_grouped_choices, by = "list_name") %>%
     filter(!str_detect(string = choice_options, pattern = value ) ) %>%
-    rename(choice = value ) %>%
+    dplyr::rename(choice = value ) %>%
     select(name, choice) %>%
     distinct() %>% # to make sure there are no duplicates
     arrange(name)
