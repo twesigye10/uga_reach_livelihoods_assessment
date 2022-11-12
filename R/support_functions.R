@@ -78,7 +78,11 @@ implement_cleaning_support <- function(input_df_raw_data, input_df_survey, input
   kbo_cleaned <- kobold::kobold_cleaner(kbo_modified)
   
   # handling Personally Identifiable Information(PII)
-  input_vars_to_remove_from_data <- c("complainant_name",
+  input_vars_to_remove_from_data <- c("deviceid", 
+                                      "audit",
+                                      "audit_URL",
+                                      "instance_name",
+                                      "complainant_name",
                                       "complainant_id",
                                       "respondent_telephone",
                                       "name_pers_recording",
