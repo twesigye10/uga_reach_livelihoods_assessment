@@ -26,8 +26,7 @@ df_tool_data <- readxl::read_excel(path = dataset_location) %>%
                                            location %in% c("kitgum") ~ "kitgum",
                                            TRUE ~ location),
          district_name = i.check.district_name,
-         i.check.point_number = point_number) %>% 
-  filter(i.check.start_date > as_date("2022-08-05"))
+         i.check.point_number = point_number)
 
 hh_roster_data <- readxl::read_excel(path = dataset_location, sheet = "hh_roster")
 df_repeat_hh_roster_data <- df_tool_data %>% 
