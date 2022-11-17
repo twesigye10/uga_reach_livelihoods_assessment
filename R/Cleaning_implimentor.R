@@ -65,9 +65,7 @@ df_raw_data_for_roster <- df_raw_data |>
          "_submission__notes" = `_notes`,            
          "_submission__status" = `_status`,            
          "_submission__submitted_by" = `_submitted_by`,     
-         "_submission__tags" = `_tags`
-         
-  ) |> 
+         "_submission__tags" = `_tags`) |> 
   select(all_of(return_cols_roster_add))
 
 
