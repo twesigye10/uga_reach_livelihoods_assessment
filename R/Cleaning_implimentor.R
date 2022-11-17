@@ -35,15 +35,58 @@ df_raw_data <- readxl::read_excel(path = data_path, col_types = c_types) %>%
                                           pattern = fixed(pattern = "N/A", ignore_case = TRUE)), "NA", .)))
 
 # loops
+# hh_roster loop
 hh_roster <- readxl::read_excel(path = data_path, sheet = "hh_roster") %>% 
   mutate(name = openssl::md5(name),
          memberinfo = openssl::md5(memberinfo))
-hh_repeat_school_enrollment <- readxl::read_excel(path = data_path, sheet = "repeat_school_enrollment") %>% 
-  mutate(child_name_edu = openssl::md5(child_name_edu))
+
+df_cl_log_add_roster_data <- df_cleaning_log |> 
+  filter(issue_id %in% c("logic_c_hoh_details_and_hh_roster_48"))
+
+return_cols_roster_add <- colnames(hh_roster)
+
+df_raw_data_for_roster <- df_raw_data |> 
+  filter(`_uuid` %in% df_cl_log_add_roster_data$uuid) |> 
+  mutate(hh_member_position = NA,
+         name = openssl::md5(paste("hoh", `_uuid`)),
+         gender = gender_hoh,
+         age = age_hoh,
+         school_aged = "0",
+         hh_position = NA,
+         person_id = as.character(name),
+         memberinfo = openssl::md5(paste(name, gender, ",", age)),
+         "_parent_table_name" = "UGA2205_HH",
+         "_parent_index" = `_index`,
+         "_submission__id" = `_id`,
+         "_index" = NA,
+         "_submission__uuid" = `_uuid`,              
+         "_submission__submission_time" = `_submission_time`,   
+         "_submission__validation_status" = `_validation_status`,
+         "_submission__notes" = `_notes`,            
+         "_submission__status" = `_status`,            
+         "_submission__submitted_by" = `_submitted_by`,     
+         "_submission__tags" = `_tags`
+         
+  ) |> 
+  select(all_of(return_cols_roster_add))
+
+
+hh_roster_with_added_rows <- bind_rows(hh_roster, df_raw_data_for_roster) |> 
+  mutate(`_index` = ifelse(is.na(`_index`), row_number(), `_index`)
+  ) |> 
+  group_by(`_submission__uuid`) |> 
+  arrange(`_index`) |> 
+  mutate(hh_member_position = ifelse(is.na(hh_member_position), as.character(max(as.numeric(hh_member_position), na.rm=TRUE) + 1), hh_member_position),
+         hh_position = hh_member_position) |> 
+  ungroup()
 
 df_raw_data_hh_roster <- df_raw_data %>% 
   select(-`_index`) %>% 
-  inner_join(hh_roster, by = c("_uuid" = "_submission__uuid") )
+  inner_join(hh_roster_with_added_rows, by = c("_uuid" = "_submission__uuid") )
+
+# school_enrollment loop
+hh_repeat_school_enrollment <- readxl::read_excel(path = data_path, sheet = "repeat_school_enrollment") %>% 
+  mutate(child_name_edu = openssl::md5(child_name_edu))
 
 df_raw_data_hh_repeat_school_enrollment <- df_raw_data %>% 
   select(-`_index`) %>% 
