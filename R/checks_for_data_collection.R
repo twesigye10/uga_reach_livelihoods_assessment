@@ -48,7 +48,7 @@ logic_output <- list()
 
 # testing_data
 df_testing_data <- df_tool_data %>% 
-  filter(i.check.start_date < as_date("2022-10-06") | str_detect(string = hh_id, pattern = fixed('test', ignore_case = TRUE))) %>% 
+  filter(i.check.start_date < as_date("2022-10-06") | str_detect(string = point_number, pattern = fixed('test', ignore_case = TRUE))) %>% 
   mutate(i.check.type = "remove_survey",
          i.check.name = "",
          i.check.current_value = "",
